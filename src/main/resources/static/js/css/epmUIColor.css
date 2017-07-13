@@ -1,0 +1,253 @@
+@CHARSET "UTF-8";
+
+.slds-button{
+   position: relative;
+   z-index:20;  
+   border-radius: 8px;
+   background-color: #0070d2 !important;
+   border: 1px solid #ffffff; 
+   background-color:#0070d2 !important \9\0;
+   behavior: url(../js/css/ie-css3.htc) \9\0;
+   behavior: url(../js/css/ie-css3.htc) \9;
+  *behavior: url(../js/css/ie-css3.htc);
+  _behavior: url(../js/css/ie-css3.htc);  
+}
+.btn-primary{
+   position: relative;
+   z-index:20;
+   background-color: #0070d2 !important;
+   border: 1px solid #ffffff;	
+   border-radius: 8px; 
+   background-color:#0070d2 !important \9\0;
+   behavior: url(../js/css/ie-css3.htc) \9\0;
+   behavior: url(../js/css/ie-css3.htc) \9;
+  *behavior: url(../js/css/ie-css3.htc);
+  _behavior: url(../js/css/ie-css3.htc); 	
+}
+input[disabled].l-bar-button{
+	position: relative;
+    z-index:20;
+	border-radius: 8px!important;
+	background-color: #d8dde6;
+    border: 1px solid #ffffff;
+	font-size:15px;
+	
+}
+/* input.l-bar-button{
+	 position: relative;
+   z-index:20;  
+   border-radius: 8px;
+
+   border: 1px solid #d8dde6; 
+   behavior: url(../js/css/ie-css3.htc) \9;
+  *behavior: url(../js/css/ie-css3.htc);
+  _behavior: url(../js/css/ie-css3.htc);  
+}
+.pcontrol button.l-bar-button{
+   position: relative;
+   z-index:20;  
+   border-radius: 8px;
+   border-radius: 8px \9;
+   *border-radius: 8px;
+   _border-radius: 8px;
+   border: 1px solid #d8dde6; 
+   behavior: url(../js/css/ie-css3.htc) \9;
+  *behavior: url(../js/css/ie-css3.htc);
+  _behavior: url(../js/css/ie-css3.htc);     
+} */
+
+/* .pcontrol button.l-bar-button:first-child{
+	z-index:100;
+	background-color: #aaaaaa;
+  	border: 1px solid #ffffff;
+  	color: white;
+	line-height: 35px !important;
+	height: 35px !important;
+	font-size:15px;
+}
+input.l-bar-button{
+	position: relative;
+    z-index:20;
+    background-color: #0070d2;
+	border-radius: 8px;
+    border-radius: 8px;
+   border-radius: 8px \9;
+   *border-radius: 8px;
+   _border-radius: 8px;
+  	border: 1px solid #ffffff;
+  	color: white;
+
+	font-size:15px;
+	
+}
+input[disabled].l-bar-button{
+	position: relative;
+    z-index:20;
+    background-color: #0070d2;
+	border-radius: 8px!important;
+	background-color: #aaaaaa;
+    border: 1px solid #aaaaaa;
+
+
+	font-size:15px;
+	
+}
+.pcontrol button.l-bar-button{
+	position: relative;
+    z-index:20;  
+    background-color: #0070d2;
+   border-radius: 8px;
+   border-radius: 8px \9;
+   *border-radius: 8px;
+   _border-radius: 8px;
+   border: 1px solid #ffffff; 
+   behavior: url(../js/css/ie-css3.htc) \9;
+  *behavior: url(../js/css/ie-css3.htc);
+  _behavior: url(../js/css/ie-css3.htc);     
+} */
+/* input.l-bar-button.l-bar-btnprev {
+	position: relative;
+	background-color: #0070d2;
+   z-index:30;  
+   border-radius: 8px!important;
+   border: 1px solid #aaaaaa!important; 
+   behavior: url(../js/css/ie-css3.htc) \9;
+  *behavior: url(../js/css/ie-css3.htc);
+  _behavior: url(../js/css/ie-css3.htc);     
+}
+input.l-bar-button.l-bar-btnnext {
+	position: relative;
+	background-color: #0070d2;
+   z-index:20;  
+   border-radius: 8px!important;
+   border: 1px solid #aaaaaa!important; 
+   behavior: url(../js/css/ie-css3.htc) \9;
+  *behavior: url(../js/css/ie-css3.htc);
+  _behavior: url(../js/css/ie-css3.htc);     
+} */
+/* 按钮皮肤设定，暂时注释 */
+/* .slds-button{
+  position: relative;
+  display: inline-block;
+  z-index:20;
+  padding: 0;
+  background: transparent;
+  background-clip: border-box;
+  border: 1px solid transparent;
+  border-radius: 8px; 
+  font-size: 0.75rem;
+  line-height: 1.875rem;
+  text-decoration: none;
+  color: #0070d2;
+  -webkit-appearance: none;
+  white-space: normal;
+  user-select: none;
+  transition: color 0.05s linear, background-color 0.05s linear;
+  behavior: url(../js/css/ie-css3.htc) \9;
+  *behavior: url(../js/css/ie-css3.htc);
+  _behavior: url(../js/css/ie-css3.htc);  
+}
+
+
+.slds-button--brand{
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #00c0d2;
+  border: 1px solid #00c0d2;
+  color: white;
+	
+	
+}
+.slds-button--brand:hover{
+ opacity:1;filter(alpha=100);
+  background-color: #6fcfdf;
+  border: 1px solid #6fcfdf;
+  color: white;
+	
+	
+}
+.pcontrol button.l-bar-button:first-child{
+	z-index:100;
+	background-color: #ddc0d2;
+  border: 1px solid #ddc0d2;
+  color: white;
+	line-height: 35px !important;
+	height: 35px !important;
+	font-size:15px;
+}
+input.l-bar-button{
+	background-color: #00c0d2;
+  	border: 1px solid #ffffff;
+  	color: white;
+	line-height: 35px !important;
+	height: 35px !important;
+	font-size:15px;
+	
+}
+对分页disabled按钮进行颜色控制
+input[disabled].l-bar-button{
+	background-color: #eeeeee;
+    border: 1px solid #eeeeee;
+    color: white;
+	line-height: 35px !important;
+	height: 35px !important;
+	font-size:15px;
+	
+}
+对每个页数的button进行颜色控制
+.pcontrol button.l-bar-button{
+	background-color: #00c0d2;
+  border: 1px solid #ffffff;
+  color: white;
+	line-height: 35px !important;
+	height: 35px !important;
+	font-size:15px;
+}
+新增页面按钮颜色统一
+.btn-primary{
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #00c0d2;
+  border: 1px solid #00c0d2;
+  color: white;
+  border-radius: 8px; 
+  behavior: url(../js/css/ie-css3.htc) \9;
+  *behavior: url(../js/css/ie-css3.htc);
+  _behavior: url(../js/css/ie-css3.htc); 
+   border: 1px solid #ffffff; 
+	
+}
+.btn-primary:hover{
+ opacity:1;filter(alpha=100);
+  background-color: #6fcfdf;
+  border: 1px solid #ffffff;
+  color: white;	
+}
+
+.btn-primary:active::after{
+  opacity:1;filter(alpha=100);
+  background-color: #6fcfdf;
+  border: 1px solid #ffffff;
+  color: white;	
+	
+}
+.btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+  color: #fff;
+  background-color: #6fcfdf;
+  border-color: #ffffff;
+}
+
+.tooltip{
+	background-color: #6fcfdf;
+  border: 1px solid #6fcfdf;
+	
+}
+.l-bar-group{
+	padding:0 10px;
+	
+}
+ */

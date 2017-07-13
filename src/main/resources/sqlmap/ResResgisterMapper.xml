@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.ResRegisterDao">
+	<select id="findAll" resultType="com.bonc.epmwxwl.model.Res">
+		select
+		res.res_id "res_id",
+		res.sort_num "sort_num",
+		res.res_name "res_name",
+		res.res_resume "res_resume",
+		res.main_table "main_table",
+		res.main_field "main_field",
+		e.entity_name "entity_name",
+		case when res.stutas='0'
+		then '启用'
+		when res.stutas='1' then '停用'
+		end "stutas"
+		from WXWL_RES res
+		left join WXWL_RES_ENTITY re on
+		res.res_id=re.res_id
+		left join WXWL_ENTITY e on
+		re.entity_id=e.entity_id
+		order by res.sort_num ASC
+	</select>
+	<select id="findByCondition" resultType="com.bonc.epmwxwl.model.Res">
+select
+    res.res_id "res_id",
+    res.sort_num "sort_num",
+    res.res_name "res_name",
+    res.res_resume "res_resume",
+    res.main_table "main_table",
+	res.main_field "main_field",
+    case when res.stutas='0'
+    then '启用'
+    when res.stutas='1' then '停用'
+    end "stutas"
+    from WXWL_RES res
+		where res.tenant_id=#{tenant_id}
+		<if test="stutas!=null and stutas!=''">
+		res.stutas= #{stutas} 
+		</if>
+		<if test="res_name!=null and res_name!=''">
+		and	res.res_name like #{res_name}</if>
+		<if test="res_resume!=null and res_resume!=''">
+	 		and res.res_resume like  #{res_resume}
+		</if>
+    order by res.sort_num ASC
+	</select>
+	<select id="findResById" resultType="com.bonc.epmwxwl.model.Res">
+		select
+		res_id "res_id",
+		res_name "res_name",
+		res_resume "res_resume",
+		main_table "main_table",
+		main_field "main_field",
+		stutas "stutas",
+		delflag "delflag",
+		sort_num "sort_num"
+		from WXWL_RES
+		where res_id=#{res_id}
+	</select>
+
+	<select id="finMaxSortNumRes" resultType="java.lang.Integer">
+		select max(sort_num)
+		from WXWL_RES
+	</select>
+
+	<select id="finMaxSortNumResEntity" resultType="java.lang.Integer">
+		select
+		max(sort_num) from WXWL_RES_ENTITY
+	</select>
+
+	<select id="findAllEntityName" resultType="java.util.HashMap">
+		select
+		entity_id "id",
+		entity_name "text"
+		from WXWL_ENTITY
+	</select>
+
+	<select id="findExtraEntityNameById" resultType="java.util.HashMap">
+		select
+		t.entity_id "id",
+		t.entity_name "text"
+		from WXWL_ENTITY t
+		where t.entity_id not in
+		(select r.entity_id
+		from WXWL_RES_ENTITY r
+		where r.res_id = #{res_id})
+	</select>
+
+	<select id="findAllEntityNameById" resultType="java.util.HashMap">
+		select
+		t.entity_id "id",
+		t.entity_name "text"
+		from WXWL_RES_ENTITY r
+		left join WXWL_ENTITY t
+		on r.entity_id = t.entity_id
+		where r.res_id = #{res_id}
+	</select>
+
+	<select id="findIdAndSortNumById" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.Res">
+		select
+		res_id "res_id",
+		sort_num "sort_num"
+		from WXWL_RES
+		where res_id=#{id}
+	</select>
+
+	<select id="findPreIdAndSortNumById" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.Res">
+		select
+		t2.res_id "res_id",
+		t2.sort_num "sort_num"
+		from
+		(
+		select
+		t.res_id as res_id,
+		t.sort_num as sort_num
+		from WXWL_RES t
+		where
+		t.sort_num &lt; (
+		select t.sort_num from WXWL_RES t
+		where
+		t.res_id=#{res_id}
+		)
+		order by t.sort_num DESC
+		) t2
+		where rownum=1
+	</select>
+	<select id="findAfterIdAndSortNumById" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.Res">
+		select
+		t2.res_id "res_id",
+		t2.sort_num "sort_num"
+		from
+		(
+		select
+		t.res_id as res_id,
+		t.sort_num as sort_num
+		from WXWL_RES t
+		where
+		t.sort_num &gt; (
+		select t.sort_num from WXWL_RES t
+		where
+		t.res_id=#{res_id}
+		)
+		order by t.sort_num ASC
+		) t2
+		where rownum=1
+	</select>
+
+	<update id="updateSortNumById" parameterType="com.bonc.epmwxwl.model.Res">
+		update WXWL_RES
+		set
+		sort_num=#{sort_num,jdbcType=INTEGER}
+		where
+		res_id=#{res_id,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteByIdRes" parameterType="String">
+		delete from
+		WXWL_RES
+		where res_id=#{res_id,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteByIdResEntity">
+		delete from WXWL_RES_ENTITY where
+		res_id=#{res_id,jdbcType=VARCHAR}
+	</delete>
+
+	<insert id="registerSave" parameterType="com.bonc.epmwxwl.model.Res">
+		insert into WXWL_RES(res_id,res_name,res_resume,stutas,delflag,sort_num,tenant_id,main_table,main_field)
+		values (
+		#{res_id,jdbcType=VARCHAR},
+		#{res_name,jdbcType=VARCHAR},
+		#{res_resume,jdbcType=VARCHAR},
+		#{stutas,jdbcType=VARCHAR},
+		#{delflag,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR},
+		#{main_table,jdbcType=VARCHAR},
+		#{main_field,jdbcType=VARCHAR} 
+		)
+	</insert>
+
+	<insert id="resEntitySave" parameterType="com.bonc.epmwxwl.model.ResEntity">
+		insert into
+		WXWL_RES_ENTITY(res_entity_id,res_id,entity_id,condition_sql,condition_resume,sort_num,tenant_id)
+		values (
+		#{res_entity_id,jdbcType=VARCHAR},
+		#{res_id,jdbcType=VARCHAR},
+		#{entity_id,jdbcType=VARCHAR},
+		#{condition_sql,jdbcType=VARCHAR},
+		#{condition_resume,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="resUpdate" parameterType="com.bonc.epmwxwl.model.Res">
+		update WXWL_RES
+		set
+		res_name=#{res_name,jdbcType=VARCHAR},
+		main_table=#{main_table,jdbcType=VARCHAR},
+		main_field=#{main_field,jdbcType=VARCHAR},
+		res_resume=#{res_resume,jdbcType=VARCHAR},
+		stutas=#{stutas,jdbcType=VARCHAR},
+		tenant_id=#{tenant_id,jdbcType=VARCHAR}
+		where
+		res_id=#{res_id,jdbcType=VARCHAR}
+	</update>
+
+	<select id="findPrimaryIdsById" resultType="java.util.HashMap">
+		select
+		f.field_name "field_name"
+		from WXWL_ENTITY_FIELD f
+		left join WXWL_RES_ENTITY r on f.entity_id = r.entity_id
+		where r.res_id = #{res_id} and f.mainkey='1'
+	</select>
+
+	<select id="findFiledsById" resultType="java.util.HashMap">
+		select r.entity_id,f1.field_id  "mainKey",f2.field_id "foreignKey" from WXWL_RES_ENTITY_REL rel
+     left join WXWL_RES_ENTITY r on rel.res_entity_id = r.res_entity_id
+     left join WXWL_ENTITY_FIELD f1 on f1.field_id = rel.main_id
+     left join WXWL_ENTITY_FIELD f2 on f2.field_id=rel.foreign_id
+     where r.res_id =#{res_id}
+	</select>
+
+	<select id="findPrimaryIdsByName" resultType="java.util.HashMap">
+		select
+		f.field_name "field_name"
+		from WXWL_ENTITY_FIELD f left join WXWL_ENTITY e on f.entity_id =
+		e.entity_id
+		where e.entity_name = #{entity_name} and f.mainkey='1'
+	</select>
+
+	<select id="findFiledsByName" resultType="java.util.HashMap">
+		select
+		f.field_name "field_name"
+		from WXWL_ENTITY_FIELD f left join WXWL_ENTITY e on f.entity_id =
+		e.entity_id
+		where e.entity_name = #{entity_name} and f.mainkey='0'
+	</select>
+
+	<select id="findPrimaryIdsByEids" resultType="java.util.HashMap">
+		select
+		f.field_id "field_id",
+		(case when f.field_name is null then field_name_en else field_name end)  "field_name"
+		from WXWL_ENTITY_FIELD f
+		where f.entity_id = #{entity_id}
+	</select>
+
+	<select id="findFiledsByEids" resultType="java.util.HashMap">
+		select
+		f.field_id "field_id",
+		(case when f.field_name is null then field_name_en else field_name end)  "field_name"
+		from WXWL_ENTITY_FIELD f
+		where f.entity_id in 
+		
+		<foreach item="entity_ids" index="index" collection="list" open="("  
+            separator="," close=")">  
+            #{entity_ids}  
+        </foreach>  
+		
+	</select>
+	
+	<select id="findTotalCount" resultType="Long">
+		select count(*)
+  		from WXWL_RES res
+	</select>
+	
+
+</mapper>

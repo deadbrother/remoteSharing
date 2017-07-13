@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.ActivityPolicyDao">
+	<select id="getActivityPolicyList" parameterType="com.bonc.activity.model.ActivityPolicyBo"
+		resultType="java.util.HashMap">
+		select p.POLICY_ID "policyId",
+		POLICY_NAME "policyName",
+		p.POLICY_CLASS_ID "policyClassId",
+		p.channel "channel",
+		p.create_user "createUser",
+		<!-- to_char(CREATE_TIME, 'yyyy-mm-dd hh24:mi:ss') "createTime", -->
+		P.CREATE_TIME  "createTime",
+		to_char(START_TIME, 'yyyy-MM-dd') "startTime",
+		to_char(EFFECTIVE_TIME,'yyyy-MM-dd') "effectiveTime",
+		PROVINCE "province",
+		c.POLICY_CLASS_NAME "policyClassName",
+		decode(PROVINCE, '-1', '集团') "provinceName",
+		p.UPLOAD_FILENAME "uploadFileName",
+		s.user_name "createUserName",
+		b.path "createUserOrgPath"
+		from CLYX_POLICY_INFO p 
+		left join CLYX_POLICY_CLASS_CODE c
+		on p.POLICY_CLASS_ID = c.POLICY_CLASS_ID and p.tenant_id= c.tenant_id
+		left join ${security}.userinfo s 
+		on s.login_id=p.CREATE_USER and  s.tenant_id=p.tenant_id
+		left join ${security}.userinfo_orginfo_rel a
+      	on s.id = a.userinfo_id and a.tenant_id = p.tenant_id
+    	left join ${security}.orginfo b
+      	on a.orginfo_id = b.id and b.tenant_id = p.tenant_id
+		where 1 = 1
+		and (b.path in ( ${supperOrgs} ) or b.path like CONCAT(
+			CONCAT('%', #{lowerLever,javaType=String,jdbcType=VARCHAR}), '%'))
+		and p.tenant_id = #{tenantId}
+		<if test="policyName !=null and policyName !=''">
+			AND POLICY_NAME like CONCAT(
+			CONCAT('%',
+			#{policyName,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+
+		<!-- <isNotEmpty prepend="and" property="startTime"> ( START_TIME <![CDATA[ 
+			>= ]]> to_date(#startTime#,'yyyy-mm-dd hh24:mi:ss') ) </isNotEmpty> <isNotEmpty 
+			prepend="and" property="effectiveTime"> ( <![CDATA[ EFFECTIVE_TIME <= to_date(#effectiveTime#,'yyyy-mm-dd 
+			hh24:mi:ss') ]]> ) </isNotEmpty> <isNotEmpty prepend="and" property="policyClassId"> 
+			(p.POLICY_CLASS_ID = #policyClassId# ) </isNotEmpty> -->
+		order by p.CREATE_TIME desc
+	</select>
+
+	<select id="getPolicyInfoDetail" resultType="hashmap">
+		SELECT t.policy_id "policyId",
+				t.policy_name "policyName",
+				to_char(t.start_time, 'yyyy-mm-dd') "startTime",
+				to_char(t.EFFECTIVE_TIME, 'yyyy-mm-dd') "effectiveTime",
+				TO_CHAR(t.CREATE_TIME, 'yyyy-MM-dd HH:mm:ss') "createTime", 
+	    		<!-- t.CREATE_TIME  "CREATE_TIME", -->
+	    		t.UPLOAD_FILENAME "uploadFileName",
+				t.upload_file "uploadFile",
+		t2.POLICY_CLASS_NAME "policyClassName",
+		t3.user_name "createUserName"
+		FROM CLYX_POLICY_INFO t
+		LEFT JOIN CLYX_POLICY_CLASS_CODE t2
+		ON t.POLICY_CLASS_ID=t2.POLICY_CLASS_ID and t.tenant_id=t2.tenant_id
+		LEFT JOIN ${security}.userinfo t3
+		on t3.login_id=t.CREATE_USER
+		WHERE 1 = 1 and t.tenant_id=t2.tenant_id
+		<if test="po.policyId !=null and po.policyId !=''">
+			and t.policy_id =
+			#{po.policyId,javaType=String,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<delete id="deletePolicyInfo" parameterType="com.bonc.activity.model.ActivityPolicyBo">
+		delete from CLYX_POLICY_INFO r
+		where
+		r.POLICY_ID =#{po.policyId,javaType=String,jdbcType=VARCHAR}
+	</delete>
+	<!-- 修改查寻 -->
+	<select id="getPolicyInfo" parameterType="com.bonc.activity.model.ActivityPolicyBo"
+		resultType="java.util.HashMap">
+		SELECT t.POLICY_ID "policyId",
+		t.POLICY_NAME "policyName",
+		t.POLICY_CLASS_ID "policyClassId",
+		t.channel "channel",
+		t.main_content
+		"content",
+		t.create_user "createUser",
+		<!-- to_char(t.CREATE_TIME,
+		'yyyy-MM-dd') "createTime", -->
+		t.CREATE_TIME  "createTime",
+		to_char(t.START_TIME, 'yyyy/MM/dd')
+		"startTime",
+		to_char(t.EFFECTIVE_TIME, 'yyyy/MM/dd') "effectiveTime",
+		t.UPLOAD_FILENAME "uploadFileName",
+		t.upload_file "uploadFile",
+		t.tenant_Id "tenantId",
+		t2.POLICY_CLASS_NAME,
+		t3.user_name
+		"createUserName"
+		FROM CLYX_POLICY_INFO t
+		LEFT JOIN
+		CLYX_POLICY_CLASS_CODE t2
+		ON t.POLICY_CLASS_ID=t2.POLICY_CLASS_ID and
+		t.tenant_id=t2.tenant_id
+		LEFT JOIN ${security}.userinfo t3
+		on
+		t3.login_id=t.CREATE_USER
+		WHERE 1 = 1 and t.tenant_id=t2.tenant_id
+		<if test="po.policyId !=null and po.policyId !=''">
+			and t.policy_id =
+			#{po.policyId,javaType=String,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<select id="getPolicyTypeList" resultType="java.util.HashMap">
+		select
+		t.POLICY_CLASS_ID "policyClassId",
+		t.POLICY_CLASS_NAME
+		"policyClassName"
+		from CLYX_POLICY_CLASS_CODE t
+		where 1=1 
+		and t.tenant_id=#{po.tenantId}
+	</select>
+
+	<select id="getNextPolicyId" resultType="java.lang.String">
+		select
+		to_char(seq_p.nextval) "policyId" from dual
+	</select>
+
+	<select id="checkPolicyName" resultType="java.lang.String">
+		select * from clyx_policy_info t
+		where 1=1
+		and t.tenant_id=#{po.tenantId}
+		<if test="po.policyId !=null and po.policyId !=''">
+			and t.policy_id !=
+			#{po.policyId,javaType=String,jdbcType=VARCHAR}
+		</if>
+		<if test="po.policyName !=null and po.policyName !=''">
+			and t.policy_name =
+			#{po.policyName,javaType=String,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<select id="queryById" parameterType="com.bonc.activity.model.ActivityPolicyBo"
+		resultType="com.bonc.activity.model.ActivityPolicyInfoPo">
+		select p.POLICY_ID "policyId",
+		p.POLICY_NAME "policyName",
+		p.POLICY_CLASS_ID "policyClassId",
+		p.UPLOAD_FILE "uploadFile",
+		p.UPLOAD_MAN "uploadMan",
+		P.CREATE_TIME  "createTime",
+		p.UPLOAD_FILENAME
+		"uploadFileName",
+		p.CREATE_USER "createUser",
+		c.POLICY_CLASS_NAME "policyClassName",
+		c.POLICY_CLASS_ID "policyClassId"
+		from CLYX_POLICY_INFO p,
+		CLYX_POLICY_CLASS_CODE c
+		where 1=1 
+		and p.POLICY_CLASS_ID =c.POLICY_CLASS_ID 
+		and p.POLICY_ID =#{po.policyId,javaType=String,jdbcType=VARCHAR}  
+		and c.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<insert id="savePolicy">
+		INSERT INTO CLYX_POLICY_INFO(POLICY_ID, POLICY_NAME,
+		POLICY_CLASS_ID,START_TIME,EFFECTIVE_TIME,CREATE_TIME,CREATE_USER,UPLOAD_FILE,UPLOAD_MAN,UPLOAD_FILENAME,tenant_id)
+		VALUES(#{po.policyId,javaType=String,jdbcType=VARCHAR},
+		#{po.policyName,javaType=String,jdbcType=VARCHAR},
+		#{po.policyClassId,javaType=String,jdbcType=VARCHAR},
+		#{po.startTime,jdbcType=DATE},
+		#{po.effectiveTime,jdbcType=DATE},
+		<!-- to_date(#{po.createTime,jdbcType=DATE},'yyyy-mm-dd hh24:mi:ss'), -->
+		#{po.createTime,jdbcType=DATE},
+		#{po.createUser,javaType=String,jdbcType=VARCHAR},
+		#{po.uploadFile,jdbcType=BLOB},#{po.uploadMan,javaType=String,jdbcType=VARCHAR},#{po.uploadFileName,javaType=String,jdbcType=VARCHAR},#{po.tenantId,javaType=String,jdbcType=VARCHAR})
+	</insert>
+
+	<select id="getNowTime" resultType="java.lang.String">
+		select
+		to_char(sysdate,'yyyy-mm-dd hh24:mi:ss') "createTime"
+		from dual
+	</select>
+	<update id="UpdatePolicy">
+		UPDATE CLYX_POLICY_INFO
+		SET POLICY_ID =
+		#{po.policyId,javaType=String,jdbcType=VARCHAR},
+		POLICY_NAME
+		=#{po.policyName,javaType=String,jdbcType=VARCHAR},
+		POLICY_CLASS_ID =
+		#{po.policyClassId,javaType=String,jdbcType=VARCHAR},
+		START_TIME =
+		#{po.startTime,jdbcType=DATE},
+		EFFECTIVE_TIME =
+		#{po.effectiveTime,jdbcType=DATE},
+		<!-- CREATE_TIME
+		=to_date(#{po.createTime,jdbcType=DATE},'yyyy-mm-dd hh24:mi:ss'), -->
+		CREATE_TIME=#{po.createTime,jdbcType=DATE},
+		CREATE_USER = #{po.createUser,javaType=String,jdbcType=VARCHAR},
+		UPLOAD_FILE = #{po.uploadFile,jdbcType=BLOB},
+		UPLOAD_MAN = #{po.uploadMan,javaType=String,jdbcType=VARCHAR},
+		UPLOAD_FILENAME =#{po.uploadFileName,javaType=String,jdbcType=VARCHAR}
+		WHERE POLICY_ID =
+		#{po.policyId,javaType=String,jdbcType=VARCHAR}
+	</update>
+	<!-- <select id="getActivityExamineList1" parameterType="com.bonc.activity.model.ActivityProvBo" 
+		resultType="java.util.HashMap"> select t.activity_id "activityDailyId", t.activity_name 
+		"activityDailyName", t5.org_level_name "orgLevel", t.activity_cycle "activityCycle", 
+		t.org_range "orgRange", t.channel_check "channelCheck", t.prov_id "provId", 
+		t.city_id "cityId", t7.theme_name "activityTheme", t6.state_desc "stateDesc", 
+		to_char(t.start_date, 'yyyy-mm-dd') "startDate", to_char(t.end_date, 'yyyy-mm-dd') 
+		"endDate", to_char(t.create_date,'yyyy-mm-dd') "createDate", t.create_org_path 
+		"createOrgPath", t.org_path "orgPath", t1.name "targetName", t.USERGROUP_ID 
+		"userGroupId", t.CREATE_USER "createUser", STATE "state", t.parent_id "parentId", 
+		t3.user_name "createUserName", t4.type_desc "activityTypeName" from CLYX_ACTIVITY 
+		t left join clyx_marketing_target t1 on t.target = t1.id left join clyx_activity_prov 
+		t2 on t2.activity_id=t.activity_id and t2.tenant_id=t.tenant_id left join 
+		security_hn.userinfo t3 on t3.login_id=t.CREATE_USER left join clyx_activity_type 
+		t4 on t4.type_id=t.activity_typeid left join clyx_activity_orglevel t5 on 
+		t.org_level=t5.org_level left join clyx_activity_state_code t6 on t.state=t6.state_code 
+		left join clyx_activity_theme t7 on t7.theme_code=t.ACTIVITY_THEME_CODE where 
+		t.activity_id not in( select t.activity_id "activityDailyId" from CLYX_ACTIVITY 
+		t left join clyx_marketing_target t1 on t.target = t1.id left join clyx_activity_prov 
+		t2 on t2.activity_id=t.activity_id and t2.tenant_id=t.tenant_id left join 
+		security_hn.userinfo t3 on t3.login_id=t.CREATE_USER left join clyx_activity_type 
+		t4 on t4.type_id=t.activity_typeid left join clyx_activity_orglevel t5 on 
+		t.org_level=t5.org_level left join clyx_activity_state_code t6 on t.state=t6.state_code 
+		left join clyx_activity_theme t7 on t7.theme_code=t.ACTIVITY_THEME_CODE right 
+		join (select channel_code from clyx_p_channel_info where channel_type='2') 
+		mb on t.channel_check like '%'||mb.channel_code||'%' ) and city_id !='-1' 
+		and state='13' <if test="activityName !=null and activityName !=''"> AND 
+		t.activity_name like CONCAT( CONCAT('%', #{activityName,javaType=String,jdbcType=VARCHAR}), 
+		'%') </if> order by t.create_date desc </select> -->
+
+	<select id="getExecuteId" resultType="string">
+		select
+		to_char(execute_id_SEQ.nextval) as "execute_id" from dual
+	</select>
+
+
+	<select id="getStatusName" resultType="java.lang.String">
+		select state_desc
+		"status"
+		from clyx_activity_state_code where state_code=
+		#{status_code,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<insert id="executeLog" parameterType="java.lang.String">
+		insert into
+		clyx_execute_log(EXECUTE_ID,ACTIVITY_ID,USER_ID,REMARK,
+		EXECUTE_DATE,STATUS,TENANT_ID,USER_NAME)VALUES(#{executeId,javaType=String,jdbcType=VARCHAR},
+		#{activityId,javaType=String,jdbcType=VARCHAR},#{loginUserId,javaType=String,jdbcType=VARCHAR},
+		#{remark,javaType=String,jdbcType=VARCHAR},to_date(#{executeDate,jdbcType=DATE},'yyyy/mm/dd
+		hh24:mi:ss'),
+		#{status,javaType=String,jdbcType=VARCHAR},#{tenantId,javaType=String,jdbcType=VARCHAR}
+		,#{userName,javaType=String,jdbcType=VARCHAR})
+	</insert>
+	<update id="updatePassActivity" parameterType="java.lang.String">
+		update
+		CLYX_ACTIVITY set state='9' where
+		activity_id=#{activityId,javaType=String,jdbcType=VARCHAR}
+	</update>
+
+
+	<update id="updateNoPassActivity" parameterType="java.lang.String">
+		update
+		CLYX_ACTIVITY set state='10' where
+		activity_id=#{activityId,javaType=String,jdbcType=VARCHAR}
+	</update>
+    <select id="queryUsePolicy" parameterType="java.lang.String" resultType="java.lang.String">
+	select count(*) from (
+	select * from CLYX_ACTIVITY t
+	where t.policy_id=#{id,javaType=String,jdbcType=VARCHAR}
+	)
+	
+	</select>
+    
+</mapper>

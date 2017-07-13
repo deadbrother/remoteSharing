@@ -1,0 +1,2 @@
+call mvn install:install-file -Dfile=..\lib\spring-orm-4.2.1.RELEASE.jar -DgroupId=org.springframework.orm -DartifactId=spring-orm -Dversion=4.2.1.RELEASE -Dpackaging=jar
+if not "%ERRORLEVEL%" == "0" exit /b

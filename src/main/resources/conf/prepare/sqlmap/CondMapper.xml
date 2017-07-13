@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bonc.epmwxwl.dao.cond.CondDao">
+	<!-- 根据sql查询行云中码表 --> 
+	<select id="findCodeList" parameterType="String" resultType="com.bonc.epmwxwl.model.DataRes" >
+		  ${sql}
+	</select>
+	<select id="findSqlCodeList" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+		  ${sql}
+	</select>
+	<select id="TagItemList" parameterType="java.lang.String" resultType="com.bonc.epmwxwl.model.TagListPo">
+	       select cd.field_name "field_name",
+	       dm.dime_name "dime_name" 
+	       from usertool_hn.dap_uni_cube_dime cd 
+	       left join usertool_hn.dap_uni_dime_metadata dm 
+	       on cd.dime_id = dm.dime_id  
+	       where cd.cube_id = #{cube_id} 
+	</select>
+	<!-- 获取cub -->
+	<select id="cubQuery" parameterType="java.util.HashMap" resultType="java.lang.String">
+		select 	
+			cube_id "cube_id"
+			from usertool_hn.dap_uni_cube_metadata where data_auth='-1' and cube_type=#{typeflag,jdbcType=VARCHAR} and tenant_id = #{tenant_id}
+	</select>
+	<!-- 获取类别 -->
+	<select id="dimGroupList" parameterType="java.util.HashMap" resultType="com.bonc.epmwxwl.model.TagListPo">
+			select 	
+				t.class_id 	"dime_class_id",
+	      		t.class_name 	"dime_class_name" 
+	   		from usertool_hn.dap_uni_metadata_class t
+	   		where t.cube_id = #{cube_id}  and t.class_type='0' and t.login_name = #{login_name} and t.tenant_id = #{tenant_id} 
+	</select>
+	
+	<!-- 获取类别 -->
+	<select id="dimParentGroupList" parameterType="java.util.HashMap" resultType="com.bonc.epmwxwl.model.TagListPo">
+			select 	
+				t.class_id 	"dime_class_id",
+	      		t.class_name 	"dime_class_name" 
+	   		from usertool_hn.dap_uni_metadata_class t
+	   		where t.parent_class_id = #{parent_class_id}  and t.tenant_id = #{tenant_id} 
+	</select>
+	
+	<!-- 获取维度 -->
+	<select id="dimList" parameterType="java.util.HashMap" resultType="com.bonc.epmwxwl.model.TagListPo">
+			select 	
+				cd.dime_id 			"dime_id",
+	   			dm.dime_name  		"dime_name",
+	   			dm.dime_class_id 	"dime_class_id",
+	   			dm.dime_table 		"dime_table",
+	      		dm.show_limit_sql 	"show_limit_sql",
+	      		cd.field_name		"field_name" 
+			from usertool_hn.dap_uni_cube_dime cd 
+			left join usertool_hn.dap_uni_dime_metadata dm
+			on cd.dime_id = dm.dime_id
+			where 
+	   			cd.cube_id = #{cube_id}  and dm.dime_id in(select dime_id from usertool_hn.dap_uni_mc_dime where class_id=#{dime_class_id})
+	</select>
+	<!-- 获取指标 -->
+	<select id="indexList" parameterType="java.util.HashMap" resultType="com.bonc.epmwxwl.model.TagListPo">
+			select 
+	      		cd.measure_id 			"measure_id",
+	      		dm.measure_name 		"measure_name",
+	      		dm.measure_class_id 	"measure_class_id",
+	      		cd.field_name		  "field_name"
+			from  usertool_hn.dap_uni_cube_measure cd 
+			left join usertool_hn.dap_uni_measure_metadata dm
+			on cd.measure_id = dm.measure_id 
+			where cd.cube_id = #{cube_id} and dm.measure_id in(select measure_id from usertool_hn.dap_uni_mc_measure where class_id=#{dime_class_id})
+	</select>
+	<!-- 根据id 查询sql --> 
+	<select id="sqlQuery" parameterType="java.lang.String" resultType="java.lang.String">
+		 select 
+		 	dm.show_limit_sql "show_limit_sql"
+		 from  usertool_hn.dap_uni_dime_metadata dm where dime_id=#{id}
+	</select>
+	<!-- 根据field_name 查询sql --> 
+	<select id="sqlFieldQuery" parameterType="java.lang.String" resultType="java.lang.String">
+		  select   
+	     distinct dm.show_limit_sql
+			from usertool_hn.dap_uni_cube_dime cd 
+			left join usertool_hn.dap_uni_dime_metadata dm
+			on cd.dime_id = dm.dime_id
+	   		 where cd.field_name=#{field_name}
+	</select>
+	
+</mapper>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.EntityCodeTypeDao">
+	<select id="findAllBytenantId" resultType="com.bonc.epmwxwl.model.EntityCodeType">
+		select
+		sort_num
+		"sort_num",
+		code_type_id "code_type_id",
+		code_type_name
+		"code_type_name",
+		code_type_desc "code_type_desc",
+		tenant_id "tenant_id"
+		from
+		WXWL_ENTITY_CODE_TYPE code
+		where tenant_id=#{tenant_id}
+		order by
+		code.sort_num ASC
+	</select>
+	<select id="findPreIdAndSortNumById" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.EntityCodeType">
+		select
+		t2.code_type_id "code_type_id",
+		t2.sort_num "sort_num"
+		from
+		(
+		select
+		t.code_type_id as code_type_id,
+		t.sort_num as sort_num
+		from
+		WXWL_ENTITY_CODE_TYPE t
+		where
+		t.sort_num &lt; (
+		select t.sort_num from
+		WXWL_ENTITY_CODE_TYPE t
+		where
+		t.code_type_id=#{code_type_id}
+		)
+		order by
+		t.sort_num DESC
+		) t2
+		where rownum=1
+	</select>
+	<select id="findAfterIdAndSortNumById" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.EntityCodeType">
+		select
+		t2.code_type_id "code_type_id",
+		t2.sort_num "sort_num"
+		from
+		(
+		select
+		t.code_type_id as code_type_id,
+		t.sort_num as sort_num
+		from
+		WXWL_ENTITY_CODE_TYPE t
+		where
+		t.sort_num &gt; (
+		select t.sort_num from
+		WXWL_ENTITY_CODE_TYPE t
+		where
+		t.code_type_id=#{code_type_id}
+		)
+		order by
+		t.sort_num ASC
+		) t2
+		where rownum=1
+	</select>
+	<select id="findMaxSortNum" resultType="Integer">
+		select max(t.sort_num)
+		from WXWL_ENTITY_CODE_TYPE t
+	</select>
+	<select id="findList" resultType="com.bonc.epmwxwl.model.EntityCodeType">
+		select
+		sort_num "sort_num",
+		code_type_id "code_type_id",
+		code_type_name
+		"code_type_name",
+		code_type_desc "code_type_desc",
+		tenant_id "tenant_id"
+		from
+		WXWL_ENTITY_CODE_TYPE code
+		where tenant_id=#{tenant_id}
+		<if test="code_type_name !=null and code_type_name!=''">  
+		    AND code_type_name like CONCAT(CONCAT('%', #{code_type_name,javaType=String,jdbcType=VARCHAR}), '%') 
+	 	</if> 
+	 	<if test="code_type_id !=null and code_type_id!=''">  
+		    AND code_type_id #{code_type_id} 
+	 	</if> 
+		order by code.sort_num ASC
+	</select>
+	<select id="findById" resultType="com.bonc.epmwxwl.model.EntityCodeType">
+		select
+		code_type_id
+		"code_type_id",
+		sort_num "sort_num",
+		code_type_name
+		"code_type_name",
+		code_type_desc "code_type_desc",
+		tenant_id "tenant_id"
+		from
+		WXWL_ENTITY_CODE_TYPE
+		where
+		code_type_id=#{code_type_id,jdbcType=INTEGER}
+	</select>
+	<select id="findByCondition" resultType="com.bonc.epmwxwl.model.EntityCodeType">
+		select
+		sort_num "sort_num",
+		code_type_id
+		"code_type_id",
+		code_type_name
+		"code_type_name",
+		code_type_desc
+		"code_type_desc",
+		tenant_id "tenant_id"
+		from
+		WXWL_ENTITY_CODE_TYPE
+		where  tenant_id=#{tenant_id} 
+		<if test="code_type_name!=null and code_type_name!=''" >and code_type_name like
+		#{code_type_name}</if>
+		<if test="code_type_desc!=null and code_type_desc!=''">
+		and code_type_desc like
+		#{code_type_desc}
+		</if>
+		order by sort_num ASC
+	</select>
+	<insert id="saveAdd" parameterType="com.bonc.epmwxwl.model.EntityCodeType">
+		insert into
+		WXWL_ENTITY_CODE_TYPE
+		values(
+		#{code_type_id,jdbcType=VARCHAR},
+		#{code_type_name,jdbcType=VARCHAR},
+		#{code_type_desc,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR}
+		)
+	</insert>
+	<update id="update" parameterType="com.bonc.epmwxwl.model.EntityCodeType">
+		update WXWL_ENTITY_CODE_TYPE
+		set
+		code_type_name=#{code_type_name,jdbcType=VARCHAR},
+		code_type_desc=#{code_type_desc,jdbcType=VARCHAR},
+		sort_num=#{sort_num,jdbcType=INTEGER},
+		tenant_id=#{tenant_id,jdbcType=VARCHAR}
+		where
+		code_type_id=#{code_type_id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateSortNumById" parameterType="com.bonc.epmwxwl.model.EntityCodeType">
+		update
+		WXWL_ENTITY_CODE_TYPE
+		set
+		sort_num=#{sort_num,jdbcType=INTEGER}
+		where
+		code_type_id=#{code_type_id,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteById" parameterType="String">
+		delete
+		from
+		WXWL_ENTITY_CODE_TYPE
+		where
+		code_type_id=#{code_type_id,jdbcType=VARCHAR}
+	</delete>
+
+</mapper>

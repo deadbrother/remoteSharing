@@ -1,0 +1,2501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.ActivityProvDao">
+	<select id="getActivityList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.activity_id "activityDailyId",
+		t.activity_name
+		"activityDailyName",
+		t9.name "orgLevel",
+		t.activity_cycle
+		"activityCycle",
+		t.org_range "orgRange",
+		t.channel_check "channelCheck",
+		t.prov_id "provId",
+		t.city_id "cityId",
+		t.activity_function
+		"activityFunction",
+		t.tenant_id "tenantId",
+		t7.theme_name
+		"activityTheme",
+		t6.state_desc "stateDesc",
+		to_char(t.start_date,
+		'yyyy-mm-dd') "startDate",
+		to_char(t.end_date,
+		'yyyy-mm-dd') "endDate",
+		to_char(t.create_date,'yyyy-mm-dd')
+		"createDate",
+		t.create_org_path
+		"createOrgPath",
+		t.create_org_id "createOrgId",
+		t.org_path "orgPath",
+		t.USERGROUP_ID "userGroupId",
+		t.CREATE_USER
+		"createUser",
+		t.state "state",
+		t.parent_id "parentId",
+		t.process_instance_id as "processInstanceId",
+		t3.user_name
+		"createUserName"
+		from CLYX_ACTIVITY t
+		left join ${security}.userinfo t3
+		on
+		t3.login_id=t.CREATE_USER and t.tenant_id=t3.tenant_id
+		left join
+		CLYX_ACTIVITY_ORGLEVEL t5 on
+		t.org_level=t5.org_level and t.tenant_id =
+		t5.tenant_id
+		left join CLYX_ACTIVITY_STATE_CODE t6 on
+		t.state=t6.state_code and t.tenant_id =t6.tenant_id
+		left join
+		clyx_activity_theme t7 on
+		t7.theme_code=t.ACTIVITY_THEME_CODE and
+		t.tenant_id=t7.tenant_id
+		left join ${security}.orginfo t8 on
+		t.create_org_path = t8.path and t.tenant_id = t8.tenant_id
+		left join
+		${security}.org_class t9 on t8.org_class = t9.ID and t.tenant_id
+		=
+		t9.tenant_id
+		where 1=1 and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		<if test="po.activityId ==null or po.activityId ==''">
+			<if test="po.activityName !=null and po.activityName !=''">
+				AND t.activity_name like CONCAT(
+				CONCAT('%',
+				#{po.activityName,javaType=String,jdbcType=VARCHAR}), '%')
+			</if>
+
+			<if test="po.state !=null and po.state !=''">
+				and t.state =
+				#{po.state,javaType=String,jdbcType=VARCHAR}
+			</if>
+			<if test="po.activityCycle !=null and po.activityCycle !=''">
+				and t.activity_cycle =
+				#{po.activityCycle,javaType=String,jdbcType=VARCHAR}
+			</if>
+			<if test="po.activityThemeCode !=null and po.activityThemeCode !=''">
+				and t.activity_theme_code =
+				#{po.activityThemeCode,javaType=String,jdbcType=VARCHAR}
+			</if>
+			<if test="po.startDate !=null and po.startDate !=''">
+				and ( t.create_date &gt;=
+				to_date(#{po.startDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd')
+				)
+			</if>
+			<if test="po.endDate !=null and po.endDate !=''">
+				and ( t.create_date &lt;=
+				to_date(#{po.endDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd')+1
+				)
+			</if>
+			<if test="po.createName != null and po.createName !=''">
+				AND t3.user_name like CONCAT(
+				CONCAT('%',
+				#{po.createName,javaType=String,jdbcType=VARCHAR}), '%')
+			</if>
+			<if test="po.orgLevelName != null and po.orgLevelName !=''">
+				AND t5.org_level_name like CONCAT(
+				CONCAT('%',
+				#{po.orgLevelName,javaType=String,jdbcType=VARCHAR}), '%')
+			</if>
+			<if test="po.channelCheck != null and po.channelCheck !=''">
+				AND ','||t.channel_check||',' like CONCAT(
+				CONCAT('%,',
+				#{po.channelCheck,javaType=String,jdbcType=VARCHAR}), ',%')
+			</if>
+			<if test="activityType ==null or activityType ==''">
+				<if test="po.createOrgPath !=null and po.createOrgPath !=''">
+					and (${sql})
+				</if>
+				and t.CREATE_USER =#{loginUserId,javaType=String,jdbcType=VARCHAR}
+				<!-- <if test = "isAdmin == 0"> <if test="po.createOrgPath !=null and 
+					po.createOrgPath !=''"> and (${sql}) </if> and t.parent_id is null </if> 
+					<if test = "isAdmin == 1"> and t.org_path like CONCAT( CONCAT('%', #{po.createOrgPath,javaType=String,jdbcType=VARCHAR}), 
+					'%') </if> -->
+			</if>
+			<if test="po.orgLevelName != null and po.orgLevelName !=''">
+				AND t5.org_level_name like CONCAT(
+				CONCAT('%',
+				#{po.orgLevelName,javaType=String,jdbcType=VARCHAR}), '%')
+			</if>
+			<if test="po.orgIds !=null and po.orgIds != ''">
+				and (${sql1})
+			</if>
+			<if test="activityType !=null and activityType !=''">
+				<if test="activityType == 0">
+					<if test="isAdmin == 0">
+						<if test="po.createOrgPath !=null and po.createOrgPath !=''">
+							and (${sql})
+						</if>
+						and t.parent_id is null
+					</if>
+					<if test="isAdmin == 1">
+						and t.org_path like CONCAT(
+						CONCAT('%',
+						#{po.createOrgPath,javaType=String,jdbcType=VARCHAR}), '%')
+					</if>
+				</if>
+				<if test="activityType == 1">
+					<if test="po.createOrgPath !=null and po.createOrgPath !=''">
+						and (${sql})
+					</if>
+					and t.CREATE_USER =#{loginUserId,javaType=String,jdbcType=VARCHAR}
+				</if>
+				<if test="activityType == 2">
+					and t.parent_id is not null and t.CREATE_USER is null
+				</if>
+				<if test="activityType == 3">
+					${sql2}
+				</if>
+				<if test="activityType == 4">
+					<if test="isAdmin == 0">
+						<if test="po.createOrgPath !=null and po.createOrgPath !=''">
+							and (${sql})
+						</if>
+						and t.activity_function = '2'
+					</if>
+					<if test="isAdmin == 1">
+						and t.org_path like CONCAT(
+						CONCAT('%',
+						#{po.createOrgPath,javaType=String,jdbcType=VARCHAR}), '%')
+						and
+						t.activity_function = '2'
+					</if>
+				</if>
+			</if>
+		</if>
+		<!-- <if test="po.activityId !=null and po.activityId !=''"> and t.parent_activity 
+			= #{po.activityId,javaType=String,jdbcType=VARCHAR} </if> -->
+		<if test="po.activityId !=null and po.activityId !=''">
+			and t.parent_activity =
+			#{po.activityId,javaType=String,jdbcType=VARCHAR}
+			and t.org_path like
+			CONCAT(
+			CONCAT('%',
+			#{po.createOrgPath,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		order by t.create_date desc
+	</select>
+
+
+
+	<!-- 删除活动基本信息 -->
+	<delete id="deleteActivityProv" parameterType="com.bonc.activity.model.ActivityProvBo">
+		delete from
+		CLYX_ACTIVITY r
+		where
+		r.activity_id in
+		(${ids}) and
+		r.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</delete>
+
+	<!-- chengweichang 9-30 停用活动 -->
+	<update id="stopActivityProv" parameterType="com.bonc.activity.model.ActivityProvBo">
+		UPDATE
+		CLYX_ACTIVITY
+		T
+		SET
+		T.STATE='8',
+		T.ORDER_ORD ='0'
+		WHERE
+		t.activity_id =
+		#{po.activityId,javaType=String,jdbcType=VARCHAR} and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</update>
+
+	<!-- chengweichang 11-20 pause活动 -->
+	<update id="pauseActivityProv" parameterType="com.bonc.activity.model.ActivityProvBo">
+		UPDATE
+		CLYX_ACTIVITY T
+		SET T.STATE='11'
+		WHERE
+		t.activity_id =
+		#{po.activityId,javaType=String,jdbcType=VARCHAR}
+		and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</update>
+
+	<!-- chengweichang 10-1 启用活动 -->
+	<update id="startActivityProv" parameterType="com.bonc.activity.model.ActivityProvBo">
+		UPDATE
+		CLYX_ACTIVITY T
+		SET T.STATE='9'
+		WHERE
+		t.activity_id =
+		#{po.activityId,javaType=String,jdbcType=VARCHAR}
+		and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</update>
+
+	<update id="examineActivityProv" parameterType="com.bonc.activity.model.ActivityProvBo">
+		UPDATE
+		CLYX_ACTIVITY T
+		SET T.STATE='13'
+		WHERE
+		t.activity_id =
+		#{po.activityId,javaType=String,jdbcType=VARCHAR}
+	</update>
+
+	<select id="queryState" parameterType="com.bonc.activity.model.ActivityProvPo"
+
+		resultType="java.lang.String">
+		select t.STATE from CLYX_ACTIVITY t
+		where
+		t.activity_id=#{activityId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getUserGroupList" resultType="hashmap">
+		SELECT T.CI_WA_ID,
+		T.CI_WA_NAME,
+		T.CI_WA_NUM,
+		T.CI_WA_CREATERNAME,
+		T.CI_WA_DESC,
+		T.CI_WA_CREATEDATE,
+		T.FACT_TABLE_NAME,
+		T.CI_WA_TYPE,
+		t3.user_name
+		"createUserName"
+		FROM v_user_group_all_info T
+		left join
+		${security}.userinfo t3 on t3.login_id=T.CI_WA_CREATERNAME and T.tenant_id=t3.tenant_id
+		WHERE 1 = 1
+		and (t.orgs in ( ${supperOrgs} ) or t.orgs like CONCAT(
+		CONCAT('%',
+		#{lowerLever,javaType=String,jdbcType=VARCHAR}), '%') or
+		t.CI_WA_CREATERNAME = #{loginUserId,javaType=String,jdbcType=VARCHAR})
+		<if test="po.userGroupName !=null and po.userGroupName!=''">
+			AND CI_WA_NAME like CONCAT(
+			CONCAT('%',
+			#{po.userGroupName,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		<if test="po.createName != null and po.createName != '' ">
+			AND t3.user_name like CONCAT(
+			CONCAT('%',
+			#{po.createName,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		<!-- <if test="loginUserId !=null and loginUserId!=''"> and (ci_wa_creatername=#{loginUserId,javaType=String,jdbcType=VARCHAR} 
+			or t.is_public='1') </if> -->
+		and t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		<!-- and t.source_cube_id is null -->
+		order by T.ci_wa_id desc
+	</select>
+
+	<insert id="saveActivity" parameterType="com.bonc.activity.model.ActivityProvPo">
+		INSERT INTO
+		CLYX_ACTIVITY(ACTIVITY_ID, ACTIVITY_NAME, START_DATE,
+		END_DATE,
+		USERGROUP_ID, USERGROUP_NAME, USERGROUP_TYPE,CREATE_DATE,CREATE_USER,
+		STATE, USERGROUP_TABLE, PROV_ID, CITY_ID,
+		parent_activity,ACTIVITY_TYPEID,URGENCY_LEVEL,POLICY_ID,ACTIVITY_DESC,
+		ORG_LEVEL,IS_DELETE_BLACK_USER,IS_DELETE_WHITE_USER,ACTIVITY_CYCLE,ORDER_CYCLE,ORDER_UPDATE_RULE,
+		TOUCH_LIMIT_DAY,IS_DELETE_SAME_TYPE,IS_DELETE_SAME_SUCCESS,ORG_RANGE,STRATEGY_DESC,STRATEGY_NAME,
+		SUCCESS_ID,ACTIVITY_FUNCTION,CHANNEL_CHECK,ORG_IDS,ORG_PATH,CREATE_ORG_ID,CREATE_ORG_PATH,TENANT_ID,
+		ACTIVITY_THEME_CODE,IS_SEND_ORDER,SELF_SEND_CHANNEL_RULE,E_CHANNEL_SHOW_RULE,OTHER_CHANNEL_EXERULE,
+		IS_SUB_ACTIVITY,ORDER_IS_CONSULT_END_DATE,obligate_order)
+		VALUES(#{activityId,javaType=String,jdbcType=VARCHAR},
+		#{activityName,javaType=String,jdbcType=VARCHAR},
+		to_date(#{startDate,jdbcType=DATE},'yyyy/mm/dd'),to_date(#{endDate,jdbcType=DATE},'yyyy/mm/dd'),
+		#{userGroupId,javaType=String,jdbcType=VARCHAR},#{userGroupName,javaType=String,jdbcType=VARCHAR},#{userGroupType,javaType=String,jdbcType=VARCHAR},
+		sysdate,
+		#{createName,javaType=String,jdbcType=VARCHAR},#{state,javaType=String,jdbcType=VARCHAR},
+		#{userGroupTable,javaType=String,jdbcType=VARCHAR},#{provId,javaType=String,jdbcType=VARCHAR},
+		#{cityId,javaType=String,jdbcType=VARCHAR},
+		#{parentActivity,javaType=String,jdbcType=VARCHAR},#{activityTypeId,javaType=String,jdbcType=VARCHAR},
+		#{urgencyLevel,javaType=String,jdbcType=VARCHAR},#{policyId,javaType=String,jdbcType=VARCHAR},
+		#{activityDesc,javaType=String,jdbcType=VARCHAR},#{orgLevel,javaType=String,jdbcType=VARCHAR},
+		#{isDeleteBlackUser,javaType=String,jdbcType=VARCHAR},#{isDeleteWhiteUser,javaType=String,jdbcType=VARCHAR},
+		#{activityCycle,javaType=String,jdbcType=VARCHAR},#{orderCycle,javaType=String,jdbcType=VARCHAR},
+		#{orderUpdateRule,javaType=String,jdbcType=VARCHAR},#{touchLimitDay,javaType=String,jdbcType=VARCHAR},
+		#{isDeleteSameType,javaType=String,jdbcType=VARCHAR},#{isDeleteSameSuccess,javaType=String,jdbcType=VARCHAR},
+		#{orgRange,javaType=String,jdbcType=VARCHAR},#{strategyDesc,javaType=String,jdbcType=VARCHAR},#{strategyName,javaType=String,jdbcType=VARCHAR},
+		#{activityId,javaType=String,jdbcType=VARCHAR},#{activityFunction,javaType=String,jdbcType=VARCHAR},
+		#{channelCheck,javaType=String,jdbcType=VARCHAR},#{orgIds,javaType=String,jdbcType=VARCHAR},#{orgPath,javaType=String,jdbcType=VARCHAR},
+		#{createOrgId,javaType=String,jdbcType=VARCHAR},#{createOrgPath,javaType=String,jdbcType=VARCHAR},#{tenantId,javaType=String,jdbcType=VARCHAR},
+		#{activityThemeCode,javaType=String,jdbcType=VARCHAR},#{isSendOrder,javaType=String,jdbcType=VARCHAR},
+		#{selfSendChannelRule,javaType=String,jdbcType=VARCHAR},#{eChannelShowRule,javaType=String,jdbcType=VARCHAR},
+		#{otherChannelExerule,javaType=String,jdbcType=VARCHAR},#{isSubActivity,javaType=String,jdbcType=VARCHAR},
+		#{orderIsConsultEndDate,javaType=String,jdbcType=VARCHAR},#{obligateOrder,javaType=String,jdbcType=VARCHAR})
+	</insert>
+
+	<select id="getNextActivityId" resultType="string">
+		select
+		to_char(ACTIVITY_ID_SEQ.nextval) as "activityId" from dual
+	</select>
+
+	<select id="getActivityBasicInfo" resultType="java.util.HashMap">
+		SELECT
+		T.ACTIVITY_THEME_CODE as "activityThemeCode",
+		T.ACTIVITY_FUNCTION as "activityFunction",
+		T.ACTIVITY_ID as
+		"activityId",
+		T.ACTIVITY_NAME as "activityName",
+		T.CHANNEL_CHECK as
+		"channelCheck",
+		T.ORG_LEVEL as "orgLevel",
+		T.IS_DELETE_BLACK_USER as
+		"isDeleteBlackUser",
+		T.IS_DELETE_WHITE_USER
+		as "isDeleteWhiteUser",
+		T.ACTIVITY_DESC as "activityDesc",
+		T.ACTIVITY_CYCLE as "activityCycle",
+		T.ORDER_CYCLE as "orderCycle",
+		T.ORDER_UPDATE_RULE as
+		"orderUpdateRule",
+		T.TOUCH_LIMIT_DAY as
+		"touchLimitDay",
+		T.IS_DELETE_SAME_TYPE as "isDeleteSameType",
+		T.IS_DELETE_SAME_SUCCESS
+		as "isDeleteSameSuccess",
+		T.ORG_PATH as
+		"orgPath",
+		T.ORG_IDS as "orgIds",
+		T.ORG_RANGE as "orgRange",
+		T.OTHER_CHANNEL_EXERULE as
+		"otherChannelExerule",
+		T.E_CHANNEL_SHOW_RULE as "eChannelShowRule",
+		T.SELF_SEND_CHANNEL_RULE
+		as "selfSendChannelRule",
+		T.IS_SEND_ORDER as
+		"isSendOrder",
+		T.CHANNEL_CHECK as "channelCheck",
+		T.URGENCY_LEVEL as
+		"urgencyLevel",
+		T.STRATEGY_DESC as "strategyDesc",
+		T.STATE as "state",
+		T.IS_SUB_ACTIVITY as "isSubActivity",
+		T.obligate_order as
+		"obligateOrder",
+		T.tenant_id as "tenantId",
+		T.create_user as
+		"loginUserId",
+		T.create_org_path as "createOrgPath",
+		T.process_instance_id as "processInstanceId",
+		T.ORDER_IS_CONSULT_END_DATE as
+		"orderIsConsultEndDate",
+		TO_CHAR(T.create_date, 'yyyy-MM-dd
+		hh24:mi:ss') as "createDate",
+		TO_CHAR(T.start_date, 'yyyy/MM/dd') as
+		"startDate",
+		TO_CHAR(T.end_date,
+		'yyyy/MM/dd') as "endDate",
+		T1.STATE_DESC as "stateDesc",
+		T2.ORG_LEVEL_NAME as "orgLevelName",
+		T3.CI_WA_NUM as "userGroupNum",
+		T3.CI_WA_ID as
+		"userGroupId",
+		T3.CI_WA_TYPE as "userGroupType",
+		T3.CI_WA_NAME as
+		"userGroupName",
+		T4.THEME_NAME as "themeName",
+		T5.ACTIVITY_ID as
+		"parentActivity",
+		T5.ACTIVITY_NAME as
+		"parentActivityName",
+		T6.TYPE_ID
+		as "activityTypeId",
+		T6.TYPE_DESC as
+		"typeDesc",
+		T7.POLICY_ID as
+		"policyId",
+		T7.POLICY_NAME as "policyName",
+		T8.USER_NAME as
+		"createUserName",
+		T9.SUCCESS_ID as "successId",
+		T9.SUCCESS_NAME as
+		"successName"
+		FROM CLYX_ACTIVITY T
+		LEFT JOIN
+		CLYX_ACTIVITY_STATE_CODE T1
+		ON T1.STATE_CODE = T.STATE and T1.tenant_id
+		= t.tenant_id
+		LEFT JOIN CLYX_ACTIVITY_ORGLEVEL T2
+		ON T2.ORG_LEVEL =
+		T.ORG_LEVEL and T2.tenant_id = t.tenant_id
+		LEFT JOIN
+		v_user_group_all_info T3
+		ON T3.CI_WA_ID = T.USERGROUP_ID and
+		t3.tenant_id = t.tenant_id
+		LEFT JOIN CLYX_ACTIVITY_THEME T4
+		ON
+		T4.THEME_CODE = T.ACTIVITY_THEME_CODE and T4.tenant_id = t.tenant_id
+		LEFT JOIN CLYX_ACTIVITY T5
+		on T.PARENT_ACTIVITY=T5.ACTIVITY_ID
+		LEFT JOIN
+		CLYX_ACTIVITY_TYPE T6
+		on
+		T6.TYPE_ID=T.ACTIVITY_TYPEID
+		LEFT JOIN
+		CLYX_POLICY_INFO T7
+		on
+		T7.POLICY_ID=T.POLICY_ID
+		LEFT JOIN
+		${security}.USERINFO T8
+		on
+		T8.LOGIN_ID=T.CREATE_USER
+		LEFT JOIN
+		CLYX_SUCCESSSTANDARD_INFO T9
+		on
+		T9.SUCCESS_ID=T.SUCCESS_ID
+		WHERE 1 = 1
+		<if test="po.activityId !=null and po.activityId !=''">
+			and
+			T.activity_id
+			=
+			#{po.activityId,javaType=String,jdbcType=VARCHAR}
+		</if>
+		and t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+
+	</select>
+
+	<update id="updateActivity" parameterType="com.bonc.activity.model.ActivityProvPo">
+		UPDATE CLYX_ACTIVITY
+		SET ACTIVITY_NAME =#{activityName,javaType=String,jdbcType=VARCHAR},
+		PHONE_NUMBER = #{telephone,javaType=String,jdbcType=VARCHAR},
+		START_DATE =
+		to_date(#{startDate,javaType=String,jdbcType=DATE},'yyyy/mm/dd'),
+		END_DATE =
+		to_date(#{endDate,javaType=String,jdbcType=DATE},'yyyy/mm/dd'),
+		USERGROUP_ID = #{userGroupId,javaType=String,jdbcType=VARCHAR},
+		USERGROUP_NAME =#{userGroupName,javaType=String,jdbcType=VARCHAR},
+		USERGROUP_TYPE = #{userGroupType,javaType=String,jdbcType=VARCHAR},
+		USERGROUP_TABLE = #{userGroupTable,javaType=String,jdbcType=VARCHAR},
+		PARENT_ACTIVITY=#{parentActivity,javaType=String,jdbcType=VARCHAR},
+		ACTIVITY_TYPEID = #{activityTypeId,javaType=String,jdbcType=VARCHAR},
+		urgency_level= #{urgencyLevel,javaType=String,jdbcType=VARCHAR},
+		POLICY_ID = #{policyId,javaType=String,jdbcType=VARCHAR},
+		ACTIVITY_DESC =#{activityDesc,javaType=String,jdbcType=VARCHAR},
+		IS_DELETE_BLACK_USER =
+		#{isDeleteBlackUser,javaType=String,jdbcType=VARCHAR},
+		IS_DELETE_WHITE_USER =
+		#{isDeleteWhiteUser,javaType=String,jdbcType=VARCHAR},
+		ACTIVITY_CYCLE=#{activityCycle,javaType=String,jdbcType=VARCHAR},
+		ORDER_CYCLE = #{orderCycle,javaType=String,jdbcType=VARCHAR},
+		ORDER_UPDATE_RULE
+		=#{orderUpdateRule,javaType=String,jdbcType=VARCHAR},
+		TOUCH_LIMIT_DAY =
+		#{touchLimitDay,javaType=String,jdbcType=VARCHAR},
+		IS_DELETE_SAME_TYPE
+		= #{isDeleteSameType,javaType=String,jdbcType=VARCHAR},
+		IS_DELETE_SAME_SUCCESS
+		=#{isDeleteSameSuccess,javaType=String,jdbcType=VARCHAR},
+		ORG_RANGE =
+		#{orgRange,javaType=String,jdbcType=VARCHAR},
+		STRATEGY_DESC
+		=#{strategyDesc,javaType=String,jdbcType=VARCHAR},
+		STRATEGY_NAME =
+		#{strategyName,javaType=String,jdbcType=VARCHAR},
+		SUCCESS_ID
+		=#{activityId,javaType=String,jdbcType=VARCHAR},
+		ACTIVITY_FUNCTION =
+		#{activityFunction,javaType=String,jdbcType=VARCHAR},
+		CHANNEL_CHECK=#{channelCheck,javaType=String,jdbcType=VARCHAR},
+		ORG_IDS = #{orgIds,javaType=String,jdbcType=VARCHAR},
+		STATE =
+		#{state,javaType=String,jdbcType=VARCHAR},
+		ORG_PATH =
+		#{orgPath,javaType=String,jdbcType=VARCHAR},
+		ACTIVITY_THEME_CODE =
+		#{activityThemeCode,javaType=String,jdbcType=VARCHAR},
+		ORDER_IS_CONSULT_END_DATE =
+		#{orderIsConsultEndDate,javaType=String,jdbcType=VARCHAR},
+		obligate_order = #{obligateOrder,javaType=String,jdbcType=VARCHAR}
+		WHERE ACTIVITY_ID = #{activityId,javaType=String,jdbcType=VARCHAR}
+		and
+		tenant_id=#{tenantId,javaType=String,jdbcType=VARCHAR}
+	</update>
+
+	<select id="getUnderActivityList" resultType="hashmap">
+		select
+		t.activity_id "activityDailyId",
+		t.activity_name "activityDailyName",
+		to_char(t.start_Date, 'yyyy/mm/dd')
+		"startDate",
+		to_char(t.end_Date,
+		'yyyy/mm/dd') "endDate",
+		USERGROUP_ID,
+		USERGROUP_NAME,
+		to_char(t.create_Date,'yyyy-mm-dd') "createDate",
+		CREATE_USER
+		"createUser",
+		STATE "state",
+		t.tenant_id "tenantId"
+		from CLYX_ACTIVITY t
+		where 1=1
+		and t.parent_id is not null
+		and t.tenant_id = #{po.tenantId}
+		order by t.create_date desc
+	</select>
+
+	<select id="getHigherActivityList" resultType="java.util.HashMap">
+		select
+		t.activity_id "activityId",
+		t.activity_name "activityName"
+		from
+		CLYX_ACTIVITY t
+		where
+		t.org_path like
+		CONCAT(
+		CONCAT('%',
+		#{po.createOrgPath,javaType=String,jdbcType=VARCHAR}), ',%')
+		and
+		t.state='9' and t.activity_function='2'
+	</select>
+
+	<select id="getActivityTypeList" resultType="hashmap">
+		select
+		t.TYPE_ID
+		"activityTypeId",
+		t.TYPE_DESC "activityTypeName",
+		t.TYPE_PARENT_ID
+		"typeParentId"
+		from CLYX_ACTIVITY_TYPE t
+		where
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getStateList" resultType="hashmap">
+		select
+		t.state_code as
+		"stateCode",
+		t.state_desc as "stateDesc"
+		from CLYX_ACTIVITY_STATE_CODE t
+		where t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		and
+		t.is_valid='1'
+		and t.state_code != '14'
+		order by t.state_code desc
+	</select>
+
+	<select id="getPolicyList" resultType="hashmap">
+		select
+		t.POLICY_ID
+		"policyId",
+		t.POLICY_NAME "policyName"
+		from CLYX_POLICY_INFO t
+		left join
+		${security}.userinfo s
+		on s.login_id=t.CREATE_USER and
+		s.tenant_id=t.tenant_id
+		left join
+		${security}.userinfo_orginfo_rel a
+		on
+		s.id = a.userinfo_id and a.tenant_id = t.tenant_id
+		left join
+		${security}.orginfo b
+		on a.orginfo_id = b.id and b.tenant_id =
+		t.tenant_id
+		where
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		and b.id in
+		(${ids})
+	</select>
+
+	<!-- 查询活动名称是否重复 -->
+	<select id="checkActivityName" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select * from CLYX_ACTIVITY t
+		where 1=1
+		and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		<if test="po.activityId !=null and po.activityId !=''">
+			and t.activity_id !=
+			#{po.activityId}
+		</if>
+		<if test="po.activityName !=null and po.activityName !=''">
+			and t.activity_name =
+			#{po.activityName}
+		</if>
+		<if test="po.createOrgPath !=null and po.createOrgPath !=''">
+			and t.create_org_path =
+			#{po.createOrgPath}
+		</if>
+	</select>
+
+	<select id="querySuccessStandardTypeList" resultType="com.bonc.activity.model.SuccessStandardTypePo">
+		select
+		t.type_id as "typeId",
+		t.type_name as "typeName",
+		t.is_valid as
+		"isValid",
+		t.ord as "ord",
+		t.condition as "condition",
+		t.condition_SQL as
+		"conditionSQL",
+		t.PRODUCT_REL as "productRel",
+		t.rst1 as "rst1"
+		from
+		CLYX_SUCCESSSTANDARD_TYPE t
+		where 1=1
+		<if test="po.tenantId != null and po.tenantId != ''">
+			and t.tenant_id = #{po.tenantId}
+		</if>
+		and t.is_valid = '1'
+		order by t.ord
+	</select>
+
+	<!--成功标准xml迁移 -->
+	<!-- 成功标准列表 -->
+	<select id="querySuccessStandardList" resultType="com.bonc.activity.model.SuccessStandardPo">
+		select t.success_id as "successId",
+		p.type_name as "successType",
+		t.success_type_id as "successTypeId",
+		decode(t.success_matchingtype,'1','全部编码','2','精准匹配',' ') as
+
+		"matchingType",
+		t.success_matchingtype as "matchingTypeId",
+		t.success_condition as "successCondition",
+		t.success_reward as
+		"successReward",
+		t.success_point as "successPoint",
+		t.tenant_id as
+		"tenantId",
+		t.success_condition_SQL as "successConditionSQL",
+		t.orgid as
+		"orgId",
+		t.operate_user as "operateUser",
+		t.operate_time as
+		"operateTime"
+		from CLYX_SUCCESSSTANDARD_INFO t
+		left join
+		CLYX_SUCCESSSTANDARD_TYPE p on t.success_type_id = p.type_id
+		where 1=1
+		<if test="tenantId != null and tenantId != ''">
+			and t.tenant_id = #{tenantId}
+		</if>
+		and t.tenant_id='uni076'
+		<if test="orgId != null and orgId != ''">
+			and t.org_id in
+			#{orgId}
+		</if>
+		<if test="successName != null and successName != ''">
+			and t.success_name like
+			'%' || #{successName} || '%'
+		</if>
+		<if test="successTypeId != null and successTypeId != ''">
+			t.success_type_id = #{successTypeId}
+		</if>
+		order by t.operate_time desc
+	</select>
+
+	<select id="findSuccessStandardById" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="com.bonc.activity.model.SuccessStandardPo">
+		select
+		t.success_id as "successId",
+		p.type_name as
+		"successType",
+		t.success_type_id as "successTypeId",
+		decode(t.success_matchingtype,'1','全部编码','2','精准匹配',' ')
+		as
+		"matchingType",
+		t.success_matchingtype as "matchingTypeId",
+		t.success_condition as "successCondition",
+		t.success_reward as
+		"successReward",
+		t.success_point as "successPoint",
+		t.tenant_id as
+		"tenantId",
+		t.success_condition_SQL as "successConditionSQL",
+		t.success_sql_condition as "successSqlCondition",
+		t.orgId as "orgId",
+		t.orgpath as "orgpath",
+		t.operate_user as "operateUser",
+		t.operate_time
+		as "operateTime"
+		from
+		CLYX_SUCCESSSTANDARD_INFO t
+		left join CLYX_SUCCESSSTANDARD_TYPE p on
+		t.success_type_id = p.type_id
+		and t.tenant_id = p.tenant_id
+		where
+		t.success_id = #{po.activityId,jdbcType=VARCHAR}
+		and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+
+	<!-- 编辑新增成功标准页面调用 -->
+	<select id="queryProductIdList" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select product_id
+		from CLYX_SUCCESS_PRODUCT_REL
+		where
+		success_id = #{po.activityId,jdbcType=VARCHAR}
+		and
+		tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		order by ord
+	</select>
+
+	<!-- 编辑新增成功标准页面调用 -->
+	<select id="queryProductNameList" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select product_name
+		from <!-- CLYX_P_PRODUCT_INFO -->
+		${successProductPo.tableName} t
+		where product_id
+		<if test="successStandardPo.successProductIds == null">
+			in ('-1')
+		</if>
+		<if
+			test="successStandardPo.successProductIds != null and successStandardPo.successProductIds == ''">
+			in ('-1')
+		</if>
+		<if
+			test="successStandardPo.successProductIds != null and successStandardPo.successProductIds != ''">
+			in (${successStandardPo.successProductIds})
+		</if>
+		and t.tenant_id = #{po.tenantId}
+	</select>
+
+
+
+	<!-- 点击全部匹配，获取所有的产品id -->
+	<select id="queryAllProductIdList" resultType="java.lang.String">
+		select
+		t.product_id from CLYX_P_PRODUCT_INFO t where
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 成功标准基本信息新增添加 -->
+	<insert id="saveSuccessStandard" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into
+		CLYX_SUCCESSSTANDARD_INFO
+		(success_id,success_type_id,success_matchingtype,success_condition,success_reward,
+		success_condition_sql,success_sql_condition,tenant_id)
+		values
+		(#{po.activityId,jdbcType=VARCHAR},
+		#{successStandardPo.successTypeId,jdbcType=VARCHAR},
+		#{successStandardPo.matchingType,jdbcType=VARCHAR},
+		#{successStandardPo.successCondition,jdbcType=VARCHAR},
+		#{successStandardPo.successReward,jdbcType=VARCHAR},
+		#{successStandardPo.successConditionSQL,jdbcType=VARCHAR},
+		#{successStandardPo.successSqlCondition,jdbcType=CLOB},
+		#{po.tenantId,jdbcType=VARCHAR})
+	</insert>
+
+	<!-- 成功标准产品关联信息添加 -->
+	<!-- <insert id="saveSuccessProductRel" parameterType="java.util.HashMap"> 
+		insert into clyx_success_product_rel (success_id,product_id,ord,tenant_id) 
+		values (#{successId,jdbcType=VARCHAR},#{productId,jdbcType=VARCHAR}, #{ord,jdbcType=VARCHAR},#{tenantId,jdbcType=VARCHAR}) 
+		select * from ( <iterate conjunction=" union all "> select #{list[].successId},#{list[].productId},#{list[].tenantId},#{list[].ord} 
+		from dual </iterate> ) </insert> -->
+	<insert id="saveSuccessProductRel" parameterType="java.util.List">
+		insert into
+		CLYX_SUCCESS_PRODUCT_REL(success_id,product_id,ord,tenant_id)
+		<foreach close=")" open="(" collection="list" item="item"
+			index="index" separator="union">
+			select
+			#{item.successId,jdbcType=VARCHAR},
+			#{item.productId,jdbcType=VARCHAR},
+			#{item.ord,jdbcType=VARCHAR},
+			#{item.tenantId,jdbcType=VARCHAR}
+			from dual
+		</foreach>
+	</insert>
+
+	<delete id="deleteSuccessProduct" parameterType="com.bonc.activity.model.ActivityProvBo">
+		delete from
+		CLYX_SUCCESS_PRODUCT_REL where success_id
+		<if test="ids !='' and ids !=null">
+			in(${ids})
+		</if>
+		<if test="ids==null">
+			=#{po.activityId,jdbcType=VARCHAR}
+		</if>
+		<if test="ids==''">
+			=#{po.activityId,jdbcType=VARCHAR}
+		</if>
+	</delete>
+	<!-- 成功标准修改更新 -->
+	<update id="updateSuccessStandard" parameterType="com.bonc.activity.model.ActivityProvBo">
+		update
+		CLYX_SUCCESSSTANDARD_INFO
+		set
+		success_type_id =
+		#{successStandardPo.successTypeId,jdbcType=VARCHAR},
+		success_matchingtype =
+		#{successStandardPo.matchingType,jdbcType=VARCHAR},
+		success_condition =
+		#{successStandardPo.successCondition,jdbcType=VARCHAR},
+		success_reward
+		= #{successStandardPo.successReward,jdbcType=VARCHAR},
+		success_condition_sql =
+		#{successStandardPo.successConditionSQL,jdbcType=VARCHAR},
+		success_sql_condition =
+		#{successStandardPo.successSqlCondition,jdbcType=CLOB},
+		tenant_id =
+		#{po.tenantId,jdbcType=VARCHAR}
+		where
+		success_id =
+		#{po.activityId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 成功标准删除 -->
+	<delete id="deleteSuccess" parameterType="com.bonc.activity.model.ActivityProvBo">
+		delete from
+		CLYX_SUCCESSSTANDARD_INFO t where t.success_id
+		<if test="ids !='' and ids !=null">
+			in(${ids})
+		</if>
+		<if test="ids==null">
+			=#{po.activityId,jdbcType=VARCHAR}
+		</if>
+		<if test="ids==''">
+			=#{po.activityId,jdbcType=VARCHAR}
+		</if>
+	</delete>
+
+	<!-- 活动页面调用成功标准列表 -->
+	<select id="getSuccessStandard" resultType="hashmap">
+		select
+		t.success_id as
+		"successId"
+		from CLYX_SUCCESSSTANDARD_INFO t
+	</select>
+
+	<!-- 活动页面调用成功标准详情 -->
+	<select id="getSuccessStandardInfo" parameterType="java.lang.String"
+		resultType="hashmap">
+		select
+		t1.type_name as "successTypeName",
+		t.success_condition as "successCondition",
+		t.success_condition_sql as
+		"successConditionSql",
+		t.success_sql_condition as
+		"successSqlCondition",
+		t3.ord as "ord",
+		t.success_reward as
+		"successReward"
+		from CLYX_SUCCESSSTANDARD_INFO t
+		left join
+		CLYX_SUCCESSSTANDARD_TYPE t1
+		on t.success_type_id=t1.type_id
+		left join
+		CLYX_SUCCESS_PRODUCT_REL t3
+		on t3.success_id=t.success_id
+		where
+		t.success_id=#{activityId,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 成功标准产品查询 -->
+	<select id="querySuccessProductList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="com.bonc.activity.model.SuccessProductPo">
+		select
+		t.product_Id as productId,
+		t.product_code as productCode,
+		t.PRODUCT_NAME as productName,
+		t1.class_type_name as
+		productSuccessType1,
+		t2.success_type_name "productSuccesstype",
+		t3.service_type_name "serviceType",
+		t4.pay_mode_name "payMode",
+		t.rst2
+		as "ifOrder"
+		from
+		${successProductPo.tableName} t
+		<!-- clyx_p_product_info t -->
+		left join PRODUCT_CLASS_TYPE t1 on t1.class_type_code =
+		t.product_classtype1 and t1.tenant_id = t.tenant_id
+		left join PRODUCT_SUCCESSS_TYPE t2 on
+		t2.success_type_code = t.product_successtype and t2.tenant_id = t.tenant_id
+		left join
+		PRODUCT_SERVICE_TYPE t3 on t3.service_type_code = t.service_type and t3.tenant_id = t.tenant_id
+		left
+		join PRODUCT_PAY_MODE t4 on t4.pay_mode_code = t.pay_mode
+		<if test="isLeft != 'left'">
+			left join CLYX_SUCCESS_PRODUCT_REL p
+			on p.success_id =
+			#{po.activityId,javaType=String,jdbcType=VARCHAR}
+			and
+			t.product_id=p.product_id
+		</if>
+		where 1 = 1
+		and t.product_id
+		<if test="isLeft == 'left'">
+			not
+		</if>
+		<if test="successStandardPo == null">
+			in('-1')
+		</if>
+		<if test="successStandardPo != null">
+			<if
+				test="successStandardPo.successProductIds == null or successStandardPo.successProductIds == ''">
+				in ('-1')
+			</if>
+			<if
+				test="successStandardPo.successProductIds != null and successStandardPo.successProductIds != ''">
+				in (${successStandardPo.successProductIds})
+			</if>
+			<if test="successStandardPo.rst1 != ''">
+				and t.rst1 in (${successStandardPo.rst1})
+			</if>
+			<if
+				test="successStandardPo.rst1 == '' and successStandardPo.successTypeId == null">
+				and t.product_successType
+				= '-1'
+			</if>
+			<if
+				test="successStandardPo.rst1 == '' and successStandardPo.successTypeId != null">
+				and t.product_successType
+				= #{successStandardPo.successTypeId}
+			</if>
+		</if>
+		<if test="successProductPo !=null">
+			<if
+				test="successProductPo.productCode != null and successProductPo.productCode ==''">
+				and (t.product_name like '%' || ''
+				||'%'
+				or t.product_code like
+				'%' || ''
+				||'%' )
+			</if>
+			<if
+				test="successProductPo.productCode != null  and successProductPo.productCode !='' ">
+				and (t.product_name like '%' ||
+				'${successProductPo.productCode}'
+				||'%'
+				or t.product_code like '%' ||
+				'${successProductPo.productCode}'
+				||'%' )
+			</if>
+			<if
+				test="successProductPo.productSuccesstype != null  and successProductPo.productSuccesstype !='' ">
+				and (t.product_successtype like '%' ||
+				'${successProductPo.productSuccesstype}'||'%')
+			</if>
+			<if
+				test="successProductPo.serviceType != null  and successProductPo.serviceType !='' ">
+				and (t.service_type like '%' ||
+				'${successProductPo.serviceType}'||'%')
+			</if>
+			<if
+				test="successProductPo.payMode != null  and successProductPo.payMode !='' ">
+				and (t.pay_mode like '%' || '${successProductPo.payMode}'||'%')
+			</if>
+		</if>
+		and t.isvalid = '1'
+		and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		<if test="isLeft != 'left'">
+			ORDER BY p.ord
+		</if>
+		<if test="isLeft == 'left'">
+			order by t.ord
+		</if>
+	</select>
+	<select id="getActivityThemeList" resultType="java.util.HashMap">
+		select
+		t.theme_code as "themeCode",
+		t.theme_name as "themeName"
+		from
+		CLYX_ACTIVITY_THEME t
+		where 1=1
+		and t.is_valid='1'
+		<if test="po.tenantId != null and po.tenantId != ''">
+			and t.tenant_id = #{po.tenantId}
+		</if>
+		order by t.ord
+	</select>
+
+	<select id="getUserGroupListById" resultType="java.util.HashMap">
+		SELECT T.CI_WA_ID,
+		T.CI_WA_NAME,
+		T.CI_WA_NUM,
+		T.CI_WA_CREATERNAME,
+		T.CI_WA_DESC,
+		T.QUERY_SQL,
+		T.CI_WA_CREATEDATE,
+		T.FACT_TABLE_NAME
+		FROM
+		v_user_group_all_info T
+		WHERE 1 = 1
+		<if test="userGroupId !=null and userGroupId!=''">
+			and CI_WA_ID like
+			'%' ||
+			#{userGroupId,javaType=String,jdbcType=VARCHAR} || '%'
+		</if>
+		and t.tenant_id = #{po.tenantId}
+	</select>
+
+	<select id="getMonthId" resultType="java.lang.String">
+		select month_id from
+		CLYX_USERTOOL_MONTH where ord=
+		(select max(cast(ord as
+		number)) from
+		clyx_usertool_month )
+	</select>
+
+	<select id="getNowTime" resultType="java.lang.String">
+		select
+		to_char(sysdate,'yyyy/mm/dd') "sysDate"
+		from dual
+	</select>
+	<select id="getUserGroupDate" resultType="java.util.HashMap">
+		select min_date as
+		"minDate",
+		max_date as "maxDate",
+		min_month as "minMonth",
+		max_month as
+		"maxMonth"
+		from Ui_Scheme_Data_Fubu
+	</select>
+
+	<!-- 查询话术变量 -->
+	<select id="queryActivityHuashuVar" resultType="java.util.HashMap"
+		parameterType="com.bonc.activity.model.ActivityProvBo">
+		select t.id "id",
+		t.name
+		"name",
+		t.remarks "remarks",
+		t.ord
+		"ord",
+		t.prov_id "provId",
+		t.city_id
+		"cityId",
+		t.content "content",
+		t.valid "valid"
+		from CLYX_HUASHU_VAR t
+		where t.tenant_id =
+		#{po.tenantId}
+	</select>
+	<!-- 用户偏好渠道映射 -->
+	<select id="getChannelMapping" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		select channel_Preference as "channelPreference",
+		channel_id as "channelId"
+		from CLYX_CHANNEL_MAPPING
+		where tenant_id =
+		#{tenantId}
+	</select>
+	<!-- 查询传入 用户群相关信息 -->
+	<select id="queryUserGroupMess" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.ci_wa_name as "userGroupName",
+		t.ci_wa_type as
+		"userGroupType" ,
+		t.ci_wa_desc as "userGroupDesc"
+		from
+		v_user_group_all_info t where
+		t.ci_wa_id=#{userGroupId,jdbcType=VARCHAR} and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<select id="queryByChoice" parameterType="java.util.HashMap"
+		resultType="java.lang.String">
+		${sql}
+	</select>
+	<select id="queryUserGroupNum" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		${sql}
+	</select>
+
+	<select id="getActivityLogListById" parameterType="java.lang.String"
+		resultType="java.util.HashMap">
+		select t2.activity_name "activityName",t.user_id
+		"userId",to_char(t.execute_date, 'yyyy-mm-dd hh24:mi:ss')
+		"executeDate",t.remark "remark",t.user_name "userName",t1.state_desc
+		"status" from clyx_execute_log t
+		left join clyx_activity_state_code t1
+		on t.status=t1.state_code
+		left join
+		CLYX_ACTIVITY t2 on
+		t.activity_id=t2.activity_id where
+		t.activity_id=#{activityId,javaType=String,jdbcType=VARCHAR}
+		and
+		t.tenant_id=#{tenantId,javaType=String,jdbcType=VARCHAR}
+		<if test="startDate !=null and startDate !=''">
+			and ( t.execute_date &gt;=
+			to_date(#{startDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd
+			hh24:mi:ss') )
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			and ( t.execute_date &lt;=
+			to_date(#{endDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd
+			hh24:mi:ss') )
+		</if>
+		order by t.execute_date desc
+	</select>
+
+	<select id="getDianziChannel" resultType="java.util.HashMap">
+		select t.channel_code
+		from CLYX_P_CHANNEL_INFO t where t.channel_type='1'
+	</select>
+
+	<select id="queryExpiredAct" parameterType="java.lang.String"
+		resultType="java.util.HashMap">
+		select t.activity_id as "activityId",
+		t.activity_name as
+		"activityName",
+		t1.state_desc as "state",
+		to_char(t.end_date) as
+		"endDate"
+		from CLYX_ACTIVITY t
+		left join clyx_activity_state_code t1
+		on
+		t.state = t1.state_code
+		where t.state in ('9','11') and t.end_date <![CDATA[<]]>
+		(sysdate + 1) and t.tenant_id = #{tenantId}
+	</select>
+	<insert id="saveAutoExecuteLog" parameterType="java.lang.String">
+		insert into
+		CLYX_EXECUTE_LOG
+		(execute_id,activity_id,user_id,remark,status,tenant_id,execute_date)
+		values(execute_id_SEQ.nextval,#{activityId},#{sysLoginId},#{sysRemark},'8',#{tenantId},sysdate)
+	</insert>
+
+	<select id="getPolicyInfo" resultType="java.util.HashMap">
+		SELECT t.*,
+		TO_CHAR(t.CREATE_TIME, 'yyyy/MM/dd') CREATETIME,
+		t2.POLICY_CLASS_NAME,
+		t3.user_name "createUserName"
+		FROM CLYX_POLICY_INFO t
+		LEFT JOIN
+		CLYX_POLICY_CLASS_CODE t2
+		ON t.POLICY_CLASS_ID=t2.POLICY_CLASS_ID and
+		t.tenant_id=t2.tenant_id
+		LEFT JOIN ${security}.userinfo t3
+		on
+		t3.login_id=t.CREATE_USER
+		WHERE 1 = 1 and t.tenant_id=t2.tenant_id
+		and
+		t.policy_id =
+		#{po.policyId,javaType=String,jdbcType=VARCHAR}
+		and
+		t.tenant_id =
+		#{po.tenantId}
+	</select>
+
+	<select id="queryById" parameterType="string"
+		resultType="com.bonc.activity.model.PolicyInfoPo">
+		select p.POLICY_ID "policyId",
+		p.POLICY_NAME "policyName",
+		p.POLICY_CLASS_ID "policyClassId",
+		p.UPLOAD_FILE "uploadFile",
+		p.UPLOAD_MAN "uploadMan",
+		p.CREATE_TIME "createTime",
+		UPLOAD_FILENAME
+		"uploadFileName",
+		CREATE_USER "createUser",
+		c.POLICY_CLASS_NAME
+		"policyClassName"
+		from CLYX_POLICY_INFO p,
+		CLYX_POLICY_CLASS_CODE c
+		where 1=1 and p.POLICY_CLASS_ID =
+		c.POLICY_CLASS_ID and p.POLICY_ID =
+		#{po.policyId,javaType=String,jdbcType=VARCHAR}
+		and
+		p.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getOrgClass" parameterType="com.bonc.activity.model.ActivityProvPo">
+		select
+		t.id,
+		t.org_name,
+		t1.PARENT_ID
+		from ${security}.orginfo t
+		left join
+		${security}.org_class t1
+		on t.id=t1.id and t.tenant_id=t1.TENANT_ID
+		where t.reserve2 !='0'
+		and t.tenant_id='uni076'
+		and t1.parent_id is not
+		null
+		<if test="createOrgPath !='' and createOrgPath !=null">
+			and t.path like
+			CONCAT(#{createOrgPath,javaType=String,jdbcType=VARCHAR}, '%')
+		</if>
+	</select>
+
+	<!-- 活动统计模块sql代码 -->
+	<!-- 查询当前登录用户数合计 -->
+	<select id="getOrgInfo" parameterType="com.bonc.activity.model.ActivityProvPo"
+		resultType="java.util.HashMap">
+		select count(*) as "sum",
+		nvl(sum(case
+		when t.state = 13 then
+		1
+		else
+		0
+		end),0) as "examine",
+		nvl(sum(case
+		when t.state = 9 then
+		1
+		else
+		0
+		end),0) as
+		"start",
+		nvl(sum(case
+		when t.state = 10 then
+		1
+		else
+		0
+		end),0) as "reject",
+		nvl(sum(case
+		when t.state = 12 then
+		1
+		else
+		0
+		end),0) as "pauseSave",
+		nvl(sum(case
+		when t.state = 11 then
+		1
+		else
+		0
+		end),0) as "pause",
+		nvl(sum(case
+		when t.state = 8 then
+		1
+		else
+		0
+		end),0) as "stop"
+		from
+		CLYX_ACTIVITY t
+		where t.tenant_id= #{tenantId}
+		and t.create_org_path
+		like
+		CONCAT(#{createOrgPath,javaType=String,jdbcType=VARCHAR},'%')
+		<if test="startDate !=null and startDate !=''">
+			and ( t.create_date &gt;=
+			to_date(#{startDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd') )
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			and ( t.create_date &lt;=
+			to_date(#{endDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd')+1 )
+		</if>
+		<!-- select * from (select t.activity_id, t.state from CLYX_ACTIVITY t 
+			where t.create_org_id = #{orgIds} and t.tenant_id = #{tenantId}) pivot(COUNT(activity_id) 
+			for state in (8, 9, 10, 11, 12, 13)) -->
+
+	</select>
+
+	<!-- 查询当前登录用户创建的用户数分类 -->
+	<select id="getSingleOrgInfo" parameterType="com.bonc.activity.model.ActivityProvPo"
+		resultType="java.util.HashMap">
+		select count(*) as "sum",
+		nvl(sum(case
+		when t.state = 13 then
+		1
+		else
+		0
+		end),0) as "examine",
+		nvl(sum(case
+		when t.state = 9 then
+		1
+		else
+		0
+		end),0) as
+		"start",
+		nvl(sum(case
+		when t.state = 10 then
+		1
+		else
+		0
+		end),0) as "reject",
+		nvl(sum(case
+		when t.state = 12 then
+		1
+		else
+		0
+		end),0) as "pauseSave",
+		nvl(sum(case
+		when t.state = 11 then
+		1
+		else
+		0
+		end),0) as "pause",
+		nvl(sum(case
+		when t.state = 8 then
+		1
+		else
+		0
+		end),0) as "stop"
+		from
+		CLYX_ACTIVITY t
+		where t.tenant_id= #{tenantId}
+		and t.create_org_id =
+		#{orgIds}
+		<if test="startDate !=null and startDate !=''">
+			and ( t.create_date &gt;=
+			to_date(#{startDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd') )
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			and ( t.create_date &lt;=
+			to_date(#{endDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd')+1 )
+		</if>
+	</select>
+
+	<select id="statisticsDetail" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.activity_id "activityDailyId",
+		t.activity_name
+		"activityDailyName",
+		t.activity_function "activityFunction",
+		t.usergroup_id "userGroupId",
+		t3.state_desc "stateDesc",
+		to_char(t.create_date,'yyyy-mm-dd') "createDate",
+		t.state "state",
+		t2.user_name "createUserName"
+		from CLYX_ACTIVITY t
+		left join
+		${security}.userinfo t2 on
+		t2.login_id=t.CREATE_USER and
+		t.tenant_id=t2.tenant_id
+		left join clyx_activity_state_code t3 on
+		t.state=t3.state_code and t.tenant_id =t3.tenant_id
+		where 1=1 and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		<if test="po.createOrgPath !='' and po.createOrgPath !=null">
+			and t.create_org_path like
+			CONCAT(#{po.createOrgPath,javaType=String,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="po.createOrgPath =='' or po.createOrgPath ==null">
+			and t.create_org_id = #{po.orgIds}
+		</if>
+		<if test="po.state !='' and po.state !=null">
+			and t.state = #{po.state}
+		</if>
+		<if test="po.startDate !=null and po.startDate !=''">
+			and ( t.create_date &gt;=
+			to_date(#{po.startDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd') )
+		</if>
+		<if test="po.endDate !=null and po.endDate !=''">
+			and ( t.create_date &lt;=
+			to_date(#{po.endDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd')+1 )
+		</if>
+		order by t.create_date desc
+	</select>
+
+	<select id="getStatisticsInfo" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="com.bonc.activity.model.StatisticsInfo">
+		select
+		t.activity_name "activityDailyName",
+		t3.state_desc "stateDesc",
+		t2.user_name "createUserName",
+		to_char(t.create_date,'yyyy-mm-dd')
+		"createDate"
+		from CLYX_ACTIVITY t
+		left join ${security}.userinfo t2 on
+		t2.login_id=t.CREATE_USER and t.tenant_id=t2.tenant_id
+		left join
+		clyx_activity_state_code t3 on
+		t.state=t3.state_code and t.tenant_id
+		=t3.tenant_id
+		where 1=1 and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		<if test="po.createOrgPath !='' and po.createOrgPath !=null">
+			and t.create_org_path like
+			CONCAT(#{po.createOrgPath,javaType=String,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="po.createOrgPath =='' or po.createOrgPath ==null">
+			and t.create_org_id = #{po.orgIds}
+		</if>
+		<if test="po.state !='' and po.state !=null">
+			and t.state = #{po.state}
+		</if>
+		<if test="po.startDate !=null and po.startDate !=''">
+			and ( t.create_date &gt;=
+			to_date(#{po.startDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd') )
+		</if>
+		<if test="po.endDate !=null and po.endDate !=''">
+			and ( t.create_date &lt;=
+			to_date(#{po.endDate,javaType=String,jdbcType=DATE},'yyyy-mm-dd')+1 )
+		</if>
+		order by t.create_date desc
+	</select>
+
+	<!-- 获取登录人的省分地市 -->
+	<!-- <select id="queryProvAndCity" parameterType="java.lang.String" resultType="java.util.HashMap"> 
+		select a.* from pure_prov_city a where a.range_id = #{rangeId} and a.tenant_id 
+		= #{tenantId} </select> -->
+
+	<!-- 排序页面获取启用活动的预览，稳定后可与queryActivityBystate进行结合成一条语句 -->
+	<select id="getAllActiveActs" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select * from (select t.activity_id as "activityId",
+		t1.user_name as
+		"creator",
+		to_char(t.create_date,'yyyy-mm-dd hh24:mi:ss') as
+		"createDate",
+		t.create_date,
+		t9.name "orgLevel",
+		t.activity_name as
+		"activityName",
+		to_number(decode(t.order_ord,0,null,t.order_ord)) as
+		flag,
+		to_char(t.order_ord) as "orderOrd",
+		t.urgency_level
+		from
+		CLYX_ACTIVITY t
+		left join ${security}.userinfo t1 on
+		t1.login_id=t.CREATE_USER and
+		t.tenant_id=t1.tenant_id
+		left join
+		${security}.orginfo t8 on t.create_org_path = t8.path and
+		t.tenant_id =
+		t8.tenant_id
+		left join ${security}.org_class t9 on t8.org_class = t9.ID
+		and t.tenant_id
+		= t9.tenant_id
+		where t.state ='9'
+		and t.activity_function
+		= '1'
+		and (nvl(t.end_date + 1,sysdate) >= sysdate)
+		and sysdate >=
+		t.start_date
+		and t.tenant_id = #{po.tenantId}
+		and t.create_org_path like
+		(#{po.createOrgPath} || '%')
+		<if test="po.createName != null and po.createName != ''">
+			and (t1.user_name like '%' ||#{po.createName} ||'%'
+			or
+			t.create_user like '%' ||#{po.createName} ||'%')
+		</if>
+		<if test="po.createDateStart !=null and po.createDateStart != ''">
+			and t.create_date >=
+			to_date(#{po.createDateStart},'yyyy/mm/dd
+			hh24:mi:ss')
+		</if>
+		<if test="po.createDateEnd !=null and po.createDateEnd != ''">
+				    	<![CDATA[and t.create_date <= to_date(#{po.createDateEnd},'yyyy/mm/dd hh24:mi:ss')+1]]>
+		</if>
+		) temp
+		order by temp.flag,temp.urgency_level desc,temp.create_date
+	</select>
+
+	<select id="countActive" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select * from (select t.activity_id as "activityId",
+		t1.user_name as
+		"creator",
+		to_char(t.create_date,'yyyy-mm-dd hh24:mi:ss') as
+		"createDate",
+		t.create_date,
+		t2.org_level_name "orgLevel",
+		t.activity_name as "activityName",
+		to_number(decode(t.order_ord,0,null,t.order_ord)) as flag,
+		to_char(t.order_ord) as "orderOrd",
+		t.urgency_level,
+		t.tenant_id as
+		"tenantId"
+		from CLYX_ACTIVITY t
+		left join ${security}.userinfo t1 on
+		t1.login_id=t.CREATE_USER and
+		t.tenant_id=t1.tenant_id
+		left join
+		clyx_activity_orglevel t2 on
+		t.org_level=t2.org_level and t.tenant_id =
+		t2.tenant_id
+		where t.state in ('9','11')
+		and t.activity_function = '1'
+		<!-- and (nvl(t.end_date + 1,sysdate) >= sysdate) and sysdate >= t.start_date -->
+		and t.tenant_id = #{po.tenantId}
+		) temp
+		order by
+		temp.flag,temp.urgency_level desc,temp.create_date
+	</select>
+	<update id="saveOrderOrd" parameterType="java.util.HashMap">
+		update CLYX_ACTIVITY set
+		order_ord = #{orderOrd} where activity_id = #{activityId}
+	</update>
+	<update id="saveOtherAllOrderOrd" parameterType="java.util.HashMap">
+		update clyx_activity set order_ord = order_ord + 1 where
+		order_ord >=
+		to_number(#{pre}) and
+		order_ord <![CDATA[<]]>
+		to_number(#{orderOrd})
+		and state in ('9','11')
+		and tenant_id =
+		#{tenantId}
+	</update>
+
+	<update id="initOrderOrd" parameterType="java.util.HashMap">
+		update CLYX_ACTIVITY set
+		order_ord = #{ROW_ID}
+		where activity_id = #{activityId} and tenant_id =
+		#{tenantId}
+	</update>
+
+	<select id="queryActivityBystate" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.activity_id as "activityId",
+		t.activity_name as
+		"activityName",
+		t1.user_name as "creator",
+		t.state as "state",
+		to_char(t.create_date,'yyyy-mm-dd hh24:mi:ss') as "createDate",
+		t9.name as "orgLevel",
+		t2.ci_wa_num as "userNum"
+		from CLYX_ACTIVITY t
+		left join ${security}.orginfo t8 on t.create_org_path = t8.path and
+		t.tenant_id = t8.tenant_id
+		left join ${security}.org_class t9 on
+		t8.org_class = t9.ID and t.tenant_id
+		= t9.tenant_id
+		left join
+		${security}.userinfo t1 on t1.login_id=t.CREATE_USER and
+		t.tenant_id=t1.tenant_id
+		left join v_user_group_all_info t2 on
+		t.usergroup_id = t2.ci_wa_id
+		where
+		1=1
+		and t.tenant_id = #{po.tenantId}
+		and t.activity_function = '1'
+		<if test="po.createOrgPath != null">
+			and t.create_org_path like #{po.createOrgPath} || '%'
+		</if>
+		<if test="po.createName != null and po.createName != ''">
+			and (t1.user_name like '%' ||#{po.createName} ||'%'
+			or
+			t.create_user like '%' ||#{po.createName} ||'%')
+		</if>
+		<if test="po.createDateStart !=null and po.createDateStart != ''">
+			and t.create_date >=
+			to_date(#{po.createDateStart},'yyyy/mm/dd
+			hh24:mi:ss')
+		</if>
+		<if test="po.createDateEnd !=null and po.createDateEnd != ''">
+			    	<![CDATA[and t.create_date <= to_date(#{po.createDateEnd},'yyyy/mm/dd hh24:mi:ss') + 1]]>
+		</if>
+		<if test="po.state != null">
+			and t.state = #{po.state}
+		</if>
+
+		order by t.urgency_level desc,t.create_date desc
+
+	</select>
+	<select id="queryCountBystate" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select case grouping(t.state)
+		when 1 then '-1'
+		else t.state
+		end as
+		"state",
+		count(*) as "total"
+		from CLYX_ACTIVITY t
+		where
+		t.tenant_id=#{po.tenantId} and t.state is not null
+		and
+		t.activity_function = '1'
+		<if test="po.createOrgPath != null">
+			and t.create_org_path like #{po.createOrgPath} || '%'
+		</if>
+		group by rollup(t.state)
+		order by t.state
+	</select>
+
+	<select id="getMagList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select f1.name as "city",
+		f.name as "orgLevel",
+		t1.org_name as
+		"highOrg",
+		t.org_name as "channel",
+		t.id as "id"
+		from ${security}.orginfo
+		t
+		left join ${security}.org_class f on f.id=t.org_class and
+		f.tenant_id=t.tenant_id
+		left join ${security}.org_class f1 on
+		f1.id=f.PARENT_ID and f.TENANT_ID=
+		f1.tenant_id
+		left join
+		${security}.orginfo t1 on t.orginfo_id = t1.id
+		left join
+		${security}.dim_org_code b on t.reserve1 = b.code_id
+		where
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		and
+		t.status='1'
+		and t.reserve2 ='1'
+		<if test="isChooseChannel == 1">
+			<if test="chooseChannel != null and chooseChannel != '' ">
+				and t.id in (${chooseChannel})
+			</if>
+			<if test="chooseChannel == '' or chooseChannel == null">
+				and t.id is null
+			</if>
+		</if>
+		<if test="isChooseChannel == 0">
+			<if test="reserve1 !='' and reserve1 !=null">
+				and t.reserve1 =
+				#{reserve1,javaType=String,jdbcType=VARCHAR}
+			</if>
+			<if test="reserve1 == '' or reserve1 ==null">
+				and t.reserve1 in (select m.code_id from
+				clyx_activity_orginfo_rel m
+				where m.is_valid='1' and
+				m.tenant_id='uni076')
+			</if>
+			<if test="chooseChannel != null and chooseChannel != '' ">
+				and t.id not in (${chooseChannel})
+			</if>
+			<if test="sellingPath != null and sellingPath != '' ">
+				and (${sql})
+			</if>
+			<if test="sellingPath == null or sellingPath == '' ">
+				and t.id is null
+			</if>
+			<if test="sellingAreaName != '' and sellingAreaName != null ">
+				AND t.org_name like CONCAT(
+				CONCAT('%',
+				#{sellingAreaName,javaType=String,jdbcType=VARCHAR}), '%')
+
+			</if>
+		</if>
+	</select>
+
+	<select id="queryChooseOrginfo" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select
+		m.code_id as "codeId",
+		m.code_name as "codeName"
+		from
+		CLYX_ACTIVITY_ORGINFO_REL m
+		where m.is_valid='1'
+		and
+		m.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<insert id="saveUsernum" parameterType="java.util.List">
+		insert into CLYX_P_USERNUM(ACTIVITY_ID,MAPPED_ID,USERNUM,TENANT_ID)
+		<foreach close=")" open="(" collection="list" item="item"
+			index="index" separator="union">
+			select
+			#{item.activityId,jdbcType=VARCHAR},
+			#{item.mappedId,jdbcType=VARCHAR},
+			#{item.usernum,jdbcType=VARCHAR},
+			#{item.tenantId,jdbcType=VARCHAR}
+			from dual
+		</foreach>
+	</insert>
+	<delete id="deleteUsernum" parameterType="com.bonc.activity.model.ActivityProvBo">
+		delete from
+		CLYX_P_USERNUM where activity_id = #{po.activityId} and tenant_id =
+		#{po.tenantId}
+	</delete>
+	<select id="queryUsernumList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="com.bonc.activity.model.ActivityUsernumPo">
+		select mapped_id as "mappedId",
+		usernum as "usernum"
+		from
+		CLYX_P_USERNUM t where t.activity_id =
+		#{po.activityId} and t.tenant_id
+		= #{po.tenantId}
+	</select>
+
+	<select id="queryUseGroupUsed" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select usergroup_id as "usergroupId",
+		to_char(count(usergroup_id)) as "use"
+		from CLYX_ACTIVITY t
+		where
+		t.usergroup_id =
+		(select usergroup_id from CLYX_ACTIVITY where
+		activity_id = #{po.activityId})
+		and tenant_id = #{po.tenantId}
+		and
+		t.state in ('9', '10', '11', '13', '14')
+		group by usergroup_id
+	</select>
+
+	<!-- 短信订购产品回显 -->
+	<select id="queryOrderProductNameList" resultType="java.util.HashMap">
+		select t.product_name as "orderProductNames",
+		t.product_id as
+		"orderProductIds"
+		from <!-- CLYX_P_PRODUCT_INFO t -->
+		${successProductPo.tableName} t
+		where 1=1 and t.rst2='1' and
+		t.product_id
+		<if
+			test="successStandardPo.successProductIds == null or successStandardPo.successProductIds == ''">
+			in ('-1')
+		</if>
+		<if test="successStandardPo.successProductIds != null and successStandardPo.successProductIds != ''">
+			in (${successStandardPo.successProductIds})
+		</if>
+		and t.tenant_id=#{po.tenantId}
+	</select>
+
+	<select id="getPopupThemeList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.activity_id as "activityId",
+		t.activity_name as
+		"activityName",
+		t1.theme_code as "themeCode",
+		t1.theme_name as
+		"activityTheme",
+		t.org_level as "activityLevel",
+		to_char(t.create_date,'yyyy-mm-dd') as "createDate",
+		t2.ord as "ord"
+		from CLYX_ACTIVITY t
+		left join clyx_activity_theme t1 on
+		t.activity_theme_code = t1.theme_code
+		and t.tenant_id = t1.tenant_id
+		left join CLYX_ACTIVITY_THEME_PRIORITY t2 on
+		t.activity_id=t2.activity_id
+		and t.tenant_id = t2.tenant_id
+		where
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		and t.state
+		= '9'
+		and ','||t.channel_check||',' like '%,8,%'
+		<if test="po.activityThemeCode != '' and po.activityThemeCode != null">
+			and t.activity_theme_code =
+			#{po.activityThemeCode,javaType=String,jdbcType=VARCHAR}
+		</if>
+		<if test="po.activityThemeCode == '' or po.activityThemeCode == null">
+			and t.activity_theme_code is null
+		</if>
+		<if test="po.orgLevel == 1">
+			and t.org_level ='1'
+		</if>
+		<if test="po.orgLevel != 1">
+			and t.create_org_path like CONCAT(
+			CONCAT('%',
+			#{po.createOrgPath,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		order by t2.ord asc
+	</select>
+
+	<select id="getMaxOrd" parameterType="java.util.HashMap"
+		resultType="java.lang.String">
+		select max(t.ord) from CLYX_ACTIVITY_THEME_PRIORITY t
+		where t.org_level
+		= #{orgLevel,javaType=String,jdbcType=VARCHAR}
+		<if test="themeCode!=null and themeCode !=''">
+			and t.theme_code =
+			#{themeCode,javaType=String,jdbcType=VARCHAR}
+		</if>
+		<if test="themeCode == null or themeCode == '' ">
+			and t.theme_code is null
+		</if>
+		and t.tenant_id=#{tenantId}
+	</select>
+
+	<insert id="insertPriority" parameterType="java.util.HashMap">
+		insert into
+		CLYX_ACTIVITY_THEME_PRIORITY(activity_id,theme_code,tenant_id,ord,org_level)
+		values
+		(#{activityId,javaType=String,jdbcType=VARCHAR},#{themeCode,javaType=String,jdbcType=VARCHAR},
+		#{tenantId,javaType=String,jdbcType=VARCHAR},to_number(#{ord}),#{orgLevel,javaType=String,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="savePriority" parameterType="java.util.HashMap">
+		update
+		CLYX_ACTIVITY_THEME_PRIORITY set ord = to_number(${ord}) where
+		activity_id = #{activityId}
+	</update>
+
+	<update id="saveOtherAllPriorityOrd" parameterType="java.util.HashMap">
+		update CLYX_ACTIVITY_THEME_PRIORITY set ord = ord + 1 where
+		ord >=
+		to_number(${pre}) and
+		ord <![CDATA[<]]>
+		to_number(${ord})
+		and org_level =
+		#{orgLevel,javaType=String,jdbcType=VARCHAR}
+		and tenant_id
+		= #{tenantId}
+		<if test="themeCode==null or themeCode ==''">
+			and theme_code is null
+		</if>
+		<if test="themeCode!=null and themeCode != ''">
+			and theme_code =
+			#{themeCode,javaType=String,jdbcType=VARCHAR}
+		</if>
+	</update>
+
+	<update id="updatePriorityOrder" parameterType="java.util.HashMap">
+		update CLYX_ACTIVITY_THEME_PRIORITY set ord = ord - 1 where
+		ord >=
+		to_number(${ord})
+		and org_level =
+		#{orgLevel,javaType=String,jdbcType=VARCHAR}
+		and tenant_id
+		= #{tenantId}
+		<if test="themeCode!=null and themeCode !=''">
+			and theme_code =
+			#{themeCode,javaType=String,jdbcType=VARCHAR}
+		</if>
+		<if test="themeCode == null or themeCode == '' ">
+			and theme_code is null
+		</if>
+	</update>
+
+	<select id="selectStopPriority" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.ord as "ord",
+		t.theme_code as "themeCode",
+		t.tenant_id as "tenantId",
+		t.org_level as "orgLevel"
+		from
+		CLYX_ACTIVITY_THEME_PRIORITY t
+		where
+		t.activity_id=#{po.activityId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectNextPriority" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select t.ord as "ord",
+		t.activity_id as "activityId",
+		t.theme_code as
+		"themeCode",
+		t.tenant_id as "tenantId",
+		t.org_level as "orgLevel"
+		from
+		CLYX_ACTIVITY_THEME_PRIORITY t
+		where t.ord=to_number(#{ord})
+		and
+		t.org_level = #{orgLevel,javaType=String,jdbcType=VARCHAR}
+		<if test="themeCode!=null and themeCode !=''">
+			and t.theme_code =
+			#{themeCode,javaType=String,jdbcType=VARCHAR}
+		</if>
+		<if test="themeCode == null or themeCode == '' ">
+			and t.theme_code is null
+		</if>
+	</select>
+
+	<delete id="deletePriorityOrder" parameterType="com.bonc.activity.model.ActivityProvBo">
+		delete from
+		CLYX_ACTIVITY_THEME_PRIORITY t
+		where
+		t.activity_id=#{po.activityId,javaType=String,jdbcType=VARCHAR}
+	</delete>
+	<!-- 弹窗配置信息保存 -->
+	<insert id="savePopConfig" parameterType="java.util.List">
+		insert into
+		CLYX_ACTIVITY_POP_CONFIG(THEME_PRIORITY,THEME_CODE,THEME_ASCRIPTION,TENANT_ID)
+		<foreach close=")" open="(" collection="list" item="item"
+			index="index" separator="union">
+			select
+			to_number(#{item.themePriority,jdbcType=NUMERIC}),
+			#{item.themeCode,jdbcType=VARCHAR},
+			#{item.themeAscription,jdbcType=VARCHAR},
+			#{item.tenantId,jdbcType=VARCHAR}
+			from dual
+		</foreach>
+	</insert>
+
+	<!-- 弹窗配置信息删除 -->
+	<delete id="deletePopConfig" parameterType="com.bonc.activity.model.ActivityProvBo">
+		delete from
+		CLYX_ACTIVITY_POP_CONFIG where
+		tenant_id = #{po.tenantId}
+	</delete>
+
+	<!-- 获取省份弹窗配置信息 -->
+	<select id="findProCongigByTenantId" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="com.bonc.activity.model.PopConfigInfo">
+		select t.theme_priority as themePriority,
+		t.theme_code as
+		themeCode
+		from CLYX_ACTIVITY_POP_CONFIG t
+		where t.theme_ascription = '1'
+		and t.tenant_id=#{po.tenantId}
+	</select>
+
+	<!-- 获取地市弹窗配置信息 -->
+	<select id="findCityCongigByTenantId" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="com.bonc.activity.model.PopConfigInfo">
+		select t.theme_priority as themePriority,
+		t.theme_code as
+		themeCode
+		from CLYX_ACTIVITY_POP_CONFIG t
+		where t.theme_ascription = '2'
+		and t.tenant_id=#{po.tenantId}
+	</select>
+
+	<select id="queryStateById" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.lang.String">
+		select t.state from CLYX_ACTIVITY t
+		where
+		t.activity_id=#{po.activityId,javaType=String,jdbcType=VARCHAR}
+		and
+		t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<select id="queryOrgLevleName" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select
+		t.org_level as "orgLevel",
+		t.org_level_name as "orgLevelName"
+		from CLYX_ACTIVITY_ORGLEVEL t
+		where 1=1
+		<if test="po.tenantId != null and po.tenantId != ''">
+			and t.tenant_id = #{po.tenantId}
+		</if>
+		and t.is_valid='1'
+		order by t.ord
+	</select>
+
+	<!-- 获取产品网别信息 -->
+	<select id="productServiceTypeList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select
+		t.service_type_code as "typeCode",
+		t.service_type_name as
+		"typeName"
+		from PRODUCT_SERVICE_TYPE t
+		where 1=1
+		<if test="po.tenantId != null and po.tenantId != ''">
+			and t.tenant_id = #{po.tenantId}
+		</if>
+		and t.is_valid='1'
+		order by t.ord
+	</select>
+
+	<!-- 获取产品付费类型 -->
+	<select id="productPayModeList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select
+		t.pay_mode_code as "payModeCode",
+		t.pay_mode_name as
+		"payModeName"
+		from PRODUCT_PAY_MODE t
+		where 1=1
+		<if test="po.tenantId != null and po.tenantId != ''">
+			and t.tenant_id = #{po.tenantId}
+		</if>
+		and t.is_valid='1'
+		order by t.ord
+	</select>
+
+	<select id="getRejectChannel" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.lang.String">
+		select
+		channel_id as "channelId"
+		from
+		clyx_channel_approval_message
+		where
+		activity_id=#{po.activityId,javaType=String,jdbcType=VARCHAR}
+		and
+		tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		and
+		approval_status='10'
+	</select>
+	<select id="queryAllChannel" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.channel_code as "channelCode",
+		t.channel_name as
+		"channelName"
+		from CLYX_P_CHANNEL_INFO_ACTIVITY t
+		where t.is_valid='1'
+		and t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<select id="queryUeditorTools" resultType="java.lang.String">
+		select sys_param_value
+		from CLYX_SYSTEM_PARAM t
+		where t.sys_param='5'
+		and t.tenant_id =
+		#{po.tenantId}
+	</select>
+
+	<!-- 短信网关相关sql(未迁移mysql) -->
+	<select id="queryActivityClassify" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.activity_classify_id as "activityClassifyId",
+		t.activity_classify_name as "activityClassifyName"
+		from
+		clyx_sms_activity_classify t
+		where 1 = 1
+		and t.is_valid = '1'
+		and
+		t.tenant_id = #{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		order by
+		t.ord
+	</select>
+	<select id="queryCreateMechanis" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.create_mechanism_id as "createMechanismId",
+		t.create_mechanism_name as "createMechanismName"
+		from
+		clyx_sms_create_mechanism t
+		where 1 = 1
+		and t.is_valid = '1'
+		and
+		t.tenant_id = #{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		order by
+		t.ord
+	</select>
+	<select id="querySmsActivityType" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.activity_type_id as "activityTypeId",
+		t.activity_type_name as "activityTypeName"
+		from clyx_sms_activity_type t
+		where 1 = 1
+		and t.is_valid = '1'
+		and t.tenant_id =
+		#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		order by t.ord
+	</select>
+	<select id="queryMarketingType" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.marketing_type_id as "marketingTypeId",
+		t.marketing_type_name as "marketingTypeName"
+		from
+		clyx_sms_marketing_type t
+		where 1 = 1
+		and t.is_valid = '1'
+		and
+		t.tenant_id = #{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		order by
+		t.ord
+
+	</select>
+	<select id="queryMarketingTypeAdd" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.marketing_type_id as "marketingTypeId",
+		t.marketing_type_name as "marketingTypeName"
+		from
+		clyx_sms_marketing_type t
+		where 1 = 1 and t.marketing_type_id != '1'
+		and t.is_valid = '1'
+		and t.tenant_id =
+		#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		order by t.ord
+
+	</select>
+	<!-- 查询短信端口配置数据 -->
+	<select id="portConfigList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.id as "id",
+		t.activity_classify as "activityClassify",
+		t.create_mechanism as "createMechanism",
+		t.activity_type as
+		"activityType",
+		t.marketing_type as "marketingType",
+		t1.activity_classify_name as "activityClassifyName",
+		t2.create_mechanism_name as "createMechanismName",
+		t3.activity_type_name as "activityTypeName",
+		t4.marketing_type_name as
+		"marketingTypeName",
+		t.use_port as "usePort",
+		t.use_port_name as
+		"usePortName"
+		from CLYX_SMS_PORT_CONFIG t
+		left join
+		clyx_sms_activity_classify t1 on t.activity_classify =
+		t1.activity_classify_id and t.tenant_id = t1.tenant_id
+		left join
+		clyx_sms_create_mechanism t2 on t.create_mechanism =
+		t2.create_mechanism_id and t.tenant_id = t2.tenant_id
+		left join
+		clyx_sms_activity_type t3 on t.activity_type =
+		t3.activity_type_id and
+		t.tenant_id = t3.tenant_id
+		left join clyx_sms_marketing_type t4 on
+		t.marketing_type =
+		t4.marketing_type_id and t.tenant_id = t4.tenant_id
+		where 1=1
+		and t.tenant_id =
+		#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		<if test="activitySmsProtConfig != null">
+			<if
+				test="activitySmsProtConfig.activityClassify !=null and activitySmsProtConfig.activityClassify !=''">
+				and t.activity_classify =
+				#{activitySmsProtConfig.activityClassify,javaType=String,jdbcType=VARCHAR}
+			</if>
+			<if
+				test="activitySmsProtConfig.createMechanism !=null and activitySmsProtConfig.createMechanism !=''">
+				and t.CREATE_MECHANISM =
+				#{activitySmsProtConfig.createMechanism,javaType=String,jdbcType=VARCHAR}
+			</if>
+			<if
+				test="activitySmsProtConfig.activityType !=null and activitySmsProtConfig.activityType !=''">
+				and t.ACTIVITY_TYPE =
+				#{activitySmsProtConfig.activityType,javaType=String,jdbcType=VARCHAR}
+			</if>
+			<if
+				test="activitySmsProtConfig.marketingType !=null and activitySmsProtConfig.marketingType !=''">
+				and t.MARKETING_TYPE =
+				#{activitySmsProtConfig.marketingType,javaType=String,jdbcType=VARCHAR}
+			</if>
+		</if>
+		order by t.ord
+	</select>
+
+	<select id="queryMaxPortId" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.lang.String">
+		select max(to_number(id)) from CLYX_SMS_PORT_CONFIG t
+		where
+		1=1 and
+		t.tenant_id = #{po.tenantId}
+	</select>
+
+	<insert id="addPort" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into
+		CLYX_SMS_PORT_CONFIG t
+		values(#{activitySmsProtConfig.id,javaType=String,jdbcType=VARCHAR}+1,#{activitySmsProtConfig.activityClassify,javaType=String,jdbcType=VARCHAR},
+		#{activitySmsProtConfig.createMechanism,javaType=String,jdbcType=VARCHAR},#{activitySmsProtConfig.activityType,javaType=String,jdbcType=VARCHAR},
+		#{activitySmsProtConfig.marketingType,javaType=String,jdbcType=VARCHAR},#{activitySmsProtConfig.usePort,javaType=String,jdbcType=VARCHAR},
+		#{activitySmsProtConfig.userPortName,javaType=String,jdbcType=VARCHAR},#{activitySmsProtConfig.id,javaType=String,jdbcType=VARCHAR}+1,#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+
+		)
+	</insert>
+
+	<update id="updatePort" parameterType="com.bonc.activity.model.ActivityProvBo">
+		update
+		CLYX_SMS_PORT_CONFIG t
+		set t.ACTIVITY_CLASSIFY =
+		#{activitySmsProtConfig.activityClassify,javaType=String,jdbcType=VARCHAR},
+		t.CREATE_MECHANISM =
+		#{activitySmsProtConfig.createMechanism,javaType=String,jdbcType=VARCHAR},
+		t.ACTIVITY_TYPE =
+		#{activitySmsProtConfig.activityType,javaType=String,jdbcType=VARCHAR},
+		t.MARKETING_TYPE =
+		#{activitySmsProtConfig.marketingType,javaType=String,jdbcType=VARCHAR},
+		t.use_port =
+		#{activitySmsProtConfig.usePort,javaType=String,jdbcType=VARCHAR},
+		t.use_port_name =
+		#{activitySmsProtConfig.userPortName,javaType=String,jdbcType=VARCHAR}
+		where 1=1
+		and
+		t.id=#{activitySmsProtConfig.id,javaType=String,jdbcType=VARCHAR}
+		and
+		t.tenant_id = #{po.tenantId}
+	</update>
+	<delete id="deletePort" parameterType="com.bonc.activity.model.ActivityProvBo">
+		delete from
+		CLYX_SMS_PORT_CONFIG t
+		where 1=1
+		and
+		t.id=#{activitySmsProtConfig.id,javaType=String,jdbcType=VARCHAR}
+		and
+		t.tenant_id = #{po.tenantId}
+	</delete>
+
+	<select id="checkPortSave" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.lang.Integer">
+		select count(id) from CLYX_SMS_PORT_CONFIG t
+		where 1=1 and
+		t.tenant_id =
+		#{po.tenantId}
+		and t.ACTIVITY_CLASSIFY =
+		#{activitySmsProtConfig.activityClassify,javaType=String,jdbcType=VARCHAR}
+		and t.CREATE_MECHANISM =
+		#{activitySmsProtConfig.createMechanism,javaType=String,jdbcType=VARCHAR}
+		and t.ACTIVITY_TYPE =
+		#{activitySmsProtConfig.activityType,javaType=String,jdbcType=VARCHAR}
+		and t.MARKETING_TYPE =
+		#{activitySmsProtConfig.marketingType,javaType=String,jdbcType=VARCHAR}
+		<if test="activitySmsProtConfig.id != null and activitySmsProtConfig.id != ''">
+			and t.id != #{activitySmsProtConfig.id,javaType=String,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<select id="queryOrgList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.id "cityId",t.name "cityName",t.tenant_id
+		"tenantId" from ${security}.org_class t where t.CLASS_LEVEL='2'
+		and
+		t.tenant_id = #{po.tenantId}
+	</select>
+
+	<select id="queryProvinceId" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.lang.String">
+		select t.id "cityId"from ${security}.org_class t where
+		t.CLASS_LEVEL='1'
+		and t.tenant_id = #{po.tenantId}
+	</select>
+
+	<select id="queryServiceTypeList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.service_type_id "typeId",t.service_type_name
+		"typeName",
+		t.tenant_id "tenantId" from clyx_tel_service_type t where
+		t.is_valid='1'
+		and t.tenant_id = #{po.tenantId}
+		order by ord
+	</select>
+
+	<select id="queryPortPhoneList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select
+		t.telephone_channel_id "channelId",
+		t.channel_name "channelName",
+		t.ascription_city_id
+		"cityId",
+		t.ascription_city_name "cityName",
+		t.service_type_id "typeId",
+		t2.service_type_name "typeName",
+		t.is_valid "isValid",
+		t.interface_address "address",
+		t.ftp_id "ftpId",
+		t.ftp_port "ftpPort",
+		t.ftp_username "ftpUsername",
+		t.ftp_password "ftpPassword",
+		t.ftp_down_path "downPath",
+		t.ftp_return_path "returnPath",
+		t.file_key
+		"fileKey",
+		t.tenant_id "tenantId" from clyx_telephone_channel_manager t
+		left join clyx_tel_service_type t2 on
+		t.service_type_id=t2.service_type_id and t.tenant_id=t2.tenant_id
+		where 1=1
+		and t.tenant_id=#{po.tenantId}
+		<if test="tpInfo.channelName !=null and tpInfo.channelName !=''">
+			AND t.channel_name like CONCAT(
+			CONCAT('%',
+			#{tpInfo.channelName,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+
+		<if test="tpInfo.cityName !=null and tpInfo.cityName !=''">
+			AND t.ascription_city_name like CONCAT(
+			CONCAT('%',
+			#{tpInfo.cityName,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+
+		<if test="tpInfo.isValid !=null and tpInfo.isValid !=''">
+			AND
+			t.is_Valid=#{tpInfo.isValid,javaType=String,jdbcType=VARCHAR}
+		</if>
+
+		<if test="tpInfo.typeId !=null and tpInfo.typeId !=''">
+			AND t.service_type_id
+			=#{tpInfo.typeId,javaType=String,jdbcType=VARCHAR}
+		</if>
+		order by t.ord
+	</select>
+
+	<select id="getNextChannelId" resultType="string">
+		select
+		to_char(TELEPHONE_ID_SEQ.nextval) as "channelId" from dual
+	</select>
+
+	<select id="getNextOrd" resultType="string">
+		select
+		to_char(telephone_channel_ord_sequence.nextval) as "channelId" from
+		dual
+	</select>
+
+	<insert id="phoneAdd" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into
+		clyx_telephone_channel_manager
+		(TELEPHONE_CHANNEL_ID,CHANNEL_NAME,ASCRIPTION_CITY_ID,
+		ASCRIPTION_CITY_NAME,SERVICE_TYPE_ID,IS_VALID,ORD,FTP_ID,FTP_PORT,
+		FTP_USERNAME,FTP_PASSWORD,FTP_RETURN_PATH,FTP_DOWN_PATH,FILE_KEY,TENANT_ID)
+		values(#{tpInfo.channelId,javaType=String,jdbcType=VARCHAR},#{tpInfo.channelName,javaType=String,jdbcType=VARCHAR},
+		#{tpInfo.cityId,javaType=String,jdbcType=VARCHAR},#{tpInfo.cityName,javaType=String,jdbcType=VARCHAR},#{tpInfo.typeId,javaType=String,jdbcType=VARCHAR},
+		#{tpInfo.isValid,javaType=String,jdbcType=VARCHAR},#{tpInfo.ord,javaType=String,jdbcType=VARCHAR},
+		#{tpInfo.ftpId,javaType=String,jdbcType=VARCHAR},#{tpInfo.ftpPort,javaType=String,jdbcType=VARCHAR},
+		#{tpInfo.ftpUsername,javaType=String,jdbcType=VARCHAR},#{tpInfo.ftpPassword,javaType=String,jdbcType=VARCHAR},
+		#{tpInfo.returnPath,javaType=String,jdbcType=VARCHAR},#{tpInfo.downPath,javaType=String,jdbcType=VARCHAR},#{tpInfo.fileKey,javaType=String,jdbcType=VARCHAR},
+		#{po.tenantId,javaType=String,jdbcType=VARCHAR})
+
+	</insert>
+
+	<select id="queryPhoneListById" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="com.bonc.activity.model.ActivityTelephoneInfo">
+		select t.telephone_channel_id "channelId",t.channel_name
+		"channelName",
+		t.ascription_city_id "cityId",t.ascription_city_name
+		"cityName",
+		t.service_type_id "typeId",
+		t2.service_type_name
+		"typeName",t.is_valid "isValid",t.interface_address "address",
+		t.ftp_id "ftpId",t.ftp_port "ftpPort",t.ftp_username "ftpUsername",
+		t.ftp_password "ftpPassword",t.ftp_down_path
+		"downPath",t.ftp_return_path "returnPath",
+		t.file_key
+		"fileKey",t.tenant_id "tenantId" from clyx_telephone_channel_manager
+		t
+		left join clyx_tel_service_type t2 on t.service_type_id=
+		t2.service_type_id and t.tenant_id = t2.tenant_id
+		where
+		t.telephone_channel_id=#{tpInfo.channelId,javaType=String,jdbcType=VARCHAR}
+
+	</select>
+
+	<delete id="phoneDelete" parameterType="com.bonc.activity.model.ActivityProvBo">
+		delete from
+		clyx_telephone_channel_manager t where
+		t.telephone_channel_id=#{tpInfo.channelId,javaType=String,jdbcType=VARCHAR}
+
+	</delete>
+
+	<select id="queryPhoneNameList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.lang.String">
+		select t.channel_name "channelName" from
+		clyx_telephone_channel_manager t
+	</select>
+
+	<select id="getCountSubActivity" parameterType="java.util.HashMap"
+		resultType="java.lang.String">
+		select case count(*) when 0 then '0' else '1' end as
+		"parentActivity" from clyx_activity t where
+		t.parent_activity =
+		#{activityDailyId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<select id="queryPortPhoneListById" resultType="java.util.HashMap">
+		select t.telephone_channel_id "channelId",t.channel_name
+		"channelName",
+		t.ascription_city_id "cityId",t.ascription_city_name
+		"cityName",
+		t.service_type_id "typeId",
+		t2.service_type_name
+		"typeName",t.is_valid "isValid",t.interface_address "address",
+		t.ftp_id "ftpId",t.ftp_port "ftpPort",t.ftp_username "ftpUsername",
+		t.ftp_password "ftpPassword",t.ftp_down_path
+		"downPath",t.ftp_return_path "returnPath",
+		t.file_key
+		"fileKey",t.tenant_id "tenantId" from clyx_telephone_channel_manager
+		t
+		left join clyx_tel_service_type t2 on t.service_type_id=
+		t2.service_type_id and t.tenant_id = t2.tenant_id
+		where 1=1
+		<if test="cityId !=null and cityId !=''">
+			and t.ascription_city_id like
+			CONCAT(
+			CONCAT('%',
+			#{cityId,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		and t.tenant_id = #{tenantId}
+	</select>
+
+	<select id="checkPhoneSave" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.lang.Integer">
+		select count(TELEPHONE_CHANNEL_ID) from clyx_telephone_channel_manager
+		t
+		where 1=1 and
+		t.tenant_id = #{po.tenantId}
+		and t.channel_name=
+		#{tpInfo.channelName,javaType=String,jdbcType=VARCHAR}
+		<if test="tpInfo.channelId != null and tpInfo.channelId != ''">
+			and t.TELEPHONE_CHANNEL_ID != #{tpInfo.channelId}
+		</if>
+	</select>
+	<!-- end -->
+
+	<select id="queryactivityIsSendSms" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.lang.String">
+		select sys_param_value from CLYX_SYSTEM_PARAM where
+		sys_param = '8'
+		and tenant_id = #{po.tenantId}
+	</select>
+
+	<!-- 互联网入口数据查询 -->
+	<select id="getLoginButton" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select
+		t.button_name as "buttonName",
+		t.button_url as
+		"buttonUrl",
+		t.button_dec as "buttonDec",
+		t.button_type as "buttonType"
+		from clyx_activity_loginmain t
+	</select>
+
+	<select id="getMenuDetail" resultType="java.util.HashMap">
+		select 
+		t.activity_name "activityName",
+		t2.telephone_huashu_content "huashu",
+		t3.success_name "successName"
+		from CLYX_ACTIVITY t
+		left join CLYX_P_CHANNEL_TELEPHONE t2 on t.activity_id=t2.activity_id
+		left join CLYX_SUCCESSSTANDARD_INFO t3 on t.activity_id=t3.success_id
+		where t.activity_id=#{activityId,jdbcType=VARCHAR} 
+	</select>
+	<select id="queryFtpType" resultType="java.lang.String">
+		select sys_param_value from CLYX_SYSTEM_PARAM where tenant_id = #{po.tenantId} and sys_param='9'
+	</select>
+	
+	<select id="queryCityName" resultType="java.lang.String">
+		select t.name 
+		from ${security}.org_class t where 1=1
+		and t.tenant_id = #{tenantId} and t.id=#{cityId}
+	</select>
+	
+	<select id="queryCompanyName" resultType="java.lang.String">
+		select t.channel_name 
+		from clyx_telephone_channel_manager t where 1=1
+		and t.tenant_id = #{tenantId} and t.telephone_channel_id=#{companyId}
+	</select>
+	
+	<select id="getWoStrategyList" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.activity_id  "activityId",
+		t.activity_name 
+		"activityName",
+		t.org_level  "activityLevel",
+		to_char(t.create_date,'yyyy-mm-dd')  "createDate",
+		t2.ord  "ord"
+		from CLYX_ACTIVITY t
+		left join CLYX_ACTIVITY_PRIORITY t2 on
+		t.activity_id=t2.activity_id
+		and t.tenant_id = t2.tenant_id
+		where
+		t.tenant_id='uni076'
+		and t.state
+		= '9'
+		and ','||t.channel_check||',' like '%,13,%'
+		<if test="po.activityName !=null and po.activityName !=''">
+			AND t.activity_name like CONCAT(
+			CONCAT('%',
+			#{po.activityName,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		<!-- <if test="po.orgLevel == 1">
+			and t.org_level ='1'
+		</if>
+		<if test="po.orgLevel != 1">
+			and t.create_org_path like CONCAT(
+			CONCAT('%',
+			#{po.createOrgPath,javaType=String,jdbcType=VARCHAR}), '%')
+		</if> -->
+		order by t2.ord asc
+	</select>
+	<select id="getSubMaxOrd" parameterType="java.util.HashMap"
+		resultType="java.lang.String">
+		select max(t.ord) from CLYX_ACTIVITY_PRIORITY t
+		where
+		t.org_level
+		= #{orgLevel,javaType=String,jdbcType=VARCHAR}
+		and
+		t.tenant_id=#{tenantId}
+		and t.identify='woStrategy'
+	</select>
+
+	<insert id="insertSubPriority" parameterType="java.util.HashMap">
+		insert into
+		CLYX_ACTIVITY_PRIORITY(activity_id,tenant_id,ord,org_level,identify)
+		values
+		(#{activityId,javaType=String,jdbcType=VARCHAR},#{tenantId,javaType=String,jdbcType=VARCHAR},
+		to_number(#{ord}),#{orgLevel,javaType=String,jdbcType=VARCHAR},'woStrategy')
+	</insert>
+	
+	<update id="saveSubPriority" parameterType="java.util.HashMap">
+		update
+		CLYX_ACTIVITY_PRIORITY set ord = to_number(${ord}) where
+		activity_id = #{activityId}
+		and identify='woStrategy'
+	</update>
+	
+	<select id="selectSubNextPriority" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select t.ord as "ord",
+		t.activity_id as "activityId",
+		t.tenant_id as "tenantId",
+		t.org_level as "orgLevel"
+		from
+		CLYX_ACTIVITY_PRIORITY t
+		where t.ord=to_number(#{ord})
+		and
+		t.org_level = #{orgLevel,javaType=String,jdbcType=VARCHAR}
+		and t.identify='woStrategy'
+	</select>
+	
+	<update id="saveSubOtherAllPriorityOrd" parameterType="java.util.HashMap">
+		update CLYX_ACTIVITY_PRIORITY set ord = ord + 1 where
+		ord >=
+		to_number(${pre}) and
+		ord <![CDATA[<]]>
+		to_number(${ord})
+		and org_level =
+		#{orgLevel,javaType=String,jdbcType=VARCHAR}
+		and tenant_id
+		= #{tenantId}
+		and identify='woStrategy'
+	</update>
+</mapper>

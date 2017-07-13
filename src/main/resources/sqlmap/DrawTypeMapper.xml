@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.draw.DrawTypeDao">
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.DrawType">
+		insert into WXWL_DRAW_TYPE
+		values (
+		#{draw_type_id,jdbcType=VARCHAR},
+		#{rowtypet_name,jdbcType=VARCHAR},
+		#{resources_id,jdbcType=VARCHAR},
+		#{resp_id,jdbcType=VARCHAR},
+		#{resume,jdbcType=VARCHAR},
+		#{stutas,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<select id="findAll" resultType="com.bonc.epmwxwl.model.DrawType">
+		select
+		draw_type_id
+		"draw_type_id",
+		rowtypet_name "rowtypet_name",
+		resources_id
+		"resources_id",
+		resp_id "resp_id",
+		resume "resume",
+		stutas "stutas",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from
+		WXWL_DRAW_TYPE
+
+	</select>
+
+	<select id="findList" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.DrawType">
+		select
+		t.draw_type_id "draw_type_id",
+		t.rowtypet_name "rowtypet_name",
+		t.resources_id "resources_id",
+		t.resp_id "resp_id",
+		t.resume "resume",
+		t.stutas "stutas",
+		t.sort_num "sort_num",
+		t.tenant_id "tenant_id",
+		r1.res_name "res_name",
+		r2.res_name "resp_name"
+		from WXWL_DRAW_TYPE t
+		left join WXWL_RES r1 on r1.res_id = t.resources_id
+		left join WXWL_RES r2 on r2.res_id = t.resp_id
+		where
+		t.tenant_id=#{tenant_id,jdbcType=VARCHAR}
+		<if test="draw_type_id !=null and draw_type_id!=''">
+			AND t.draw_type_id like CONCAT(CONCAT('%',
+			#{draw_type_id,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		<if test="rowtypet_name !=null and rowtypet_name!=''">
+			AND t.rowtypet_name like CONCAT(CONCAT('%',
+			#{rowtypet_name,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		<if test="resources_id !=null and resources_id!=''">
+			AND t.resources_id like CONCAT(CONCAT('%',
+			#{resources_id,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		order by t.sort_num
+	</select>
+
+	<select id="findAlls" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.DrawType">
+		select
+		draw_type_id
+		"draw_type_id",
+		rowtypet_name
+		"rowtypet_name",
+		resources_id
+		"resources_id",
+		resp_id "resp_id",
+		resume
+		"resume",
+		stutas "stutas",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from
+		WXWL_DRAW_TYPE
+		where tenant_id=#{tenant_id,jdbcType=VARCHAR}
+		order by sort_num
+	</select>
+
+	<select id="findById" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.DrawType">
+		select
+		draw_type_id "draw_type_id",
+		rowtypet_name
+		"rowtypet_name",
+		resources_id "resources_id",
+		resp_id "resp_id",
+		resume
+		"resume",
+		stutas
+		"stutas",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from
+		WXWL_DRAW_TYPE
+		where draw_type_id=#{id}
+	</select>
+
+	<select id="findBySortNum" parameterType="Integer"
+		resultType="com.bonc.epmwxwl.model.DrawType">
+		select
+		draw_type_id "draw_type_id",
+		rowtypet_name
+		"rowtypet_name",
+		resources_id "resources_id",
+		resp_id "resp_id",
+		resume
+		"resume",
+		stutas
+		"stutas",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from
+		WXWL_DRAW_TYPE
+		where sort_num=#{sort_num}
+	</select>
+
+	<select id="findMaxSortNum" resultType="Integer">
+		select max(t.sort_num)
+		from WXWL_DRAW_TYPE t
+	</select>
+
+	<select id="findresList" resultType="com.bonc.epmwxwl.model.Res">
+		select 
+		res_id "res_id",
+		res_name "res_name",
+		res_resume "res_resume",
+		sort_num "sort_num"
+		from WXWL_RES where delflag='0' and stutas='0'
+		order by sort_num
+	</select>
+
+
+	<select id="findmaxId" resultType="com.bonc.epmwxwl.model.DrawType">
+		select max(t.draw_type_id)
+		from WXWL_DRAW_TYPE t
+	</select>
+
+	<delete id="deleteById" parameterType="String">
+		delete
+		from
+		WXWL_DRAW_TYPE
+		where draw_type_id=#{id,jdbcType=VARCHAR}
+	</delete>
+	<update id="update" parameterType="com.bonc.epmwxwl.model.DrawType">
+		update WXWL_DRAW_TYPE
+		set
+		draw_type_id =#{draw_type_id,jdbcType=VARCHAR},
+		rowtypet_name=#{rowtypet_name,jdbcType=VARCHAR},
+		resources_id=#{resources_id,jdbcType=VARCHAR},
+		resp_id=#{resp_id,jdbcType=VARCHAR},
+		resume
+		=#{resume,jdbcType=VARCHAR},
+		stutas =#{stutas,jdbcType=VARCHAR},
+		sort_num=#{sort_num,jdbcType=INTEGER},
+		tenant_id
+		=#{tenant_id,jdbcType=VARCHAR}
+		where
+		draw_type_id
+		=#{draw_type_id,jdbcType=VARCHAR}
+	</update>
+	<select id="findResTypeFieldList" parameterType="com.bonc.epmwxwl.model.DrawType"
+		resultType="com.bonc.epmwxwl.model.EntityField">
+		select
+		f.field_id "field_id",
+		f.entity_id "entity_id",
+		f.field_type_id "field_type_id",
+		f.entity_table "entity_table",
+		(case when r.field_desc is not null then r.field_desc else f.field_name end) "field_name",
+		f.field_name_en "field_name_en",
+		f.field_resume "field_resume",
+		f.field_type "field_type",
+		f.field_digit
+		"field_digit",
+		f.code_type_id "code_type_id",
+		f.code_sql "code_sql",
+		f.mainkey "mainkey",
+		f.field_stutas "field_stutas",
+		f.sort_num
+		"sort_num",
+		f.tenant_id "tenant_id"
+		from WXWL_ENTITY_FIELD f
+		inner join
+		WXWL_RES_ENTITY e on e.entity_id =
+		f.entity_id
+		inner join
+		WXWL_RES_FIELD_TYPE_REL r on r.field_id =
+		f.field_id
+		inner join
+		WXWL_DRAW_TYPE t on t.resources_id = r.ress_id or
+		t.resp_id=r.ress_id
+		where t.draw_type_id=#{draw_type_id} and
+		f.tenant_id=#{tenant_id}
+	</select>
+
+	<update id="updateid" parameterType="String">
+		update
+		WXWL_DRAW_TYPE t
+		set
+		t.draw_type_id=t.draw_type_id+1
+		where t.draw_type_id >=
+		#{draw_type_id,jdbcType=INTEGER}
+	</update>
+
+</mapper>

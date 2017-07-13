@@ -1,0 +1,59 @@
+@CHARSET "UTF-8";
+/* padding:9px\9; ie6-10
+padding:8px\0; ie8-9
+*padding:5px; ie6-7
++padding:7px; ie7
+_padding:6px; ie6 */
+
+@media all and (-ms-high-contrast:none)
+{
+select{
+  padding:0;
+} /* IE10 */
+*::-ms-backdrop, select {
+	padding:0;
+} /* IE11 */
+
+}
+
+select{
+  padding:0\9;
+}
+
+/*activity main page*/
+.slds-select{
+	height:auto\0;
+}
+td input.l-bar-button {
+	height: 30px\0 !important;
+}
+.l-bar-button SPAN{
+	margin-top:9px\0;
+}
+.slds-button + .slds-button{
+	margin-left:10px\0;
+}
+.slds-button--brand{
+	padding:0 16px 0\0;
+}
+.Wdate{
+	line-height:100%;
+}
+
+/*add activity page*/
+.btn{
+	line-height:100%;
+}
+input[type="checkbox"], input[type="radio"]{
+	margin:0 2px;
+}
+.fa.fa-question-circle-o{
+	cursor:pointer;
+}
+
+/*修复bootstrap弹窗样式@media属性在ie8下不好使*/
+.modal-dialog {
+    margin: 30px auto\0;
+    position: relative\0;
+    width:950px\0;
+}

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bonc.epmwxwl.dao.res.DataResDao">
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.DataRes">
+		insert into WXWL_DATA_RES(data_res_id,data_res_type_id,data_res_name,data_res_desc,data_res_url,username,password,resume,sort_num,tenant_id,data_status)
+		values (
+		#{data_res_id,jdbcType=VARCHAR},
+		#{data_res_type_id,jdbcType=VARCHAR},
+		#{data_res_name,jdbcType=VARCHAR},
+		#{data_res_desc,jdbcType=VARCHAR},
+		#{data_res_url,jdbcType=VARCHAR},
+		#{username,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR},
+		#{resume,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR},
+		#{data_status,jdbcType=VARCHAR}
+		)
+	</insert>
+	<delete id="deleteById" parameterType="String">
+		delete
+		from WXWL_DATA_RES
+		where data_res_id=#{id}
+	</delete>
+	<update id="update" parameterType="com.bonc.epmwxwl.model.DataRes">
+		update WXWL_DATA_RES
+		set
+		data_res_id=#{data_res_id,jdbcType=VARCHAR},
+		data_res_type_id=#{data_res_type_id,jdbcType=VARCHAR},
+		data_res_name=#{data_res_name,jdbcType=VARCHAR},
+		data_res_desc=#{data_res_desc,jdbcType=VARCHAR},
+		data_res_url=#{data_res_url,jdbcType=VARCHAR},
+		username=#{username,jdbcType=VARCHAR},
+		password=#{password,jdbcType=VARCHAR},
+		resume=#{resume,jdbcType=VARCHAR},
+		sort_num=#{sort_num,jdbcType=INTEGER},
+		tenant_id=#{tenant_id,jdbcType=VARCHAR},
+		data_status=#{data_status,jdbcType=VARCHAR}
+		where
+		data_res_id=#{data_res_id,jdbcType=VARCHAR}
+	</update>
+	<select id="findById" parameterType="String" resultType="com.bonc.epmwxwl.model.DataRes">
+		select
+		data_res_id "data_res_id",
+		data_res_type_id "data_res_type_id",
+		data_res_name "data_res_name",
+		data_res_desc "data_res_desc",
+		data_res_url "data_res_url",
+		username "username",
+		password "password",
+		resume "resume",
+		sort_num "sort_num",
+		tenant_id "tenant_id",
+		data_status "data_status"
+		from WXWL_DATA_RES
+		where data_res_id=#{id}
+	</select>
+	<select id="findAll" resultType="com.bonc.epmwxwl.model.DataRes">
+		select
+		r.data_res_id "data_res_id",
+		t.data_res_type_name "data_res_type_name",
+		r.data_res_name "data_res_name",
+		r.data_res_desc "data_res_desc",
+		r.data_res_url "data_res_url",
+		r.username "username",
+		r.password "password",
+		r.sort_num "sort_num",
+		r.resume "resume",
+		r.tenant_id "tenant_id",
+		r.data_status "data_status"
+		from WXWL_DATA_RES r left join wxwl_data_res_type t on r.data_res_type_id=t.data_res_type_id 
+		 order by r.sort_num ASC
+	</select>
+	<select id="findAllById" resultType="com.bonc.epmwxwl.model.DataRes">
+		select
+		r.data_res_id "data_res_id",
+		t.data_res_type_name "data_res_type_name",
+		r.data_res_name "data_res_name",
+		r.data_res_desc "data_res_desc",
+		r.data_res_url "data_res_url",
+		r.username "username",
+		r.password "password",
+		r.sort_num "sort_num",
+		r.resume "resume",
+		r.tenant_id "tenant_id",
+		r.data_status "data_status"
+		from WXWL_DATA_RES r left join wxwl_data_res_type t on r.data_res_type_id=t.data_res_type_id 
+		 where r.tenant_id=#{tenant_id} order by r.sort_num ASC
+	</select>
+	
+	<select id="findPreById" resultType="com.bonc.epmwxwl.model.DataRes">
+		select
+			t1.data_res_id "data_res_id",
+			t1.data_res_type_id "data_res_type_id",
+			t1.data_res_name "data_res_name",
+			t1.data_res_desc "data_res_desc",
+			t1.data_res_url "data_res_url",
+			t1.username "username",
+			t1.password "password",
+			t1.sort_num "sort_num",
+			t1.resume "resume",
+			t1.tenant_id "tenant_id",
+			t1.data_status "data_status"
+			from (
+				select
+					t.data_res_id,
+					t.data_res_type_id,
+					t.data_res_name,
+					t.data_res_desc,
+					t.data_res_url,
+					t.username,
+					t.password,
+					t.sort_num,
+					t.resume,
+					t.tenant_id,
+					t.data_status
+					 from WXWL_DATA_RES t
+				where t.sort_num &lt; (
+					select t3.sort_num from wxwl_data_res t3 where data_res_id=#{data_res_id}
+				) order by sort_num desc 
+			) t1
+		where rownum=1
+	</select>
+	
+	<select id="findAfterById" resultType="com.bonc.epmwxwl.model.DataRes">
+		select
+			t1.data_res_id "data_res_id",
+			t1.data_res_type_id "data_res_type_id",
+			t1.data_res_name "data_res_name",
+			t1.data_res_desc "data_res_desc",
+			t1.data_res_url "data_res_url",
+			t1.username "username",
+			t1.password "password",
+			t1.sort_num "sort_num",
+			t1.resume "resume",
+			t1.tenant_id "tenant_id",
+			t1.data_status "data_status"
+			from (
+				select
+					t.data_res_id,
+					t.data_res_type_id,
+					t.data_res_name,
+					t.data_res_desc,
+					t.data_res_url,
+					t.username,
+					t.password,
+					t.sort_num,
+					t.resume,
+					t.tenant_id,
+					t.data_status from WXWL_DATA_RES t
+				where t.sort_num &gt; (
+					select t3.sort_num from WXWL_DATA_RES t3 where data_res_id=#{data_res_id}
+				) order by sort_num 
+			) t1
+		where rownum=1
+	</select>
+	
+	<select id="findMaxSortNom" resultType="Integer">
+		select max(t.sort_num) from WXWL_DATA_RES t
+	</select>
+	 <select id="findBySearch" parameterType="com.bonc.epmwxwl.model.DataRes" resultType="com.bonc.epmwxwl.model.DataRes" >
+	select
+		r.data_res_id "data_res_id",
+		t.data_res_type_name "data_res_type_name",
+		r.data_res_name "data_res_name",
+		r.data_res_desc "data_res_desc",
+		r.data_res_url "data_res_url",
+		r.username "username",
+		r.password "password",
+		r.sort_num "sort_num",
+		r.resume "resume",
+		r.tenant_id "tenant_id",
+		case  when r.data_status='0' then '正常' 
+		      when r.data_status='1' then '停用' 
+		end      "data_status"
+		from WXWL_DATA_RES r left join wxwl_data_res_type t on r.data_res_type_id=t.data_res_type_id 
+		where r.tenant_id=#{tenant_id}
+		<if test="data_res_id !=null and data_res_id !=''">
+		 AND r.data_res_id  like CONCAT(CONCAT('%', #{data_res_id,javaType=String,jdbcType=VARCHAR}), '%') 
+		</if >
+		<if test="data_res_name !=null and data_res_name !=''">
+		 AND r.data_res_name  like CONCAT(CONCAT('%', #{data_res_name,javaType=String,jdbcType=VARCHAR}), '%') 
+		</if >
+		<if test="data_res_type_id !=null and data_res_type_id !=''">
+		 AND r.data_res_type_id  =#{data_res_type_id}
+		</if >
+		order by r.sort_num ASC
+	</select> 
+	<select id="findDataNum" parameterType="String" resultType="Integer" >
+		select count(*) from WXWL_DATA_RES where  data_res_id=#{data_res_id}
+	</select>
+</mapper>

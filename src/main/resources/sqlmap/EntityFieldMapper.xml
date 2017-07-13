@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.EntityFieldDao">
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.EntityField">
+		insert into WXWL_ENTITY_FIELD(field_id,entity_id,field_type_id,entity_table,field_name,field_name_en,field_resume,field_type,field_digit,code_type_id,mainkey,field_stutas,sort_num,tenant_id,foreign_id,code_sql,field_len)
+		values (
+		#{field_id,jdbcType=VARCHAR},
+		#{entity_id,jdbcType=VARCHAR},
+		#{field_type_id,jdbcType=VARCHAR},
+		#{entity_table,jdbcType=VARCHAR},
+		#{field_name,jdbcType=VARCHAR},
+		#{field_name_en,jdbcType=VARCHAR},
+		#{field_resume,jdbcType=VARCHAR},
+		#{field_type,jdbcType=VARCHAR},
+		#{field_digit,jdbcType=VARCHAR},
+		#{code_type_id,jdbcType=VARCHAR},
+		#{mainkey,jdbcType=VARCHAR},
+		#{field_stutas,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR},
+		#{foreign_id,jdbcType=VARCHAR},
+		#{code_sql,jdbcType=VARCHAR},
+		#{field_len,jdbcType=VARCHAR}
+		)
+	</insert>
+	<delete id="deleteById" parameterType="String">
+		delete
+		from WXWL_ENTITY_FIELD
+		where field_id=#{id}
+	</delete>
+	<delete id="deleteFieldByEntityId" parameterType="String">
+		delete
+		from WXWL_ENTITY_FIELD
+		where entity_id=#{id}
+	</delete>
+	<update id="update" parameterType="com.bonc.epmwxwl.model.EntityField">
+		update WXWL_ENTITY_FIELD
+		set
+		field_type_id=#{field_type_id,jdbcType=VARCHAR}
+		where
+		field_id=#{field_id,jdbcType=VARCHAR}
+	</update>
+	<update id="update2" parameterType="com.bonc.epmwxwl.model.EntityField">
+		update WXWL_ENTITY_FIELD
+		set
+		code_type_id=#{code_type_id,jdbcType=VARCHAR},
+		code_sql=#{code_sql,jdbcType=VARCHAR}
+		where
+		field_id=#{field_id,jdbcType=VARCHAR}
+	</update>
+	<select id="findById" parameterType="String" resultType="com.bonc.epmwxwl.model.EntityField">
+		select
+		field_id "field_id",
+		entity_id "entity_id",
+		field_type_id "field_type_id",
+		entity_table "entity_table",
+		field_name "field_name",
+		field_name_en "field_name_en",
+		field_resume "field_resume",
+		field_type "field_type",
+		field_digit "field_digit",
+		code_type_id "code_type_id",
+		mainkey "mainkey",
+		field_stutas "field_stutas",
+		sort_num "sort_num",
+		tenant_id "tenant_id",
+		foreign_id "foreign_id",
+		code_sql "code_sql",
+		field_len "field_len"
+		from WXWL_ENTITY_FIELD
+		where field_id=#{id}
+	</select>
+	<select id="findByEntityId" parameterType="String" resultType="com.bonc.epmwxwl.model.EntityField">
+		select
+		t1.field_id "field_id",
+		t1.entity_id "entity_id",
+		t2.field_type_name "field_type_id",
+		t1.entity_table "entity_table",
+		t1.field_name "field_name",
+		t1.field_name_en "field_name_en",
+		t1.field_resume "field_resume",
+		t1.field_type "field_type",
+		t1.field_digit "field_digit",
+		t1.code_type_id "code_type_id",
+		t1.mainkey "mainkey",
+		t1.field_stutas "field_stutas",
+		t1.sort_num "sort_num",
+		t1.tenant_id "tenant_id",
+		t1.foreign_id "foreign_id",
+		t1.field_len   "field_len"
+		from WXWL_ENTITY_FIELD t1
+	    left join WXWL_ENTITY_FIELD_TYPE t2 on t1.field_type_id=t2.field_type_id 
+		where t1.entity_id=#{entity_id}
+	    order by t1.sort_num ASC 
+	</select>
+	<select id="findResFieldByEntityId" parameterType="String" resultType="com.bonc.epmwxwl.model.EntityField">
+	select
+    t1.field_id "field_id",
+    t1.entity_id "entity_id",
+    t3.res_field_type_name "field_type_name",
+    t1.entity_table "entity_table",
+    t1.field_name "field_name",
+    t1.field_name_en "field_name_en",
+    t1.field_resume "field_resume",
+    t1.field_type "field_type",
+    t1.field_digit "field_digit",
+    t1.code_type_id "code_type_id",
+    t1.mainkey "mainkey",
+    t1.field_stutas "field_stutas",
+    t1.sort_num "sort_num",
+    t1.tenant_id "tenant_id",
+    t1.foreign_id "foreign_id"  
+    from WXWL_ENTITY_FIELD t1
+      left join WXWL_RES_FIELD_TYPE_REL t2 on t1.field_id=t2.field_id
+      left join WXW_RES_FIELD_TYPE t3    on  t2.type_id=t3.res_field_type_id
+    where t1.entity_id=#{entity_id}
+    order by t1.sort_num ASC 
+	</select>
+	<select id="findResFieldByCondition" parameterType="com.bonc.epmwxwl.model.EntityField" resultType="com.bonc.epmwxwl.model.EntityField">
+	select
+    t1.field_id "field_id",
+    t1.entity_id "entity_id",
+    t3.res_field_type_name "field_type_name",
+    t1.entity_table "entity_table",
+    t1.field_name "field_name",
+    t1.field_name_en "field_name_en",
+    t1.field_resume "field_resume",
+    t1.field_type "field_type",
+    t1.field_digit "field_digit",
+    t1.code_type_id "code_type_id",
+    t1.mainkey "mainkey",
+    t1.field_stutas "field_stutas",
+    t1.sort_num "sort_num",
+    t1.tenant_id "tenant_id",
+    t1.foreign_id "foreign_id",
+    case  when t2.field_desc is null  then t1.field_name
+			  else t2.field_desc
+	end      "field_desc"
+    from WXWL_ENTITY_FIELD t1
+      left join WXWL_RES_FIELD_TYPE_REL t2 on t1.field_id=t2.field_id
+      <if test="resId !=null and resId!=''">  
+		   and t2.ress_id=#{resId} 
+	 </if> 
+      left join WXW_RES_FIELD_TYPE t3    on    t2.type_id=t3.res_field_type_id  and t2.ress_id=t3.res_id  
+	where t1.entity_id=#{entity_id} 
+		
+	
+	 <if test="field_name !=null and field_name!=''">  
+		    AND t1.field_name like CONCAT(CONCAT('%', #{field_name,javaType=String,jdbcType=VARCHAR}), '%') 
+	 </if> 
+	  <if test="field_type_id !=null and field_type_id!='' ">  
+		    AND t2.type_id = #{field_type_id,javaType=String,jdbcType=VARCHAR}
+	 </if> 
+	    order by t1.sort_num ASC 
+	</select>
+	<select id="findAllByCondition" parameterType="com.bonc.epmwxwl.model.EntityField" resultType="com.bonc.epmwxwl.model.EntityField">
+		select
+		t1.field_id "field_id",
+		t1.entity_id "entity_id",
+		t2.field_type_name "field_type_name",
+		t1.entity_table "entity_table",
+		t1.field_name "field_name",
+		t1.field_name_en "field_name_en",
+		t1.field_resume "field_resume",
+		t1.field_type "field_type",
+		t1.field_digit "field_digit",
+		t1.code_type_id "code_type_id",
+		t1.mainkey "mainkey",
+		t1.field_stutas "field_stutas",
+		t1.sort_num "sort_num",
+		t1.tenant_id "tenant_id",
+		t1.foreign_id "foreign_id"  
+		from WXWL_ENTITY_FIELD t1
+	    left join WXWL_ENTITY_FIELD_TYPE t2 on t1.field_type_id=t2.field_type_id 
+		where t1.entity_id=#{entity_id} 
+		 <if test="field_name !=null and field_name!=''">  
+			    AND (t1.field_name like CONCAT(CONCAT('%', #{field_name,javaType=String,jdbcType=VARCHAR}), '%') 
+			    OR t1.field_name_en like CONCAT(CONCAT('%', #{field_name,javaType=String,jdbcType=VARCHAR}), '%')
+			    ) 
+		 </if> 
+		  <if test="field_type_id !=null and field_type_id!='' ">  
+			    AND t1.field_type_id = #{field_type_id,javaType=String,jdbcType=VARCHAR}
+		 </if> 
+		
+		  <if test="tenant_id !=null and tenant_id!='' ">  
+			    AND t1.tenant_id = #{tenant_id,javaType=String,jdbcType=VARCHAR}
+		 </if> 
+		
+	    order by t1.sort_num ASC 
+	</select>
+	
+	<select id="findAll" resultType="com.bonc.epmwxwl.model.EntityField">
+	 select
+		t1.field_id "field_id",
+		t1.entity_id "entity_id",
+		t2.field_type_name "field_type_id",
+		t1.entity_table "entity_table",
+		t1.field_name "field_name",
+		t1.field_name_en "field_name_en",
+		t1.field_resume "field_resume",
+		t1.field_type "field_type",
+		t1.field_digit "field_digit",
+		t1.code_type_id "code_type_id",
+		t1.mainkey "mainkey",
+		t1.field_stutas "field_stutas",
+		t1.sort_num "sort_num",
+		t1.tenant_id "tenant_id",
+		t1.foreign_id "foreign_id"  
+		from WXWL_ENTITY_FIELD t1
+	    left join WXWL_ENTITY_FIELD_TYPE t2 on t1.field_type_id=t2.field_type_id 
+	    order by t1.sort_num ASC 
+	</select>
+	<select id="findByFieldTypeId" parameterType="java.util.Map" resultType="java.util.Map">
+		(select
+		t1.field_id      "id",
+		t1.field_name    "name",
+		t1.code_type_id  "pid",
+		'0'              "isEntityField",
+		'/epmwxwl/js/ztree/css/zTreeStyle/img/diy/vcard.png'   "icon"
+		from WXWL_ENTITY_FIELD t1
+		where t1.field_type_id=#{id,javaType=String,jdbcType=VARCHAR}
+		and t1.entity_id=#{entityId,javaType=String,jdbcType=VARCHAR}
+		and t1.field_stutas='0'
+	    )
+	    union all 
+	    (
+	    select
+		t2.field_type_id   "id",
+		t2.field_type_name "name",
+		t2.parent_id       "pid",
+		'1'                "isEntityField",
+		'/epmwxwl/js/ztree/css/zTreeStyle/img/diy/8.png'   "icon"
+		from wxwl_entity_field_type t2
+		where t2.parent_id=#{id,javaType=String,jdbcType=VARCHAR}
+		and t2.entity_id=#{entityId,javaType=String,jdbcType=VARCHAR}
+	    )
+	</select>
+	<select id="findDataByEntityId" parameterType="String" resultType="java.util.Map">
+	    select
+		t2.field_type_id   "id",
+		t2.field_type_name "name",
+		'root'      "pid",
+		'1'                "isEntityField",
+		'/epmwxwl/js/ztree/css/zTreeStyle/img/diy/8.png'   "icon"
+		from WXWL_ENTITY_FIELD_TYPE t2
+		where t2.entity_id=#{id,javaType=String,jdbcType=VARCHAR}
+		and t2.parent_id is null
+	</select>
+	<select id="findEntityByResId" parameterType="String" resultType="com.bonc.epmwxwl.model.Entity">
+		select
+		t2.entity_id "entity_id",
+		t2.entity_name "entity_name",
+		t2.entity_table "entity_table",
+		t2.data_res_id "data_res_id",
+		t2.entity_resume "entity_resume",
+		t2.stutas "stutas",
+		t2.sort_num "sort_num",
+		t2.tenant_id "tenant_id"
+		from  WXWL_RES_ENTITY t1 inner join wxwl_entity t2
+ 		on t1.entity_id=t2.entity_id
+		where  t1.res_id=#{id}
+	</select>
+	<select id="findMaxSortNum" resultType="Integer">
+		select max(t.sort_num) from WXWL_ENTITY_FIELD t
+	</select>
+	
+	<update id="updateNameByEntity" parameterType="com.bonc.epmwxwl.model.EntityField">
+		update WXWL_ENTITY_FIELD
+		set field_name=#{field_name,jdbcType=VARCHAR}
+		where
+		field_id=#{field_id,jdbcType=VARCHAR} and entity_id=#{entity_id,jdbcType=VARCHAR}
+	</update>
+</mapper>

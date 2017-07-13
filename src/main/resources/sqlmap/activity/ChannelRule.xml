@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.ActivityChannelRuleDao">
+	<select id="findRuleByTenantId" parameterType="com.bonc.activity.model.ActivityChannelRule" 
+		resultType="com.bonc.activity.model.ActivityChannelRule">
+		SELECT 
+		T.RULE_REVISER AS "reviser",
+		T.REVISER_TIME AS "reviseDate",
+		T.TENANT_ID AS "tenantId",
+		T.TOUCH_LIMIT_DAY AS "touchLimitDay",
+		T.MESSAGE_SEND_TIME AS "messageSendTime",
+		T.START_DATE AS "startDate",
+		T.END_DATE AS "endDate",
+		T.CYCLE_SEND_TIMES AS "cycleSendTimes",
+		T.INTERVAL_DAY AS "intervalDay",
+		T.SEND_FREQUENCY AS "sendFrequency",
+		T.MESS_ORDER_CODE AS "messOrderCode",
+		T.MESS_NODISTURB_CODE AS "messNoDisturbCode",
+		T.MESS_EFFECTIVE_TIME AS "messEffectiveTime",
+		T.ACCOUNT_OFFSET AS "accountOffset",
+		T.OBLIGATE_ORDER AS "obligateOrder",
+		t.POP_NUMBER_LIMIT as "popNumberLimit",
+		T.STRATEGY_TITLE AS "strategyTitle",
+		T.STRATEGY_CONTENT AS "strategyContent"
+		FROM CLYX_ACTIVITY_CHANNELRULE   T
+		WHERE T.TENANT_ID = #{tenantId}
+	</select>
+	<insert id="saveRule" parameterType="com.bonc.activity.model.ActivityChannelRule">
+		INSERT INTO CLYX_ACTIVITY_CHANNELRULE
+		(RULE_REVISER,REVISER_TIME,TENANT_ID,TOUCH_LIMIT_DAY,MESSAGE_SEND_TIME,START_DATE,
+		END_DATE,CYCLE_SEND_TIMES,INTERVAL_DAY,SEND_FREQUENCY,MESS_ORDER_CODE,MESS_NODISTURB_CODE,
+		MESS_EFFECTIVE_TIME,ACCOUNT_OFFSET,OBLIGATE_ORDER,pop_number_limit,STRATEGY_TITLE,STRATEGY_CONTENT)
+		VALUES
+		(#{reviser},#{reviseDate},#{tenantId},#{touchLimitDay},#{messageSendTime},#{startDate},
+		#{endDate},#{cycleSendTimes},#{intervalDay},#{sendFrequency},#{messOrderCode},
+		#{messNoDisturbCode},#{messEffectiveTime},#{accountOffset},#{obligateOrder,javaType=String,jdbcType=VARCHAR},
+		#{popNumberLimit,javaType=String,jdbcType=VARCHAR},#{strategyTitle,javaType=String,jdbcType=VARCHAR},
+		#{strategyContent,javaType=String,jdbcType=VARCHAR},)
+	</insert>
+	<update id="updateRule" parameterType="com.bonc.activity.model.ActivityChannelRule">
+		UPDATE CLYX_ACTIVITY_CHANNELRULE
+		SET RULE_REVISER=#{reviser},
+		REVISER_TIME = #{reviseDate},
+		TOUCH_LIMIT_DAY = #{touchLimitDay},
+		MESSAGE_SEND_TIME = #{messageSendTime},
+		START_DATE = #{startDate},
+		END_DATE = #{endDate},
+		CYCLE_SEND_TIMES = #{cycleSendTimes},
+		INTERVAL_DAY = #{intervalDay},
+		SEND_FREQUENCY = #{sendFrequency},
+		MESS_ORDER_CODE = #{messOrderCode},
+		MESS_NODISTURB_CODE = #{messNoDisturbCode},
+		MESS_EFFECTIVE_TIME = #{messEffectiveTime},
+		ACCOUNT_OFFSET = #{accountOffset},
+		OBLIGATE_ORDER = #{obligateOrder,javaType=String,jdbcType=VARCHAR},
+		pop_number_limit = #{popNumberLimit,javaType=String,jdbcType=VARCHAR},
+		STRATEGY_TITLE = #{strategyTitle,javaType=String,jdbcType=VARCHAR},
+		STRATEGY_CONTENT = #{strategyContent,javaType=String,jdbcType=VARCHAR}
+		WHERE TENANT_ID = #{tenantId}
+	</update>
+		
+	<select id="getClassification" resultType="java.util.HashMap">
+		select t.rule_type_classification_id as "classificationId",
+		       t.rule_type_classification_name as "classificationName"
+		        from ${epmwxwl}.WXWL_RULE_CLASSIFICATION t where t.draw_type_id='2' 
+		        order by t.sort_id asc
+	</select>
+	
+	<select id="getRuleType" resultType="java.util.HashMap">
+	    select t.rule_type_id as "ruleTypeId",
+	           t.rule_type_name as "ruleTypeName",
+	           t.expand1 as "expand",
+	           t.rule_type_classification_id as "ruleTypeClassId"
+	           from ${epmwxwl}.WXWL_RULE_TYPE t
+	           where 1=1
+	           <if test = "classificationId !=null and classificationId !=''">
+	               and t.rule_type_classification_id=#{classificationId,javaType=String,jdbcType=VARCHAR}
+	           </if>
+	
+	</select>
+	<select id="getTimePoint" resultType="java.util.HashMap">
+		select t.id as "id",
+		       t.time as "time",
+		       t.expand1 as "expand",
+		       t.expand2 as "expand2"
+		       from CLYX_ACTIVITY_TIME_POINT t		
+	</select>
+</mapper>

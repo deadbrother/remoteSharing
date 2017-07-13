@@ -1,0 +1,776 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.ActivityProvDao">
+     <insert id="saveWebChatMidActivityPo" parameterType="com.bonc.activity.model.ActivityProvBo">
+     insert into CLYX_ACTIVITY_WECHAT_MID(activity_id,public_id,users_num,state,tenant_id)
+     values(#{po.activityId,jdbcType=VARCHAR},
+     #{po.webChatMidActivityPo.publicId,jdbcType=VARCHAR},
+     #{po.webChatMidActivityPo.usersNum,jdbcType=NUMERIC},
+     #{po.webChatMidActivityPo.state,jdbcType=VARCHAR},
+     #{po.tenantId,jdbcType=VARCHAR})
+     </insert>
+
+    <!-- 保存沃视窗 -->
+	 <insert id="saveWoWindow" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into CLYX_P_CHANNEL_WOWINDOWINFO
+		(activity_id,CHANNEL_WOWINDOW_TITLE,
+		CHANNEL_WOWINDOW_URL,CHANNEL_WOWINDOW_IMGURL,
+		CHANNEL_WOWINDOW_CONTENT,CHANNEL_WOWINDOW_IMGSIZE,FILTER_CONDITION_SQL,FILTER_CONDITION,TENANT_ID,orderissued_rule,FILTER_SQL_CONDITION)
+		values(#{po.activityId,jdbcType=VARCHAR},
+		#{channelWoWindowPo.title,jdbcType=VARCHAR},
+		#{channelWoWindowPo.url,jdbcType=VARCHAR},
+		#{channelWoWindowPo.imgUrl,jdbcType=VARCHAR},
+		#{channelWoWindowPo.huashu,jdbcType=VARCHAR},
+		#{channelWoWindowPo.imgSize,jdbcType=VARCHAR},
+		#{channelWoWindowPo.filterConditionSql,jdbcType=VARCHAR},
+		#{channelWoWindowPo.filterCondition,jdbcType=VARCHAR},
+		#{po.tenantId,jdbcType=VARCHAR},
+		#{initOrderCycleRule,jdbcType=VARCHAR},
+		#{channelWoWindowPo.filterSqlCondition,jdbcType=CLOB})
+	</insert>
+     <!-- 保存手厅渠道 -->
+	<insert id="saveHandOffice" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into CLYX_P_CHANNEL_HANDOFFICEINFO
+		(activity_id,CHANNEL_HANDOFFICE_TITLE,
+		CHANNEL_HANDOFFICE_URL,CHANNEL_HANDOFFICE_CONTENT,FILTER_CONDITION_SQL,FILTER_CONDITION,TENANT_ID,orderissued_rule,FILTER_SQL_CONDITION)values
+		(#{po.activityId,jdbcType=VARCHAR},
+		#{channelHandOfficePo.title,jdbcType=VARCHAR},
+		#{channelHandOfficePo.url,jdbcType=VARCHAR},
+		#{channelHandOfficePo.content,jdbcType=VARCHAR},
+		#{channelHandOfficePo.filterConditionSql,jdbcType=VARCHAR},
+		#{channelHandOfficePo.filterCondition,jdbcType=VARCHAR},
+		#{po.tenantId,jdbcType=VARCHAR},
+		#{initOrderCycleRule,jdbcType=VARCHAR},
+		#{channelHandOfficePo.filterSqlCondition,jdbcType=CLOB})
+	</insert>
+    <!-- 保存微信渠道 -->
+	<insert id="insertWebchatMess" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into
+		CLYX_P_CHANNEL_WEBCHATINFO(activity_id,channel_webchat_title,channel_webchat_url,channel_webchat_content,FILTER_CONDITION_SQL,FILTER_CONDITION,TENANT_ID,orderissued_rule,FILTER_SQL_CONDITION)
+		values
+		(#{po.activityId,jdbcType=VARCHAR},
+		 #{channelWebchatInfo.channelWebchatTitle,jdbcType=VARCHAR},
+		 #{channelWebchatInfo.channelWebchatUrl,jdbcType=VARCHAR},
+		 #{channelWebchatInfo.channelWebchatContent,jdbcType=VARCHAR},
+		 #{channelWebchatInfo.filterConditionSql,jdbcType=VARCHAR},
+		 #{channelWebchatInfo.filterCondition,jdbcType=VARCHAR},
+		 #{po.tenantId,jdbcType=VARCHAR},
+		 #{initOrderCycleRule,jdbcType=VARCHAR},
+		 #{channelWebchatInfo.filterSqlCondition,jdbcType=CLOB})
+	</insert>
+     <!-- 保存网厅渠道 -->
+	<insert id="saveWebOffice" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into CLYX_P_CHANNEL_WEBOFFICEINFO
+		(activity_id,CHANNEL_WEBOFFICE_TITLE,
+		CHANNEL_WEBOFFICE_URL,CHANNEL_WEBOFFICE_CONTENT,FILTER_CONDITION_SQL,FILTER_CONDITION,TENANT_ID,orderissued_rule,FILTER_SQL_CONDITION)
+		values
+		(#{po.activityId,jdbcType=VARCHAR},
+		 #{wangting.title,jdbcType=VARCHAR},
+		 #{wangting.url,jdbcType=VARCHAR},
+		 #{wangting.content,jdbcType=VARCHAR},
+		 #{wangting.filterConditionSql,jdbcType=VARCHAR},
+		 #{wangting.filterCondition,jdbcType=VARCHAR},
+		 #{po.tenantId,jdbcType=VARCHAR},
+		 #{initOrderCycleRule,jdbcType=VARCHAR},
+		 #{wangting.filterSqlCondition,jdbcType=CLOB})
+	</insert>
+  <!--保存客户经理渠道 -->
+     <insert id="saveActivityFrontLineChannel" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into
+		CLYX_ACTIVITY_FROLINECHANNEL(ACTIVITY_ID,PROV_ID,
+		MARKETING_WORDS,SMS_WORDS,ORDERISSUED_RULE,
+		ORDERISSUED_LEVEL,IS_SPECIAL_FILTER,SPECIAL_TYPE,
+		IS_SEND_SMS,FILTER_CONDITION_SQL,touch_limit_day,
+		FILTER_CONDITION,TENANT_ID,IS_UNI_SET,FILTER_SQL_CONDITION,
+		rule_org_id,rule_org_path,rule_org_name,selling_area)
+		values(#{po.activityId,jdbcType=VARCHAR},
+		#{po.provId,jdbcType=VARCHAR},#{po.frontlineChannelPo.marketingWords,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.smsWords,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.orderIssuedRule,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.orderIssuedLevel,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.isSpecialFilter,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.specialType,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.isSendSMS,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.filterConditionSql,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.touchLimitDay,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.filterCondition,jdbcType=VARCHAR},
+		#{po.tenantId,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.isUniSet,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.filterSqlCondition,jdbcType=CLOB},
+		#{po.frontlineChannelPo.ruleOrgId,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.ruleOrgPath,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.ruleOrgName,jdbcType=VARCHAR},
+		#{po.frontlineChannelPo.sellingArea,jdbcType=VARCHAR})
+		
+	</insert>
+	
+	<!-- 保存客户经理扩展规则 -->
+	<insert id="saveActivitySpecialFilter" parameterType="java.util.List">
+	insert into CLYX_ACTIVITY_CHANNELSPECIAL(ACTIVITY_ID,MARKETING_WORDS,FILTER_NAME,FILTER_CONDITION,FILTER_CONDITION_SQL,ORD,TENANT_ID,FILTER_SQL_CONDITION,CHANNEL_TYPE)
+	<foreach close=")" open="(" collection="list" item="item" index="index" separator="union">  
+       select
+        #{item.activityId,jdbcType=VARCHAR},
+        #{item.marketingWords,jdbcType=NUMERIC},
+        #{item.filterName,jdbcType=VARCHAR},
+        #{item.filterCondition,jdbcType=VARCHAR},
+        #{item.filterConditionSql,jdbcType=VARCHAR},
+        #{item.ord,jdbcType=VARCHAR},
+        #{item.tenantId,jdbcType=VARCHAR},
+        #{item.filterSqlCondition,jdbcType=VARCHAR},
+        #{item.channelType,jdbcType=VARCHAR}
+        from dual      
+    </foreach> 
+	
+	</insert>
+	
+   <!--保存本地短信渠道-->
+   <insert id="saveActivitySmsChannel" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into
+		CLYX_ACTIVITY_MSMCHANNEL(ACTIVITY_ID,PROV_ID,
+		SEND_LEVEL,NOSEND_TIME,
+		SEND_START_TIME,SEND_END_TIME,CYCLETIMES,INTERVAL_HOURS,IS_SPECIAL_FILTER,SMS_CONTENT,touch_limit_day,FILTER_CONDITION_SQL,FILTER_CONDITION,MESSAGE_SEND_TIME,TENANT_ID,orderissued_rule,IS_UNI_SET,FILTER_SQL_CONDITION,order_product_id,marketing_type_id)
+		values(
+        #{po.activityId,jdbcType=VARCHAR}, 
+		#{po.provId,jdbcType=VARCHAR},
+		#{msmChannelPo.sendLevel,jdbcType=VARCHAR},
+		#{msmChannelPo.noSendTime,jdbcType=VARCHAR}, 
+		#{msmChannelPo.sendStartTime,jdbcType=VARCHAR},
+		#{msmChannelPo.sendEndTime,jdbcType=VARCHAR},
+		#{msmChannelPo.cycleTimes,jdbcType=VARCHAR},
+		#{msmChannelPo.intervalHours,jdbcType=VARCHAR},
+		#{msmChannelPo.isSpecialFilter,jdbcType=VARCHAR},
+		#{msmChannelPo.smsContent,jdbcType=VARCHAR},
+		#{msmChannelPo.touchLimitDay,jdbcType=VARCHAR},
+		#{msmChannelPo.filterConditionSql,jdbcType=VARCHAR},
+		#{msmChannelPo.filterCondition,jdbcType=VARCHAR},
+		#{msmChannelPo.messageSendTime,jdbcType=VARCHAR},
+		#{po.tenantId,jdbcType=VARCHAR},
+		#{initOrderCycleRule,jdbcType=VARCHAR},
+		#{msmChannelPo.isUniSet,jdbcType=VARCHAR},
+		#{msmChannelPo.filterSqlCondition,jdbcType=CLOB},
+		#{msmChannelPo.orderProductId,jdbcType=VARCHAR},
+		#{msmChannelPo.marketingType,jdbcType=VARCHAR})
+	</insert>
+
+	<select id="queryOrderProductIdList" parameterType="java.lang.String"  resultType="java.lang.String">
+		select order_product_id
+		from CLYX_ACTIVITY_MSMCHANNEL
+		where activity_id = #{po.activityId,jdbcType=VARCHAR}
+		and tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+	
+    <!-- 回显微信渠道 -->
+	<select id="queryWebchatMess" resultType="com.bonc.activity.model.ChannelWebchatInfo">
+		select
+		t.channel_webchat_title "channelWebchatTitle",
+		t.CHANNEL_WEBCHAT_MODEL_ID "channelWebchatModelId",
+		(select model_name from 
+		${epmwxwl}.clyx_p_webChat_model 
+		where model_id=
+		(select channel_webChat_model_id 
+		from clyx_p_channel_webchatinfo
+		 where activity_id=#{po.activityId})) "channelWebchatName",
+		t.channel_webchat_url "channelWebchatUrl",
+		t.channel_webchat_content "channelWebchatContent",
+		t.channel_webchat_imgurl "channelWebchatImgurl",
+		t.FILTER_CONDITION_SQL "filterConditionSql",
+		t.FILTER_CONDITION "filterCondition",
+		t.FILTER_SQL_CONDITION as "filterSqlCondition"
+		from CLYX_P_CHANNEL_WEBCHATINFO t		
+		where 1=1
+			<if test="po.activityId !=null">
+			and t.activity_id = #{po.activityId}
+			</if>
+	</select>
+ 
+      <!-- 回显沃视窗渠道 -->
+	<select id="queryWoWindowMess" resultType="com.bonc.activity.model.ChannelWoWindowPo">
+		select
+		t.CHANNEL_WOWINDOW_TITLE "title",
+		t.CHANNEL_WOWINDOW_URL "url",
+		t.CHANNEL_WOWINDOW_IMGURL "imgUrl",
+		t.CHANNEL_WOWINDOW_CONTENT 	"huashu",
+		t.CHANNEL_WOWINDOW_IMGSIZE "imgSize",
+		t.FILTER_CONDITION_SQL "filterConditionSql",
+		t.FILTER_CONDITION "filterCondition",
+		t.FILTER_SQL_CONDITION as "filterSqlCondition"
+		from
+		CLYX_P_CHANNEL_WOWINDOWINFO t
+		where 1=1
+			<if test="po.activityId != null" >
+			 and t.activity_id
+				= #{po.activityId}
+			</if>
+	</select>
+ 
+    <!-- 回显手厅渠道 -->
+	 <select id="queryHandOffice" resultType="com.bonc.activity.model.ChannelHandOfficePo">
+		select
+		t.CHANNEL_HANDOFFICE_TITLE "title",
+		t.CHANNEL_HANDOFFICE_URL
+		"url",
+		t.CHANNEL_HANDOFFICE_CONTENT "content",
+		t.FILTER_CONDITION_SQL "filterConditionSql",
+		t.FILTER_CONDITION "filterCondition",
+		t.FILTER_SQL_CONDITION as "filterSqlCondition"
+		from
+		CLYX_P_CHANNEL_HANDOFFICEINFO t
+		where 1=1
+			<if test="po.activityId != null">
+			and	t.activity_id
+				= #{po.activityId,javaType=String}
+			</if>
+	</select>  
+	
+	<!-- 回显网厅渠道 -->
+ 	<select id="queryWebOffice" parameterType="com.bonc.activity.model.ChannelWebOfficePo" resultType="com.bonc.activity.model.ChannelWebOfficePo">
+		select
+		t.CHANNEL_WEBOFFICE_TITLE "title",
+		t.CHANNEL_WEBOFFICE_URL
+		"url",
+		t.CHANNEL_WEBOFFICE_CONTENT "content",
+		t.FILTER_CONDITION_SQL "filterConditionSql",
+		t.FILTER_CONDITION "filterCondition",
+		t.FILTER_SQL_CONDITION as "filterSqlCondition"
+		from
+		CLYX_P_CHANNEL_WEBOFFICEINFO t
+		where 1=1 
+			<if test="po.activityId != null">
+			and	
+			t.activity_id= #{po.activityId,javaType=String}
+			</if>
+	</select> 
+	<!-- 下发规则 -->
+	<select id="getActivityWorkOrderRuleList" resultType="java.util.List">
+		select
+        rule_type_id          "rule_type_id",
+        rule_type_name          "rule_type_name",
+        res_type_id           "res_type_id",
+        draw_type_id          "draw_type_id",
+        condition_resume    "draw_type_id",
+        condition_sql     "condition_sql"
+    	from ${epmwxwl}.wxwl_rule_type 
+    	where draw_type_id='2'
+    	and tenant_id='uni076'
+    	and stutas='0'
+    	order by sort_num
+	</select>
+	<!-- 弹窗渠道 -->
+	 <select id="getGroupPopUpListById" resultType="com.bonc.activity.model.ChannelGroupPopupPo">
+		select 
+	    NUMBERLIMIT "numberLimit",
+	    TARGET "target",
+	    CHANNEL_GROUPPOPUP_CONTENT "content",
+	    CHANNELNAME "channelName"
+	    from CLYX_P_CHANNEL_GROUPPOPUP t
+	    where 1=1
+	   <if test="po.activityId != null">
+				t.activity_id
+				= #{po.activityId}
+			</if>
+
+          </select> 
+
+
+
+ 	<!-- 根据活动ID获取客户经理渠道信息 --> 
+    <select id="getActivityFrontLineChannel" resultType="java.util.HashMap">
+		SELECT
+		t.ACTIVITY_ID "activityId",
+		t.MARKETING_WORDS "marketingWords",
+		t.SMS_WORDS "smsWords",
+		t.FILTER_CONDITION "filterCondition",
+		t.ORDERISSUED_RULE "orderIssuedRule",
+		t.ORDERISSUED_LEVEL "orderIssuedLevel",
+		t.IS_SPECIAL_FILTER "isSpecialFilter",
+		t.SPECIAL_TYPE "specialType",
+		t.CHANNEL_SPECIAL_FILTER "specialType",
+		t.touch_limit_day as "touchLimitDay",
+		t.FILTER_CONDITION_SQL "filterConditionSql",
+		t.FILTER_CONDITION "filterCondition",
+		t.IS_UNI_SET "isUniSet",
+		t.IS_SEND_SMS "isSendSMS",
+		t.SELLING_AREA "sellingArea",
+		t.FILTER_SQL_CONDITION as "filterSqlCondition"
+		FROM CLYX_ACTIVITY_FROLINECHANNEL t
+		WHERE 1=1 AND
+		t.ACTIVITY_ID = #{po.activityId}
+	</select>
+    
+	<!-- 获取下发规则 -->
+	<select id="getActivityWorkOrderRuleTest" resultType="com.bonc.activity.model.ActivityWorkOrderRuleInfo">
+		select
+        rule_type_id          "ruleTypeId",
+        rule_type_name          "ruleTypeName",
+        rule_type_classification_id as "ruleTypeClassId"
+    	from ${epmwxwl}.wxwl_rule_type 
+    	where 1=1
+    	and tenant_id='uni076'
+    	and stutas='0'
+    	order by sort_num
+	</select>
+	 
+    
+
+      <select id="getActivitySpecialFilter" resultType="java.util.HashMap">
+		SELECT
+		p.ACTIVITY_ID "activityId",
+		p.CHANNEL_TYPE "channelType",
+		p.MARKETING_WORDS "marketingWords",
+		p.FILTER_NAME "filterName",
+		p.FILTER_CONDITION "filterCondition",
+		p.FILTER_CONDITION_SQL "filterConditionSql",
+		p.FILTER_SQL_CONDITION as "filterSqlCondition",
+		p.ORD "ord",
+		p.MSM_TEMPLATE as "msmTemplate"
+		FROM CLYX_ACTIVITY_CHANNELSPECIAL p
+		WHERE 1=1 AND p.ACTIVITY_ID =
+		#{po.activityId} AND p.CHANNEL_TYPE = '5'
+	</select>
+
+
+     
+    <select id="queryWeixinModelCode" resultType="com.bonc.activity.model.ChannelWeixinModelCodePo">
+	select 
+	t.model_id "model_id",
+	t.model_name "model_name",
+	t.is_validate "valiDate",
+	t.channel_account "account",
+	 t.tenant_id "tenant_id"
+	from ${epmwxwl}.clyx_p_webChat_model t
+	where 1=1 and t.tenant_id = #{po.tenantId}
+	</select>  
+     
+     <select id="queryPublicWebChat" resultType="com.bonc.activity.model.ChannelPublicWebChatPo">
+       select a.public_id "publicId", 
+       a.public_name "publicName",
+       a.public_desc "publicDesc",
+       a.public_code "publicCode",
+       a.public_state "publicState",
+       a.upd_staff "updStaff",
+       a.upd_time "updTime",
+       a.ext1 "ext1",
+       a.ext2 "ext2",
+       a.ext3 "ext3"
+       from ${epmwxwl}.CLYX_P_WECHAT_PUBLIC a where a.public_state='1'
+       and a.tenant_id = #{po.tenantId}
+     </select>
+     
+    <insert id="saveGroupPopup1" parameterType="java.util.List">
+	insert into clyx_p_channel_groupPopup(ACTIVITY_ID,NUMBERLIMIT,TARGET,CHANNEL_GROUPPOPUP_CONTENT,
+	CHANNELNAME,FILTER_CONDITION_SQL,FILTER_CONDITION,TENANT_ID,ORDERISSUED_RULE,FILTER_SQL_CONDITION,is_send_sms,sms_send_words,channel_identify)
+	<foreach close=")" open="(" collection="list" item="item" index="index" separator="union">  
+       select
+        #{item.activity_Id,jdbcType=VARCHAR},
+        #{item.numberLimit,jdbcType=NUMERIC},
+        #{item.target,jdbcType=VARCHAR},
+        #{item.content,jdbcType=VARCHAR},
+        #{item.channelName,jdbcType=VARCHAR},
+        #{item.filterConditionSql,jdbcType=VARCHAR},
+        #{item.filterCondition,jdbcType=VARCHAR},
+        #{item.tenant_id,jdbcType=VARCHAR},
+        #{item.orderissued_rule,jdbcType=VARCHAR},
+        #{item.filterSqlCondition,jdbcType=VARCHAR},
+        #{item.isSendSms,jdbcType=VARCHAR},
+        #{item.smsSendWords,jdbcType=VARCHAR},
+        #{item.channelIdentify,jdbcType=VARCHAR}
+        from dual      
+    </foreach> 
+	</insert>	
+     
+	<insert id="saveGroupPopup" parameterType="com.bonc.activity.model.ChannelGroupPopupPo">
+	insert into clyx_p_channel_groupPopup(ACTIVITY_ID,NUMBERLIMIT,TARGET,CHANNEL_GROUPPOPUP_CONTENT,
+	CHANNELNAME,FILTER_CONDITION_SQL,FILTER_CONDITION,TENANT_ID,ORDERISSUED_RULE,FILTER_SQL_CONDITION,is_send_sms,sms_send_words,channel_identify)  
+    values(#{activity_Id,jdbcType=VARCHAR},
+        #{numberLimit,jdbcType=NUMERIC},
+        #{target,jdbcType=VARCHAR},
+        #{content,jdbcType=VARCHAR},
+        #{channelName,jdbcType=VARCHAR},
+        #{filterConditionSql,jdbcType=VARCHAR},
+        #{filterCondition,jdbcType=VARCHAR},
+        #{tenant_id,jdbcType=VARCHAR},
+        #{orderissued_rule,jdbcType=VARCHAR},
+        #{filterSqlCondition,jdbcType=CLOB},
+        #{isSendSms,jdbcType=VARCHAR},
+        #{smsSendWords,jdbcType=VARCHAR},
+        #{channelIdentify,jdbcType=VARCHAR})       
+	</insert>	
+  
+    <!-- 删除手厅 -->
+    <delete id="delHandOffice" parameterType="com.bonc.activity.model.ActivityProvBo">
+       delete from CLYX_P_CHANNEL_HANDOFFICEINFO where ACTIVITY_ID=#{po.activityId}
+    </delete>
+    <!-- 删除网厅记录 -->
+    <delete id="delWebOffice" parameterType="com.bonc.activity.model.ActivityProvBo">
+       delete from CLYX_P_CHANNEL_WEBOFFICEINFO where ACTIVITY_ID=#{po.activityId}
+    </delete>
+    <!-- 删除沃视窗记录 -->
+    <delete id="delWowindowinfo">
+     delete from CLYX_P_CHANNEL_WOWINDOWINFO where ACTIVITY_ID=#{po.activityId}
+    </delete>
+     <!-- 删除微信渠道记录 -->
+    <delete id="delWebChatinfo">
+       delete from CLYX_P_CHANNEL_WEBCHATINFO where ACTIVITY_ID=#{po.activityId}
+    </delete>
+    <!-- 删除弹窗-->
+    	<delete id="deleteGroupPopup">
+		delete from CLYX_P_CHANNEL_GROUPPOPUP  where ACTIVITY_ID=#{po.activityId} 
+	</delete>
+    <!-- 删除客户经理 -->
+    <delete id="delFrontlineChannelPo">
+       delete from CLYX_ACTIVITY_FROLINECHANNEL  where ACTIVITY_ID=#{po.activityId}
+    </delete>
+    <delete id="deleteChannelSpecialFilterList">
+    	delete from CLYX_ACTIVITY_CHANNELSPECIAL t where t.activity_id = #{po.activityId}
+    </delete>
+   <!-- 删除本地短信 -->
+    <delete id="delMsmChannelPo">
+       delete from CLYX_ACTIVITY_MSMCHANNEL  where ACTIVITY_ID=#{po.activityId}
+    </delete>
+    
+     <!-- 删除微信公众号信息 -->
+     <delete id="delWebPublicInfo">
+       delete from CLYX_ACTIVITY_WECHAT_MID  where ACTIVITY_ID=#{po.activityId}
+    </delete>
+    
+     <update id="updateFrontLine">
+		update CLYX_ACTIVITY_FROLINECHANNEL
+		set 
+		MARKETING_WORDS=#po.frontlineChannelPo.marketingWords#,
+		SMS_WORDS=#po.frontlineChannelPo.smsWords#,
+		ORDERISSUED_RULE=#po.frontlineChannelPo.orderIssuedRule#,
+		ORDERISSUED_LEVEL=#po.frontlineChannelPo.orderIssuedLevel#,
+		IS_SPECIAL_FILTER=#po.frontlineChannelPo.isSpecialFilter#,
+		SPECIAL_TYPE=#po.frontlineChannelPo.specialType#
+		where activity_id=#po.activityId#
+	</update>
+    
+    
+    <update id="updateMsmChannelPo">
+		update CLYX_ACTIVITY_MSMCHANNEL
+		set 
+        FILTER_CONDITION=#po.msmChannelPo.filterCondition#,
+		SEND_LEVEL=#po.msmChannelPo.sendLevel#,
+		NOSEND_TIME=#po.msmChannelPo.noSendTime#, SEND_START_TIME=#po.msmChannelPo.sendStartTime#,SEND_END_TIME=#po.ChannelPo.sendEndTime#,
+		CYCLETIMES=#po.msmChannelPo.cycleTimes#,
+		INTERVAL_HOURS=#po.msmChannelPo.intervalHours#,IS_SPECIAL_FILTER=#po.msmChannelPo.isSpecialFilter#,SMS_CONTENT=#po.msmChannelPo.smsContent#
+		where activity_id=#po.activityId#
+	</update>
+   <!-- 回显弹窗信息 -->
+   <select id="queryGroupPopupList" resultType="com.bonc.activity.model.ChannelGroupPopupPo">
+		select 
+	    NUMBERLIMIT "numberLimit",
+	    TARGET "target",
+	    CHANNEL_GROUPPOPUP_CONTENT "content",
+	    CHANNELNAME "channelName",
+	    FILTER_CONDITION "filterCondition",
+	    FILTER_CONDITION_SQL "filterConditionSql",
+	    FILTER_SQL_CONDITION  as "filterSqlCondition",
+	    is_send_sms as "isSendSms",
+	    sms_send_words as "smsSendWords",
+	    channel_identify as "channelIdentify"
+	    from CLYX_P_CHANNEL_GROUPPOPUP t
+	    where 1=1
+		<if test="po.activityId !=null and po.activityId !=''">
+			and
+			t.activity_id
+			= #{po.activityId,javaType=String,jdbcType=VARCHAR}
+		</if>
+
+</select>
+<!-- 回显短信渠道信息 -->
+	<!-- 根据活动ID获取短信渠道信息 -->
+	<select id="getActivitySmsChannel" resultType="hashmap">
+		SELECT
+		t.ACTIVITY_ID "activityId",
+		t.FILTER_CONDITION "filterCondition",
+		t.SEND_LEVEL "sendLevel",
+		t.NOSEND_TIME "noSendTime",
+		t.SEND_START_TIME "sendStartTime",
+		t.SEND_END_TIME "sendEndTime",
+		t.CYCLETIMES "cycleTimes",
+		t.INTERVAL_HOURS "intervalHours",
+		t.IS_SPECIAL_FILTER "isSpecialFilter",
+		t.FILTER_CONDITION_SQL "filterConditionSql",
+		t.SMS_CONTENT "smsContent",
+	    t.IS_UNI_SET "isUniSet",
+		t.MESSAGE_SEND_TIME "messageSendTime",
+		t.TOUCH_LIMIT_DAY "touchLimitDay",
+		t.FILTER_SQL_CONDITION as "filterSqlCondition",
+		t.order_product_id as "orderProductId",
+		t.marketing_type_id as "marketingType",
+		t1.marketing_type_name as "marketingName" 
+		FROM CLYX_ACTIVITY_MSMCHANNEL t
+		left join clyx_sms_marketing_type t1 on t.marketing_type_id = t1.marketing_type_id and t.tenant_id = t1.tenant_id 
+		WHERE 1=1 
+		<if test="po.activityId !=null and po.activityId !=''">
+			and
+			t.activity_id
+			= #{po.activityId,javaType=String,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<!-- 回显客户经理 -->
+		<!-- 根据活动ID，渠道类型获取特殊筛选信息 -->
+	<select id="getActivitySpecialFilterList" resultType="hashmap">
+		SELECT
+		p.MARKETING_WORDS "marketingWords",
+		p.FILTER_NAME "filterName",
+		p.FILTER_CONDITION "filterCondition",
+		p.FILTER_CONDITION_SQL "filterConditionSql",
+		p.FILTER_SQL_CONDITION as "filterSqlCondition",
+		p.ORD "ord",
+		p.CHANNEL_TYPE "channelType",
+		p.MSM_TEMPLATE "msmTemplate"
+		FROM CLYX_ACTIVITY_CHANNELSPECIAL p
+		WHERE p.channel_type='5'
+		<if test="po.activityId !=null and po.activityId !=''">
+			and
+			p.activity_id
+			= #{po.activityId,javaType=String,jdbcType=VARCHAR}
+		</if>
+		order by p.ord		
+	</select>
+		
+	<select id="initOrderCycleRule" parameterType="com.bonc.activity.model.ActivityProvBo" resultType="string">
+	    select  rule_type_id  as "rule_type_id" from ${epmwxwl}.wxwl_rule_type
+    	where draw_type_id='3'
+    	and tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+    	and stutas='0' and rownum = 1
+	</select>
+	
+	<select id="queryWebPublicInfo" parameterType="com.bonc.activity.model.ActivityProvBo" resultType="com.bonc.activity.model.WebChatMidActivityPo">
+	   select t.activity_id "activityId",
+       t.public_id "publicId",
+       t.users_num "userNum",
+       t.state "state",
+       t.accept_time "acceptTime",
+       t.template_id "templateId",
+       t.accept_user "acceptUser",
+       t.stop_time "stopTime",
+       t.tenant_id "tenantId"
+       from CLYX_ACTIVITY_WECHAT_MID t  where 1=1
+       <if test="po.activityId !=null and po.activityId !=''">
+			and
+			t.activity_id
+			= #{po.activityId,javaType=String,jdbcType=VARCHAR}
+		</if>
+	
+    </select>
+    
+    <select id="getOrderOrgRange" resultType="com.bonc.activity.model.FrontlineChannelPo">
+    select t.rule_org_id as "ruleOrgId",
+           t.rule_org_name as "ruleOrgName",
+           t.rule_org_path as "ruleOrgPath"
+           from CLYX_ACTIVITY_FROLINECHANNEL t
+           where 1=1
+           and t.activity_id=#{po.activityId,javaType=String,jdbcType=VARCHAR}
+    </select>
+    <!-- 本地短信根据订购产品id   查询产品名称 -->
+	<select id="queryOrderProduName" parameterType="java.lang.String" resultType="java.lang.String">
+		select t.product_name from CLYX_P_PRODUCT_INFO t where 1=1 and t.product_id=#{orderProductId,javaType=String,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getTimePoint" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.id as "id",
+		       t.time as "time",
+		       t.expand1 as "expand",
+		       t.expand2 as "expand2"
+		       from CLYX_ACTIVITY_TIME_POINT t		
+	</select>
+	<select id="getTimeQuantum" parameterType="com.bonc.activity.model.ActivityProvBo"
+		resultType="java.util.HashMap">
+		select t.id as "id",
+		       t.time as "time",
+		       t.expand1 as "expand"
+		       from CLYX_ACTIVITY_TIME_QUANTUM t		
+	</select>
+	<!-- 弹窗特殊规则回显 -->
+	<select id="getPopSpecialFilterList" resultType="hashmap">
+		SELECT
+		p.MARKETING_WORDS "marketingWords",
+		p.FILTER_NAME "filterName",
+		p.FILTER_CONDITION "filterCondition",
+		p.FILTER_CONDITION_SQL "filterConditionSql",
+		p.FILTER_SQL_CONDITION as "filterSqlCondition",
+		p.ORD "ord",
+		p.CHANNEL_TYPE "channelType",
+		p.MSM_TEMPLATE "msmTemplate"
+		FROM CLYX_ACTIVITY_CHANNELSPECIAL p
+		WHERE p.channel_type = '8'
+		<if test="po.activityId !=null and po.activityId !=''">
+			and
+			p.activity_id
+			= #{po.activityId,javaType=String,jdbcType=VARCHAR}
+		</if>
+		order by p.ord		
+	</select>
+	
+	<!-- 保存弹窗扩展规则 -->
+	<insert id="savePopSpecialFilter" parameterType="java.util.List">
+	insert into CLYX_ACTIVITY_CHANNELSPECIAL(ACTIVITY_ID,MARKETING_WORDS,FILTER_NAME,FILTER_CONDITION,FILTER_CONDITION_SQL,ORD,TENANT_ID,FILTER_SQL_CONDITION,CHANNEL_TYPE)
+	<foreach close=")" open="(" collection="list" item="item" index="index" separator="union">  
+       select
+        #{item.activityId,jdbcType=VARCHAR},
+        #{item.marketingWords,jdbcType=NUMERIC},
+        #{item.filterName,jdbcType=VARCHAR},
+        #{item.filterCondition,jdbcType=VARCHAR},
+        #{item.filterConditionSql,jdbcType=VARCHAR},
+        #{item.ord,jdbcType=VARCHAR},
+        #{item.tenantId,jdbcType=VARCHAR},
+        #{item.filterSqlCondition,jdbcType=VARCHAR},
+        #{item.channelType,jdbcType=VARCHAR}
+        from dual      
+    </foreach> 	
+	</insert>
+	
+	<!-- 保存特殊细分列表 -->
+	<insert id="saveSpecialFilter" parameterType="com.bonc.activity.model.ChannelSpecialFilterPo">
+	insert into CLYX_ACTIVITY_CHANNELSPECIAL(ACTIVITY_ID,MARKETING_WORDS,FILTER_NAME,FILTER_CONDITION,FILTER_CONDITION_SQL,ORD,TENANT_ID,FILTER_SQL_CONDITION,CHANNEL_TYPE,MSM_TEMPLATE)
+	values
+        (#{activityId,jdbcType=VARCHAR},
+        #{marketingWords,jdbcType=NUMERIC},
+        #{filterName,jdbcType=VARCHAR},
+        #{filterCondition,jdbcType=VARCHAR},
+        #{filterConditionSql,jdbcType=VARCHAR},
+        #{ord,jdbcType=VARCHAR},
+        #{tenantId,jdbcType=VARCHAR},
+        #{filterSqlCondition,jdbcType=CLOB},
+        #{channelType,jdbcType=VARCHAR},
+        #{msmTemplate,jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 电话渠道特殊规则回显 -->
+	<select id="getTeleSpecialFilterList" resultType="hashmap">
+		SELECT
+		p.MARKETING_WORDS "marketingWords",
+		p.FILTER_NAME "filterName",
+		p.FILTER_CONDITION "filterCondition",
+		p.FILTER_CONDITION_SQL "filterConditionSql",
+		p.FILTER_SQL_CONDITION as "filterSqlCondition",
+		p.ORD "ord",
+		p.CHANNEL_TYPE "channelType",
+		p.MSM_TEMPLATE "msmTemplate"
+		FROM CLYX_ACTIVITY_CHANNELSPECIAL p
+		WHERE p.channel_type = '12'
+		<if test="po.activityId !=null and po.activityId !=''">
+			and
+			p.activity_id
+			= #{po.activityId,javaType=String,jdbcType=VARCHAR}
+		</if>
+		order by p.ord		
+	</select>
+	
+	<insert id="saveTelePhoneInfo" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into CLYX_P_CHANNEL_TELEPHONE
+		(activity_id,FILTER_CONDITION,
+		FILTER_CONDITION_SQL,ORG_CITY_IDS,ORG_CITY_NAMES,
+		COMPANY_ID,TENANT_ID,ORDERISSUED_RULE,FILTER_SQL_CONDITION,TELEPHONE_HUASHU_CONTENT,RULE_ORG_PATH)
+		values(#{po.activityId,jdbcType=VARCHAR},
+		#{channelTelePhone.filterCondition,jdbcType=VARCHAR},
+		#{channelTelePhone.filterConditionSql,jdbcType=VARCHAR},
+		#{channelTelePhone.orgCityIds,jdbcType=VARCHAR},
+		#{channelTelePhone.orgCityNames,jdbcType=VARCHAR},
+		#{channelTelePhone.companyId,jdbcType=VARCHAR},
+		#{po.tenantId,jdbcType=VARCHAR},
+		#{channelTelePhone.initOrderCycleRule,jdbcType=VARCHAR},
+		#{channelTelePhone.filterSqlCondition,jdbcType=VARCHAR},
+		#{channelTelePhone.telephoneHuashuContent,jdbcType=VARCHAR},
+		#{channelTelePhone.companyId,jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="getActivityTelephoneChannel" resultType="hashmap">
+	SELECT
+		t.ACTIVITY_ID "activityId",
+		t.FILTER_CONDITION "filterCondition",
+		t.FILTER_CONDITION_SQL "filterConditionSql",
+		t.ORG_CITY_IDS "orgCityIds",
+		t.ORG_CITY_NAMES "orgCityNames",
+		t.COMPANY_ID "companyId",
+		t.ORDERISSUED_RULE "orderissuedRule",
+		t.FILTER_SQL_CONDITION "filterSqlCondition",
+		t.TELEPHONE_HUASHU_CONTENT "telephoneHuashuContent",
+		t.RULE_ORG_PATH "ruleOrgPath"
+		FROM CLYX_P_CHANNEL_TELEPHONE t
+		WHERE 1=1 
+		<if test="po.activityId !=null and po.activityId !=''">
+			and t.activity_id= #{po.activityId,javaType=String,jdbcType=VARCHAR}
+		</if>
+			and t.tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	
+	</select>
+	
+	 <delete id="deleteChannelTelephone" parameterType="com.bonc.activity.model.ActivityProvBo">
+       delete from CLYX_P_CHANNEL_TELEPHONE where ACTIVITY_ID=#{po.activityId}
+    </delete>
+    
+    <select id="teleOrderCycleRule" parameterType="com.bonc.activity.model.ActivityProvBo" resultType="string">
+	    select  rule_type_id  as "rule_type_id" from ${epmwxwl}.wxwl_rule_type
+    	where draw_type_id='6'
+    	and tenant_id=#{po.tenantId,javaType=String,jdbcType=VARCHAR}
+    	and stutas='0' and rownum = 1
+	</select>
+	<!--保存集成总部短信 -->
+	<insert id="saveZongBuMsm" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into
+		clyx_activity_zongbumsmchannel(ACTIVITY_ID,PROV_ID,
+		SEND_LEVEL,NOSEND_TIME,
+		SEND_START_TIME,SEND_END_TIME,CYCLETIMES,INTERVAL_HOURS,IS_SPECIAL_FILTER,SMS_CONTENT,touch_limit_day,FILTER_CONDITION_SQL,FILTER_CONDITION,MESSAGE_SEND_TIME,TENANT_ID,orderissued_rule,IS_UNI_SET,FILTER_SQL_CONDITION,order_product_id,marketing_type_id)
+		values(
+        #{po.activityId,jdbcType=VARCHAR}, 
+		#{po.provId,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.sendLevel,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.noSendTime,jdbcType=VARCHAR}, 
+		#{zongBuMsmChannelPo.sendStartTime,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.sendEndTime,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.cycleTimes,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.intervalHours,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.isSpecialFilter,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.smsContent,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.touchLimitDay,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.filterConditionSql,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.filterCondition,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.messageSendTime,jdbcType=VARCHAR},
+		#{po.tenantId,jdbcType=VARCHAR},
+		#{initOrderCycleRule,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.isUniSet,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.filterSqlCondition,jdbcType=CLOB},
+		#{zongBuMsmChannelPo.orderProductId,jdbcType=VARCHAR},
+		#{zongBuMsmChannelPo.marketingType,jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 回显集成总部短信 -->
+	<!-- 根据活动ID获取集成总部短信信息 -->
+	<select id="getZongBuMsmChannelPo" parameterType="com.bonc.activity.model.ZongBuMsmChannelPo" resultType="com.bonc.activity.model.ZongBuMsmChannelPo">
+		SELECT
+		t.ACTIVITY_ID "activityId",
+		t.FILTER_CONDITION "filterCondition",
+		t.SEND_LEVEL "sendLevel",
+		t.NOSEND_TIME "noSendTime",
+		t.SEND_START_TIME "sendStartTime",
+		t.SEND_END_TIME "sendEndTime",
+		t.CYCLETIMES "cycleTimes",
+		t.INTERVAL_HOURS "intervalHours",
+		t.IS_SPECIAL_FILTER "isSpecialFilter",
+		t.FILTER_CONDITION_SQL "filterConditionSql",
+		t.SMS_CONTENT "smsContent",
+	    t.IS_UNI_SET "isUniSet",
+		t.MESSAGE_SEND_TIME "messageSendTime",
+		t.TOUCH_LIMIT_DAY "touchLimitDay",
+		t.FILTER_SQL_CONDITION as "filterSqlCondition",
+		t.order_product_id as "orderProductId",
+		t.marketing_type_id as "marketingType",
+		t1.marketing_type_name as "marketingName" 
+		FROM clyx_activity_zongbumsmchannel t
+		left join clyx_sms_marketing_type t1 on t.marketing_type_id = t1.marketing_type_id and t.tenant_id = t1.tenant_id 
+		WHERE 1=1 		
+			and activity_id= #{activityId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 删除集成总部短信 -->
+	<delete id="deleteZongBuMsmChannelPo" parameterType="com.bonc.activity.model.ZongBuMsmChannelPo" resultType="com.bonc.activity.model.ZongBuMsmChannelPo">
+		delete from clyx_activity_zongbumsmchannel where
+		ACTIVITY_ID=#{po.activityId}
+	</delete>
+</mapper>

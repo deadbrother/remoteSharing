@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.ActivityThemeDao">
+	<select id="findThemeList" parameterType="com.bonc.activity.model.ActivityTheme" resultType="com.bonc.activity.model.ActivityTheme">
+		SELECT T.THEME_CODE AS "themeCode",
+				    T.THEME_NAME AS "themeName",
+				    T.THEME_DESC AS "themeDesc",
+				    T.ORD AS "ord",
+				    T.TENANT_ID AS "tenantId",
+				    T.IS_VALID AS "isValid"
+				   FROM CLYX_ACTIVITY_THEME T
+				   WHERE T.TENANT_ID = #{tenantId}
+				<if test="themeName !=null and themeName !=''">
+				AND T.THEME_NAME LIKE CONCAT(CONCAT('%', #{themeName}), '%')
+				</if>  
+				order by T.ORD ASC
+	</select>
+	<select id="findThemeByCode" parameterType="com.bonc.activity.model.ActivityTheme" resultType="com.bonc.activity.model.ActivityTheme">
+		SELECT T.THEME_CODE AS "themeCode",
+				    T.THEME_NAME AS "themeName",
+				    T.THEME_DESC AS "themeDesc",
+				    T.ORD AS "ord",
+				    T.TENANT_ID AS "tenantId",
+				    T.IS_VALID AS "isValid"
+				   FROM CLYX_ACTIVITY_THEME T
+				   WHERE T.THEME_CODE = #{themeCode}
+	</select>
+	<insert id="saveTheme" parameterType="com.bonc.activity.model.ActivityTheme">
+		INSERT INTO CLYX_ACTIVITY_THEME
+		(THEME_CODE,THEME_NAME,THEME_DESC,ORD,TENANT_ID,IS_VALID)
+		VALUES(#{themeCode},#{themeName},#{themeDesc},#{ord},#{tenantId},#{isValid})
+	</insert>
+	<update id="updateTheme" parameterType="com.bonc.activity.model.ActivityTheme">
+		UPDATE CLYX_ACTIVITY_THEME
+		SET THEME_NAME = #{themeName},
+			  THEME_DESC = #{themeDesc},
+			  ORD = #{ord},
+			  TENANT_ID = #{tenantId},
+			  IS_VALID = #{isValid}
+		WHERE THEME_CODE = #{themeCode}
+	</update>
+</mapper>

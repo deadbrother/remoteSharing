@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.ResRuleTypeDao">
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.ResRuleType">
+		insert into WXWL_RES_RULE_TYPE
+		values (
+		#{res_type_id,jdbcType=VARCHAR},
+		#{res_type_name,jdbcType=VARCHAR},
+		#{stutas,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER}
+		)
+	</insert>
+	<select id="findAll" resultType="com.bonc.epmwxwl.model.ResRuleType">
+		select
+		res_type_id "res_type_id",
+		res_type_name "res_type_name",
+		case  when stutas='0' then '正常' 
+		      when stutas='1' then '停用' 
+		end      "stutas",
+		sort_num "sort_num"
+		from WXWL_RES_RULE_TYPE order by  sort_num ASC
+	</select>
+	<select id="findAllByCondtion" parameterType="com.bonc.epmwxwl.model.ResRuleType" resultType="com.bonc.epmwxwl.model.ResRuleType">
+		select
+		res_type_id "res_type_id",
+		res_type_name "res_type_name",
+		case  when stutas='0' then '正常' 
+		      when stutas='1' then '停用' 
+		end      "stutas",
+		sort_num "sort_num"
+		from WXWL_RES_RULE_TYPE 
+		where 1=1 
+		<if test="res_type_name !=null and res_type_name!=''">  
+		    AND res_type_name like CONCAT(CONCAT('%', #{res_type_name,javaType=String,jdbcType=VARCHAR}), '%') 
+	 	</if> 
+	 	<if test="stutas !=null and stutas!=''">  
+		    AND stutas =#{stutas}
+	    </if> 
+	 	<if test="res_type_id !=null and res_type_id!=''">  
+		    AND res_type_id =#{res_type_id}
+	    </if> 
+	    order by  sort_num ASC
+	</select>
+	<select id="findById" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.ResRuleType">
+		select
+		res_type_id "res_type_id",
+		res_type_name "res_type_name",
+		stutas "stutas",
+		sort_num "sort_num"
+		from WXWL_RES_RULE_TYPE
+		where res_type_id=#{id}
+	</select>
+	<delete id="deleteById" parameterType="String">
+		delete
+		from WXWL_RES_RULE_TYPE
+		where res_type_id=#{id}
+	</delete>
+	<update id="update" parameterType="com.bonc.epmwxwl.model.ResRuleType">
+		update WXWL_RES_RULE_TYPE
+		set
+		res_type_id=#{res_type_id,jdbcType=VARCHAR},
+		res_type_name=#{res_type_name,jdbcType=VARCHAR},
+		stutas=#{stutas,jdbcType=VARCHAR},
+		sort_num=#{sort_num,jdbcType=INTEGER}
+		where
+		res_type_id = #{res_type_id,jdbcType=VARCHAR}
+	</update>
+	<select id="findBySortNum" parameterType="Integer"
+		resultType="com.bonc.epmwxwl.model.ResRuleType">
+		select
+		res_type_id "res_type_id",
+		res_type_name "res_type_name",
+		stutas "stutas",
+		sort_num "sort_num"
+		from WXWL_RES_RULE_TYPE
+		where sort_num=#{sort_num,jdbcType=INTEGER}
+	</select>
+	<select id="findMaxSortNum" resultType="Integer">
+	select max(t.sort_num) from WXWL_RES_RULE_TYPE t
+	</select>
+	
+	<select id="findPreByCondition" parameterType="com.bonc.epmwxwl.model.ResRuleType" resultType="com.bonc.epmwxwl.model.ResRuleType">
+	select
+		t2.res_type_id    "res_type_id",
+		t2.res_type_name  "res_type_name",
+		t2.stutas    "stutas",
+		t2.sort_num  "sort_num"
+		from 
+		(
+			select 
+			t.res_type_id  as res_type_id,
+			t.res_type_name as res_type_name,
+			t.stutas as stutas,
+			t.sort_num as sort_num
+			
+			from WXWL_RES_RULE_TYPE t 
+			where t.sort_num &lt; (
+			select t.sort_num  from WXWL_RES_RULE_TYPE t
+			where t.res_type_id=#{res_type_id}
+	      )
+	      <if test="res_type_name !=null and res_type_name!=''">  
+		    AND t.res_type_name like CONCAT(CONCAT('%', #{res_type_name,javaType=String,jdbcType=VARCHAR}), '%') 
+		 	</if> 
+		 	<if test="stutas !=null and stutas!=''">  
+			    AND t.stutas =#{stutas}
+		    </if> 
+	       order by  t.sort_num DESC 
+	    ) t2 
+    where rownum=1
+	</select>
+	<select id="findAfterByCondition" parameterType="com.bonc.epmwxwl.model.ResRuleType" resultType="com.bonc.epmwxwl.model.ResRuleType">
+		select
+		t2.res_type_id    "res_type_id",
+		t2.res_type_name  "res_type_name",
+		t2.stutas    "stutas",
+		t2.sort_num  "sort_num"
+		from 
+		(
+			select 
+			t.res_type_id  as res_type_id,
+			t.res_type_name as res_type_name,
+			t.stutas as stutas,
+			t.sort_num as sort_num
+			
+			from WXWL_RES_RULE_TYPE t 
+			where t.sort_num &gt; (
+			select t.sort_num  from wxwl_res_rule_type t
+			where t.res_type_id=#{res_type_id}
+	      )
+	       <if test="res_type_name !=null and res_type_name!=''">  
+		    AND t.res_type_name like CONCAT(CONCAT('%', #{res_type_name,javaType=String,jdbcType=VARCHAR}), '%') 
+		 	</if> 
+		 	<if test="stutas !=null and stutas!=''">  
+			    AND t.stutas =#{stutas}
+		    </if> 
+	       order by  t.sort_num ASC 
+	    ) t2 
+    where rownum=1
+	</select>
+	
+	<update id="updateSortNum" parameterType="Integer">
+		update WXWL_RES_RULE_TYPE t 
+		set t.sort_num=t.sort_num+1 
+		where t.sort_num >= #{sort_num,jdbcType=INTEGER}
+	</update>
+</mapper>

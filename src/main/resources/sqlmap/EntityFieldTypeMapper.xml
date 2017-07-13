@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.EntityFieldTypeDao">
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.EntityFieldType">
+		insert into WXWL_ENTITY_FIELD_TYPE
+		values (
+		#{field_type_id,jdbcType=VARCHAR},
+		#{entity_id,jdbcType=VARCHAR},
+		#{field_type_name,jdbcType=VARCHAR},
+		#{parent_id,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR}
+		)
+	</insert>
+	<delete id="deleteById" parameterType="String">
+		delete
+		from WXWL_ENTITY_FIELD_TYPE
+		where field_type_id=#{id}
+	</delete>
+	<delete id="deleteByEntityId" parameterType="String">
+		delete
+		from WXWL_ENTITY_FIELD_TYPE
+		where entity_id=#{id}
+	</delete>
+	<update id="update" parameterType="com.bonc.epmwxwl.model.EntityFieldType">
+		update WXWL_ENTITY_FIELD_TYPE
+		set
+		field_type_id=#{field_type_id,jdbcType=VARCHAR},
+		entity_id=#{entity_id,jdbcType=VARCHAR},
+		field_type_name=#{field_type_name,jdbcType=VARCHAR},
+		parent_id=#{parent_id,jdbcType=VARCHAR},
+		sort_num=#{sort_num,jdbcType=VARCHAR}
+		where
+		field_type_id=#{field_type_id,jdbcType=VARCHAR}
+	</update>
+	<select id="findById" parameterType="String" resultType="com.bonc.epmwxwl.model.EntityFieldType">
+		select
+		field_type_id "field_type_id",
+		entity_id "entity_id",
+		field_type_name "field_type_name",
+		parent_id "parent_id",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from WXWL_ENTITY_FIELD_TYPE
+		where field_type_id=#{id}
+	</select>
+	<select id="findAllByResId" parameterType="String" resultType="com.bonc.epmwxwl.model.ResFiledType">
+		select
+		res_field_type_id "res_field_type_id",
+		res_id "res_id",
+		res_field_type_name "res_field_type_name",
+		parent_id "parent_id",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from WXW_RES_FIELD_TYPE
+		where res_id=#{id}
+	</select>
+	<select id="findByParentId" parameterType="String" resultType="com.bonc.epmwxwl.model.EntityFieldType">
+		select
+		field_type_id "field_type_id",
+		entity_id "entity_id",
+		field_type_name "field_type_name",
+		parent_id "parent_id",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from WXWL_ENTITY_FIELD_TYPE
+		where parent_id=#{id}
+	</select>
+	<select id="findAllByEntityId" parameterType="String" resultType="com.bonc.epmwxwl.model.EntityFieldType">
+		select
+		field_type_id "field_type_id",
+		entity_id "entity_id",
+		field_type_name "field_type_name",
+		parent_id "parent_id",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from WXWL_ENTITY_FIELD_TYPE
+		where entity_id=#{id}
+	    order by sort_num ASC 
+	</select>
+	
+	<select id="findAll" resultType="com.bonc.epmwxwl.model.EntityFieldType">
+	 select
+		field_type_id "field_type_id",
+		entity_id "entity_id",
+		field_type_name "field_type_name",
+		parent_id "parent_id",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from WXWL_ENTITY_FIELD_TYPE
+	    order by sort_num ASC
+	</select>
+</mapper>

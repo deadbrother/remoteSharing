@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.SuccessStandardDao">
+	<!-- 成功标准类型 -->
+	<select id="querySuccessStandardTypeList" resultType="com.bonc.activity.model.SuccessStandardTypePo">
+		select
+		t.type_id as "typeId",
+		t.type_name as "typeName",
+		t.is_valid as "isValid",
+		t.ord as "ord",
+		t.condition as "condition",
+		t.condition_SQL as "conditionSQL",
+		t.PRODUCT_REL as "productRel"
+		from CLYX_SUCCESSSTANDARD_TYPE t
+	</select>
+
+	<!-- 成功标准列表 -->
+	<select id="querySuccessStandardList" resultType="com.bonc.activity.model.SuccessStandardPo">
+		select t.success_id as "successId",
+		p.type_name as "successType",
+		t.success_type_id as "successTypeId",
+		decode(t.success_matchingtype,'1','全部编码','2','精准匹配',' ') as "matchingType",
+		t.success_matchingtype as "matchingTypeId",
+		t.success_condition as "successCondition",
+		t.success_reward as "successReward",
+		t.success_point as "successPoint",
+		t.tenant_id as "tenantId",
+		t.success_condition_SQL as "successConditionSQL",
+		t.orgid as "orgId",
+		t.operate_user as "operateUser",
+		t.operate_time  as "operateTime"
+		from CLYX_SUCCESSSTANDARD_INFO t
+		left join clyx_successstandard_type p on t.success_type_id = p.type_id
+		where 1=1
+		<if test="tenantId != null and tenantId != ''">
+			and t.tenant_id = #{tenantId}
+		</if>
+		and t.tenant_id='uni076'
+		<if test="orgId != null and orgId != ''">
+		    and t.org_id in
+			#{orgId}
+		</if>
+		<if test="successName != null and successName != ''">
+			and t.success_name like
+			'%' || #{successName} || '%'
+		</if>
+		<if test="successTypeId != null and successTypeId != ''">
+			t.success_type_id = #{successTypeId}
+		</if>
+		order by t.operate_time desc
+	</select>
+
+	<select id="findSuccessStandardById" parameterType="java.lang.String"
+		resultType="com.bonc.activity.model.SuccessStandardPo">
+		select
+		t.success_id as "successId",
+		p.type_name as "successType",
+		t.success_type_id as "successTypeId",
+		decode(t.success_matchingtype,'1','全部编码','2','精准匹配',' ')
+		as "matchingType",
+		t.success_matchingtype as "matchingTypeId",
+		t.success_condition as "successCondition",
+		t.success_reward
+		as "successReward",
+		t.success_point as "successPoint",
+		t.tenant_id as "tenantId",
+		t.success_condition_SQL as "successConditionSQL",
+		t.orgId as "orgId",
+		t.orgpath as "orgpath",
+		t.operate_user as "operateUser",
+		t.operate_time as "operateTime"
+		from
+		clyx_successstandard_info t
+		left join
+		CLYX_SUCCESSSTANDARD_TYPE p on
+		t.success_type_id = p.type_id
+
+		where t.success_id = #{activityId,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 编辑新增成功标准页面调用 -->
+	<select id="queryProductIdList" parameterType="java.lang.String" resultType="java.lang.String">
+	select product_id
+	from CLYX_SUCCESS_PRODUCT_REL
+	where success_id = #{activityId,jdbcType=VARCHAR}	
+	</select>
+	
+	<!-- 点击全部匹配，获取所有的产品id -->
+	<select id="queryAllProductIdList" resultType="java.lang.String" >
+		select t.product_id from clyx_p_product_info t
+	</select>
+	
+	<!-- 成功标准基本信息新增添加 -->
+	<insert id="saveSuccessStandard" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into
+		CLYX_SUCCESSSTANDARD_INFO
+		(success_id,success_type_id,success_matchingtype,success_condition,success_reward,
+		success_point,success_condition_sql,orgpath,orgid,operate_user,operate_time)
+		values
+		(#{activityId,jdbcType=VARCHAR},#{successStandardPo.successTypeId,jdbcType=VARCHAR},
+		#{successStandardPo.matchingType,jdbcType=VARCHAR},#{successStandardPo.successCondition,jdbcType=VARCHAR},#{successStandardPo.successReward,jdbcType=VARCHAR},
+		#{successStandardPo.successPoint,jdbcType=VARCHAR},#{successStandardPo.successConditionSQL,jdbcType=VARCHAR},
+		#{successStandardPo.orgpath,jdbcType=VARCHAR},#{successStandardPo.orgId,jdbcType=VARCHAR},#{successStandardPo.operateUser,jdbcType=VARCHAR},#{successStandardPo.operateTime,jdbcType=DATE})
+	</insert>
+
+	<!-- 成功标准产品关联信息添加 -->
+	<insert id="saveSuccessProductRel" parameterType="java.util.List">
+		insert into CLYX_SUCCESS_PRODUCT_REL (success_id,product_id,ord)
+<!-- select *
+from (
+<iterate conjunction=" union all ">
+	select
+	#{list[].successId},#{list[].productId},#{list[].ord} from dual
+</iterate>
+) -->
+	</insert>
+
+	<delete id="deleteSuccessProduct" parameterType="java.lang.String">
+		delete from CLYX_SUCCESS_PRODUCT_REL where success_id
+		= #{activityId,jdbcType=VARCHAR}
+	</delete>
+	<!-- 成功标准修改更新 -->
+	<update id="updateSuccessStandard" parameterType="java.lang.String">
+		update
+		CLYX_SUCCESSSTANDARD_INFO
+		success_type_id = #{successStandardPo.successTypeId,jdbcType=VARCHAR},
+		success_matchingtype
+		=#{successStandardPo.matchingType,jdbcType=VARCHAR},
+		success_condition = #{successStandardPo.successCondition,jdbcType=VARCHAR},
+		success_reward = #{successStandardPo.successReward,jdbcType=VARCHAR},
+		success_point = #{successStandardPo.successPoint,jdbcType=VARCHAR},
+		success_condition_sql = #{successStandardPo.successConditionSQL,jdbcType=VARCHAR},
+		operate_time =
+		#{successStandardPo.operateTime,jdbcType=DATE},
+		operate_user = #{successStandardPo.operateUser,jdbcType=VARCHAR}
+		where success_id =
+		#{activityId,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 成功标准删除 -->
+	<delete id="deleteSuccess" parameterType="java.lang.String">
+		delete from CLYX_SUCCESSSTANDARD_INFO t where t.success_id =
+		#{activityId,jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 活动页面调用成功标准列表 -->
+	<select id="getSuccessStandard" resultType="hashmap">
+		select
+		t.success_id as "successId"
+		from CLYX_SUCCESSSTANDARD_INFO t
+	</select>
+	
+	<!-- 活动页面调用成功标准详情 -->
+	<select id="getSuccessStandardInfo" parameterType="java.lang.String" resultType="hashmap">
+		select
+		t1.type_name as "successTypeName",
+		t.success_condition as "successCondition",
+		t3.ord as "ord",
+		t.success_reward as "successReward"
+		from CLYX_SUCCESSSTANDARD_INFO t
+		left join CLYX_SUCCESSSTANDARD_TYPE t1
+		on t.success_type_id=t1.type_id
+		left join clyx_success_product_rel t3
+		on t3.success_id=t.success_id
+		where t.success_id=#{activityId,jdbcType=VARCHAR}
+	</select>
+		
+ <!-- 成功标准产品查询 -->
+	<select id="querySuccessProductList" resultType="com.bonc.activity.model.SuccessProductPo">
+	select 
+	t.product_Id as productId,
+	t.product_code as productCode,
+	t.PRODUCT_NAME as productName,
+	decode( t.PRODUCT_CLASSTYPE1, 01, 'BSS', 02, 'CBSS')  as productSuccessType1
+	from
+	CLYX_P_PRODUCT_INFO t
+	where 1 = 1 
+	
+	 and t.product_id
+	<if test = "isLeft == 'left'">
+		not
+	</if>
+	<if test="successStandardPo.successProductIds != null and successStandardPo.successProductIds == ''">
+		in ('')
+	</if> 
+	<if test="successStandardPo.successProductIds != null and successStandardPo.successProductIds != ''">
+		in (#{successStandardPo.successProductIds})
+	</if>
+	<if test="successProductPo.productCode != null">
+		and (t.product_name like '%' || #{successProductPo.productCode} ||'%' 
+			or t.product_code like '%' || #{successProductPo.productCode} ||'%' )
+	</if>
+	<!-- <if test="successStandardPo.successTypeId != null">
+		and t.product_successType = #{successStandardPo.successTypeId}
+	</if>  -->
+	and t.isvalid = 1
+	order by t.ord
+	</select>
+</mapper>

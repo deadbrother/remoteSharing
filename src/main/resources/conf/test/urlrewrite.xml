@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+        "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+
+<!--
+
+    Configuration file for UrlRewriteFilter
+    http://www.tuckey.org/urlrewrite/
+
+-->
+<urlrewrite>
+
+    <!-- 适配原始pure页面的排序和分页 -->
+    <rule>
+    	<note>
+    	    /pure/User.action,,?..  -->/pure/User.action?..
+    	</note>
+    	<from>^/pure/([^\.\?]*)\.action,,(.*)</from>
+    	<to>/pure/$1.action$2</to>
+    </rule>
+
+    <rule>
+		<note>
+			登录地址
+		</note>
+        <from>^/login(/.+)*$</from>
+        <to>/pure/Login!input.action</to>
+    </rule>
+    <rule>
+		<note>
+			注销地址
+			// 如果使用单点集成，请参照以下修改为合适的路径
+       		// location.href='http://132.35.224.151:8666/cas/logout?service=${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/';
+		</note>
+        <from>^/logout(/.+)*$</from>
+        <!-- <to>/pure/Logout.action</to> -->
+        <to type="redirect">http://clyxys.bonc.yz/cas/logout?service=http://clyxys.bonc.yz/portal</to>
+    </rule>
+
+	<rule>
+		<note>
+			/../../???/get			->		/../../???!get
+			/../../???/add			->		/../../???!add
+			/../../???/edit			->		/../../???!edit
+			/../../???/editor		->		/../../???!editor
+			/../../???/fillOut      ->      /../../???!fillOut
+			/../../???/detail		->		/../../???!detail
+			/../../???/search		->		/../../???!search
+			/../../???/data			->		/../../???!data
+		</note>
+        <from>^(/.+)+/(get|add|edit|editor|fillOut|detail|search|data)$</from>
+        <to>$1!$2</to>
+    </rule>
+
+	<!-- usertool start -->
+	<rule>
+		<note>
+			/usertool/../../classical	->		classical?url=http://132.35.224.156:9201/usertool/../..
+		</note>
+        <from>^/usertool(/.+)*/classical$</from>
+        <to>classical?url=http://132.35.224.156:9201/usertool$1</to>
+    </rule>
+    <!-- usertool end -->
+    
+    <!-- epm org start -->
+	<rule>
+		<note>
+			/epm/org/../../classical	->		classical?url=%{context-path}/epm/org/../..
+		</note>
+        <from>^/epm/org(/.+)*/classical$</from>
+        <to>classical?url=%{context-path}/epm/org$1</to>
+    </rule>
+    <!-- epm org end -->
+    
+    <!-- pure start -->
+    <rule>
+		<note>
+			/pure/../../classical	->		classical?url=%{context-path}/pure/../..
+		</note>
+        <from>^/pure(/.+)*/classical$</from>
+        <to>classical?url=%{context-path}/pure$1</to>
+    </rule>
+    <!-- pure end -->
+    
+    <!-- entity start -->
+    <rule>
+       <note>
+       		/entity/data_eV15cb927958f04d5b88ae34dd14830ece   ->   /entity!data?entityVersionID=15cb927958f04d5b88ae34dd14830ece
+       </note>
+       <from>^/entity/data_eV([a-z0-9]{32})$</from>
+       <to>/entity!data?entityVersionID=$2</to>
+    </rule>
+    <rule>
+       <note>
+         <![CDATA[
+    		/entity/detail_mF1_eV15cb927958f04d5b88ae34dd14830ece   ->   /entity!detail?modifyFlag=1&entityVersionID=15cb927958f04d5b88ae34dd14830ece
+         ]]>
+       </note>
+       <from>^/entity/detail_mF([01]{1})_eV([a-z0-9]{32})$</from>
+       <to>/entity!detail?modifyFlag=$1&amp;entityVersionID=$2</to>
+    </rule>
+    <rule>
+       <note>
+         <![CDATA[
+    		/entity/detail_dF1_eV15cb927958f04d5b88ae34dd14830ece   ->   /entity!detail?detailFlag=1&entityVersionID=15cb927958f04d5b88ae34dd14830ece
+         ]]>
+       </note>
+       <from>^/entity/detail_dF([01]{1})_eV([a-z0-9]{32})$</from>
+       <to>/entity!detail?detailFlag=$1&amp;entityVersionID=$2</to>
+    </rule>
+    <!-- entity end -->
+    
+    <!-- econf start -->
+     <rule>
+       <note>
+       		/econf/data_eV15cb927958f04d5b88ae34dd14830ece   ->   /econf!data?entityVersionID=15cb927958f04d5b88ae34dd14830ece
+       </note>
+       <from>^/econf/data_eV([A-Za-z0-9]*)$</from>
+       <to>/econf!data?entityVersionID=$1</to>
+    </rule>
+    <rule>
+       <note>
+       		/econf_eV15cb927958f04d5b88ae34dd14830ece   ->   /econf?entityVersionID=15cb927958f04d5b88ae34dd14830ece
+       </note>
+       <from>^/econf_eV([A-Za-z0-9]*)$</from>
+       <to>/econf?entityVersionID=$1</to>
+    </rule>
+    <!-- econf end -->
+
+    <!-- entity start -->
+    <rule>
+       <note>
+       		/form/editor_v40ee1fe1e6ce4b3d8e6054ae7c362da2   ->   /form!editor?version=40ee1fe1e6ce4b3d8e6054ae7c362da2
+       		/form/fillOut_v40ee1fe1e6ce4b3d8e6054ae7c362da2   ->   /form!fillOut?version=40ee1fe1e6ce4b3d8e6054ae7c362da2
+       </note>
+       <from>^/form/(editor|fillOut)_v([a-z0-9]{32})$</from>
+       <to>/form!$1?version=$2</to>
+    </rule>
+    <rule>
+       <note>
+       		/form/fillOut_f40ee1fe1e6ce4b3d8e6054ae7c362da2   ->   /form!fillOut?form=40ee1fe1e6ce4b3d8e6054ae7c362da2
+       </note>
+       <from>^/form/fillOut_f([a-z0-9]{32})$</from>
+       <to>/form!fillOut?form=$1</to>
+    </rule>
+    <rule>
+       <note>
+       	<![CDATA[
+       		/form/fillOut_v7c6f64664e984c08ad26e434dce7b810_e=b655c87d6b794f34990603d1dec6e6c5&_i=c8b67b62e1b042dc8342b194dfaa68f3
+       		->
+       		/form/fillOut_v7c6f64664e984c08ad26e434dce7b810&entity=b655c87d6b794f34990603d1dec6e6c5&instance=c8b67b62e1b042dc8342b194dfaa68f3
+       	]]>
+       </note>
+<!--        <from>^/econf/data_v([a-z0-9]{32})_eV([a-z0-9]{32})_i([a-z0-9]{32})$</from> -->
+       <from>^/econf/data_eV([a-z0-9]{32})_v([a-z0-9]{32})_i([a-z0-9]{32})$</from>
+<!--        <from>^/form/fillOut_v([a-z0-9]{32})_e([a-z0-9]{32})_i([a-z0-9]{32})$</from> -->
+       <to>/form!fillOut?entity=$1&amp;version=$2&amp;instance=$3</to>
+    </rule>
+    <!-- entity end -->
+    <rule>
+       <note>
+       		/workspace/fillOut_s123   ->   /workspace/fillOut?spaceId=123
+       		/workspace/editor_s123 -> /workspace/editor?spaceId=123
+       </note>
+       <from>^/workspace/(editor|fillOut)_s([a-z0-9]{32})$</from>
+       <to>/workspace!$1?spaceId=$2</to>
+    </rule>
+    
+    <rule>
+       <note>
+         <![CDATA[
+       		/???/activitydetailsMain/xxxx       ->   /clyx/activity!detailsMain.action?bo.po.activityId=xxxx&url=???
+         ]]>
+       </note>
+       <from>^/clyx(/.+)+/activitydetailsMain/(\d+)$</from>
+       <to>/clyx/activity/activity!detailsMain?bo.po.activityId=$2&amp;url=%{context-path}/clyx$1</to>
+    </rule>
+    
+    <rule>
+       <note>
+         <![CDATA[
+       		/clyx/activity/activity/main       ->   /clyx/activity/activity!main.action
+         ]]>
+       </note>
+       <from>^/clyx/activity/activity/main$</from>
+       <to>/clyx/activity/activity!main</to>
+    </rule>
+    
+    <rule>
+       <note>
+         <![CDATA[
+       		/clyx/activity/activity/add       ->   /clyx/activity/activity!add.action
+         ]]>
+       </note>
+       <from>^/clyx/activity/activity/add$</from>
+       <to>/clyx/activity/activity!add</to>
+    </rule>
+    
+   <!--  跳转到子活动查看 -->
+    <rule>
+       <note>
+         <![CDATA[
+       		/???/activitydetailsMain/xxxx       ->   /clyx/activity!detailsMain.action?bo.po.activityId=xxxx&url=???
+         ]]>
+       </note>
+       <from>^/clyx(/.+)+/activitysubMain/(\d+)$</from>
+       <to>/clyx/activity/activity!subMain?bo.po.activityId=$2&amp;url=%{context-path}/clyx$1</to>
+    </rule>
+    
+     <!--  集团活动跳转到子活动查看 -->
+    <rule>
+       <note>
+         <![CDATA[
+       		/???/activitydetailsMain/xxxx       ->   /clyx/activity!detailsMain.action?bo.po.activityId=xxxx&url=???
+         ]]>
+       </note>
+       <from>^/clyx(/.+)+/activityJtsub/(\d+)$</from>
+       <to>/clyx/activity/activity!jtsub?bo.po.activityId=$2&amp;url=%{context-path}/clyx$1</to>
+    </rule>
+    
+     <!--  省分活动跳转到子活动查看 -->
+    <rule>
+       <note>
+         <![CDATA[
+       		/???/activitydetailsMain/xxxx       ->   /clyx/activity!detailsMain.action?bo.po.activityId=xxxx&url=???
+         ]]>
+       </note>
+       <from>^/clyx(/.+)+/activitySfsub/(\d+)$</from>
+       <to>/clyx/activity/activity!sfsub?bo.po.activityId=$2&amp;url=%{context-path}/clyx$1</to>
+    </rule>
+    
+    <!--  跳转到修改 -->
+    <rule>
+       <note>
+         <![CDATA[
+       		/???/activitydetailsMain/xxxx       ->   /clyx/activity!detailsMain.action?bo.po.activityId=xxxx&url=???
+         ]]>
+       </note>
+       <from>^/clyx(/.+)+/activitymodify/(\d+)$</from>
+       <to>/clyx/activity/activity!modify?bo.po.activityId=$2&amp;url=%{context-path}/clyx$1</to>
+    </rule>
+    
+    <!--  跳转政策关联的活动列表 -->
+    <rule>
+       <note>
+         <![CDATA[
+       		/???/activitymain/xxxx       ->   /clyx/activity!main.action?bo.po.policyId=xxxx&url=???
+         ]]>
+       </note>
+       <from>^/clyx/activity/activity/main$</from>
+       <to>/clyx/activity/activity!main</to>
+       
+       <!-- <from>^/clyx(/.+)+/activitymain/(\d{4})$</from>
+       <to>/clyx/activity/activity!main?bo.po.policyId=$2&amp;url=%{context-path}/clyx$1</to> -->
+    </rule>
+    
+     <!--  跳转子活动详情 -->
+     <rule>
+       <note>
+         <![CDATA[
+          /???/activity/activity/main/detailsMain/xxxx       ->   /clyx/activity/activity!detailsMain?bo.po.activityId=7386
+         ]]>
+       </note>
+       <from>^/clyx/activity/activity/main/detailsMain/(\d+)$</from>
+       <to>/clyx/activity/activity!detailsMain?bo.po.activityId=$1</to>
+    </rule>
+    <!-- 活动报备 -->
+    <rule>
+       <note>
+         <![CDATA[
+          /???/activity/activity/main/detailsCount/xxxx       ->   /clyx/activity/activity!detailsCount?bo.po.activityId=xxxx
+         ]]>
+       </note>
+       <from>^/clyx(/.+)+/main/detailsCount/(\d+)$</from>
+       <to>/clyx/activity/activity!detailsCount?bo.po.activityId=$2</to>
+    </rule> 
+    
+    <rule>
+    	<note>
+    	  404
+   	    </note>
+    	<from>/error/(\d+)</from>
+   	     <to>/error?statusCode=$1</to>
+   </rule>
+</urlrewrite>
+

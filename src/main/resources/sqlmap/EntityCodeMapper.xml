@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.EntityCodeDao">
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.EntityCode">
+		insert into WXWL_ENTITY_CODE(code_id,code_type_id,code_name,code_desc,parent_id,sort_num,tenant_id)
+		values (
+		#{code_id,jdbcType=VARCHAR},
+		#{code_type_id,jdbcType=VARCHAR},
+		#{code_name,jdbcType=VARCHAR},
+		#{code_desc,jdbcType=VARCHAR},
+		#{parent_id,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR}
+		)
+	</insert>
+	<delete id="deleteById" parameterType="String">
+		delete
+		from WXWL_ENTITY_CODE
+		where code_id=#{id}
+	</delete>
+	<update id="update" parameterType="com.bonc.epmwxwl.model.EntityCode">
+		update WXWL_ENTITY_CODE
+		set
+		code_type_id=#{code_type_id,jdbcType=VARCHAR},
+		code_name=#{code_name,jdbcType=VARCHAR},
+		code_desc=#{code_desc,jdbcType=VARCHAR},
+		parent_id=#{parent_id,jdbcType=VARCHAR},
+		sort_num=#{sort_num,jdbcType=INTEGER},
+		tenant_id=#{tenant_id,jdbcType=VARCHAR}
+		where
+		code_id=#{code_id,jdbcType=VARCHAR}
+	</update>
+	<select id="findById" parameterType="String"
+		resultType="com.bonc.epmwxwl.model.EntityCode">
+		select
+		code_id "code_id",
+		code_type_id "code_type_id",
+		code_name "code_name",
+		code_desc  "code_desc",
+		parent_id "parent_id",
+		sort_num  "sort_num",
+		tenant_id "tenant_id"
+		from wxwl_entity_code
+		where code_id=#{id}
+	</select>
+	<select id="findAllByTenantId"  parameterType="String"  resultType="com.bonc.epmwxwl.model.EntityCode">
+		select 
+			a.code_id "code_id",
+			a.code_name "code_name",
+			a.code_type_id "code_type_id",
+			b.code_type_name "code_type_name",
+			a.parent_id "parent_id", 
+			a.code_desc "code_desc",
+			a.sort_num "sort_num",
+			a.tenant_id "tenant_id",
+			(select c.code_name from  WXWL_ENTITY_CODE c where c.code_id= a.parent_id) "parent_name"
+		from WXWL_ENTITY_CODE a left join WXWL_ENTITY_CODE_TYPE b on a.code_type_id=b.code_type_id
+		where a.tenant_id =#{tenantId} order by a.sort_num ASC
+	</select>
+	<select id="findMaxSortNum" resultType="Integer">
+		select max(t.sort_num) from WXWL_ENTITY_CODE t
+	</select>
+	<select id="findAfterById" parameterType="String" resultType="com.bonc.epmwxwl.model.EntityCode">
+		select
+		    t2.code_id    "code_id",
+		    t2.code_type_id  "code_type_id",
+		    t2.code_name    "code_name",
+		    t2.code_desc  "code_desc",
+		    t2.parent_id    "parent_id",
+		    t2.sort_num  "sort_num",
+		    t2.tenant_id    "tenant_id"
+		    from 
+		    (
+		      select 
+		      	t.code_id,
+		    	t.code_type_id,
+		    	t.code_name,
+			    t.code_desc,
+			    t.parent_id,
+			    t.sort_num,
+			    t.tenant_id
+				from WXWL_ENTITY_CODE t 
+					where t.sort_num &gt; (
+					select t.sort_num  from wxwl_entity_code t
+					where t.code_id=#{id}
+			      )
+			       order by  t.sort_num ASC 
+			    ) t2 
+		  where rownum=1
+	</select>
+	<select id="findAfterByCondition" parameterType="com.bonc.epmwxwl.model.EntityCode"  resultType="com.bonc.epmwxwl.model.EntityCode">
+	select
+		    t2.code_id    "code_id",
+		    t2.code_type_id  "code_type_id",
+		    t2.code_name    "code_name",
+		    t2.code_desc  "code_desc",
+		    t2.parent_id    "parent_id",
+		    t2.sort_num  "sort_num",
+		    t2.tenant_id    "tenant_id"
+		    from 
+		    (
+		      select 
+		      	t.code_id,
+		    	t.code_type_id,
+		    	t.code_name,
+			    t.code_desc,
+			    t.parent_id,
+			    t.sort_num,
+			    t.tenant_id
+				from WXWL_ENTITY_CODE t 
+					where t.sort_num &gt; (
+					select t.sort_num  from wxwl_entity_code t
+					where t.code_id=#{code_id}
+			      )
+			      	<if test="code_name!=null and code_name!=''">
+						and t.code_name like CONCAT(CONCAT('%', #{code_name,javaType=String,jdbcType=VARCHAR}), '%') 
+					</if>
+					<if test="code_type_id!=null and code_type_id!=''">
+						and t.code_type_id = #{code_type_id}
+					</if>
+					<if test="code_desc!=null and code_desc!=''">
+						and t.code_desc like  CONCAT(CONCAT('%', #{code_desc,javaType=String,jdbcType=VARCHAR}), '%') 
+					</if>
+					<if test="parent_id!=null and parent_id!=''">
+						and t.parent_id like  CONCAT(CONCAT('%', #{parent_id,javaType=String,jdbcType=VARCHAR}), '%') 
+					</if>
+					<if test="tenant_id !=null and tenant_id !='' ">  
+						    AND t.tenant_id = #{tenant_id,javaType=String,jdbcType=VARCHAR}
+					 </if>
+			       order by  t.sort_num ASC 
+			    ) t2 
+		  where rownum=1
+	
+	</select>
+	
+	<select id="findPreById" parameterType="String" resultType="com.bonc.epmwxwl.model.EntityCode">
+		select
+		    t2.code_id    "code_id",
+		    t2.code_type_id  "code_type_id",
+		    t2.code_name    "code_name",
+		    t2.code_desc  "code_desc",
+		    t2.parent_id    "parent_id",
+		    t2.sort_num  "sort_num",
+		    t2.tenant_id    "tenant_id"
+		    from 
+		    (
+		      select 
+		     	t.code_id,
+		    	t.code_type_id,
+		    	t.code_name,
+			    t.code_desc,
+			    t.parent_id,
+			    t.sort_num,
+			    t.tenant_id
+				from WXWL_ENTITY_CODE t 
+					where t.sort_num &lt; (
+					select t.sort_num  from wxwl_entity_code t
+					where t.code_id=#{id}
+			      )
+			       order by  t.sort_num DESC 
+			    ) t2 
+		   where rownum=1
+	</select>
+	<select id="findPreByCondition" parameterType="com.bonc.epmwxwl.model.EntityCode"  resultType="com.bonc.epmwxwl.model.EntityCode">
+	select
+		    t2.code_id    "code_id",
+		    t2.code_type_id  "code_type_id",
+		    t2.code_name    "code_name",
+		    t2.code_desc  "code_desc",
+		    t2.parent_id    "parent_id",
+		    t2.sort_num  "sort_num",
+		    t2.tenant_id    "tenant_id"
+		    from 
+		    (
+		      select 
+		     	t.code_id,
+		    	t.code_type_id,
+		    	t.code_name,
+			    t.code_desc,
+			    t.parent_id,
+			    t.sort_num,
+			    t.tenant_id
+				from WXWL_ENTITY_CODE t 
+					where t.sort_num &lt; (
+					select t.sort_num  from wxwl_entity_code t
+					where t.code_id=#{code_id}
+			      )
+			      	<if test="code_name!=null and code_name!=''">
+						and t.code_name like CONCAT(CONCAT('%', #{code_name,javaType=String,jdbcType=VARCHAR}), '%') 
+					</if>
+					<if test="code_type_id!=null and code_type_id!=''">
+						and t.code_type_id = #{code_type_id}
+					</if>
+					<if test="code_desc!=null and code_desc!=''">
+						and t.code_desc like  CONCAT(CONCAT('%', #{code_desc,javaType=String,jdbcType=VARCHAR}), '%') 
+					</if>
+					<if test="parent_id!=null and parent_id!=''">
+						and t.parent_id like  CONCAT(CONCAT('%', #{parent_id,javaType=String,jdbcType=VARCHAR}), '%') 
+					</if>
+					<if test="tenant_id !=null and tenant_id !='' ">  
+						    AND t.tenant_id = #{tenant_id,javaType=String,jdbcType=VARCHAR}
+					 </if>
+			       order by  t.sort_num DESC 
+			    ) t2 
+		   where rownum=1
+	
+	</select>
+	<select id="findByPid" parameterType="String" resultType="java.util.Map">
+	
+		select
+		 code_id "code_id",
+		code_name "code_name",
+		parent_id "parent_id"
+		from WXWL_ENTITY_CODE where parent_id =#{id}
+	
+	</select>
+	
+	<select id="findBySearch"  parameterType="com.bonc.epmwxwl.model.EntityCode"  resultType="com.bonc.epmwxwl.model.EntityCode">
+		select 
+			a.code_id "code_id",
+			a.code_name "code_name",
+			a.code_type_id "code_type_id",
+			b.code_type_name "code_type_name",
+			a.parent_id "parent_id", 
+			a.code_desc "code_desc",
+			a.sort_num "sort_num",
+			a.tenant_id "tenant_id",
+			(select c.code_name from  WXWL_ENTITY_CODE c where c.code_id= a.parent_id) "parent_name"
+		from WXWL_ENTITY_CODE a left join wxwl_entity_code_type b on a.code_type_id=b.code_type_id
+		where a.tenant_id =#{tenant_id} 
+		<if test="code_name!=null and code_name!=''">
+			and a.code_name like CONCAT(CONCAT('%', #{code_name,javaType=String,jdbcType=VARCHAR}), '%') 
+		</if>
+		<if test="code_type_id!=null and code_type_id!=''">
+			and a.code_type_id = #{code_type_id}
+		</if>
+		<if test="code_desc!=null and code_desc!=''">
+			and a.code_desc like  CONCAT(CONCAT('%', #{code_desc,javaType=String,jdbcType=VARCHAR}), '%') 
+		</if>
+		<if test="parent_id!=null and parent_id!=''">
+			and a.parent_id like  CONCAT(CONCAT('%', #{parent_id,javaType=String,jdbcType=VARCHAR}), '%') 
+		</if>
+		<if test="tenant_id !=null and tenant_id !='' ">  
+			    AND a.tenant_id = #{tenant_id,javaType=String,jdbcType=VARCHAR}
+		 </if>
+		order by a.sort_num ASC
+	</select>
+	
+</mapper>

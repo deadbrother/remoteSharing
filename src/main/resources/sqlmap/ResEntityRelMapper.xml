@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.ResEntityRelDao">
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.ResEntityRel">
+		insert into WXWL_RES_ENTITY_REL 
+		values (
+			#{res_entity_rel_id,jdbcType=VARCHAR},
+			#{res_entity_id,jdbcType=VARCHAR},
+			#{main_id,jdbcType=VARCHAR},
+			#{foreign_id,jdbcType=VARCHAR},
+			#{condition_resume,jdbcType=VARCHAR},
+			#{condition_sql,jdbcType=VARCHAR},
+			#{tenant_id,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bonc.epmwxwl.model.ResEntityRel">
+		update WXWL_RES_ENTITY_REL
+		set
+			res_entity_rel_id = #{res_entity_rel_id,jdbcType=VARCHAR},
+			main_id = #{main_id,jdbcType=VARCHAR},
+			foreign_id = #{foreign_id,jdbcType=VARCHAR},
+			condition_resume = #{condition_resume,jdbcType=VARCHAR},
+			condition_sql = #{condition_sql,jdbcType=VARCHAR},
+			tenant_id = #{tenant_id,jdbcType=VARCHAR}
+		where
+		res_entity_id=#{res_entity_id,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="findResEntityRelById" parameterType="String" resultType="com.bonc.epmwxwl.model.ResEntityRel">
+		select
+			r.res_entity_rel_id "res_entity_rel_id",
+			r.res_entity_id "res_entity_id",
+			r.main_id "main_id",
+			r.foreign_id "foreign_id",
+			r.condition_resume "condition_resume",
+			r.condition_sql "condition_sql",
+			r.tenant_id "tenant_id"
+		from WXWL_RES_ENTITY_REL r
+		where r.res_entity_id=#{res_entity_id}
+	</select>
+	
+	<delete id="deleteByIdResEntityRel" parameterType="String">
+		delete
+		from WXWL_RES_ENTITY_REL
+		where res_entity_id = #{res_entity_id}
+	</delete>
+</mapper>

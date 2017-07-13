@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.ResFieldTypeDao">
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.ResFiledType">
+		insert into WXW_RES_FIELD_TYPE
+		values (
+		#{res_field_type_id,jdbcType=VARCHAR},
+		#{res_id,jdbcType=VARCHAR},
+		#{res_field_type_name,jdbcType=VARCHAR},
+		#{parent_id,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR}
+		)
+	</insert>
+	<delete id="deleteById" parameterType="String">
+		delete
+		from WXW_RES_FIELD_TYPE
+		where res_field_type_id=#{id}
+	</delete>
+	<update id="update" parameterType="com.bonc.epmwxwl.model.ResFiledType">
+		update WXW_RES_FIELD_TYPE
+		set
+		res_field_type_id=#{res_field_type_id,jdbcType=VARCHAR},
+		res_id=#{res_id,jdbcType=VARCHAR},
+		res_field_type_name=#{res_field_type_name,jdbcType=VARCHAR},
+		parent_id=#{parent_id,jdbcType=VARCHAR},
+		sort_num=#{sort_num,jdbcType=VARCHAR}
+		where
+		res_field_type_id=#{res_field_type_id,jdbcType=VARCHAR}
+	</update>
+	<select id="findById" parameterType="String" resultType="com.bonc.epmwxwl.model.ResFiledType">
+		select
+		res_field_type_id "res_field_type_id",
+		res_id "res_id",
+		res_field_type_name "res_field_type_name",
+		parent_id "parent_id",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from WXW_RES_FIELD_TYPE
+		where res_field_type_id=#{id}
+	</select>
+	<select id="findByParentId" parameterType="String" resultType="com.bonc.epmwxwl.model.ResFiledType">
+			select
+		res_field_type_id "res_field_type_id",
+		res_id "res_id",
+		res_field_type_name "res_field_type_name",
+		parent_id "parent_id",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from WXW_RES_FIELD_TYPE
+		where parent_id=#{id}
+	</select>
+	<select id="findDataByResId" parameterType="String" resultType="java.util.Map">
+	    select
+		t2.res_field_type_id   "id",
+		t2.res_field_type_name "name",
+		'root'      "pid",
+		'1'                "isEntityField",
+		'/epmwxwl/js/ztree/css/zTreeStyle/img/diy/8.png'   "icon"
+		from WXW_RES_FIELD_TYPE t2
+		where t2.res_id=#{id,javaType=String,jdbcType=VARCHAR}
+		and t2.parent_id is null
+	</select>
+	<select id="findByMap" parameterType="java.util.Map" resultType="java.util.Map">
+		(select
+		t1.field_id      "id",
+		<!-- t1.field_name    "name", -->
+		case  when t3.field_desc is null  then t1.field_name
+			  else t3.field_desc
+		end      "name",
+		t1.code_type_id  "pid",
+		'0'              "isEntityField",
+		'/epmwxwl/js/ztree/css/zTreeStyle/img/diy/vcard.png'   "icon"
+		from wxwl_entity_field t1 left join wxwl_res_field_type_rel t3
+				   on t1.field_id =  t3.field_id
+		where t3.type_id=#{id,javaType=String,jdbcType=VARCHAR}
+		and t3.ress_id=#{resId,javaType=String,jdbcType=VARCHAR}
+	    )
+	    union all 
+	    (
+	     select
+		t2.res_field_type_id   "id",
+		t2.res_field_type_name "name",
+		t2.parent_id       "pid",
+		'1'                "isEntityField",
+		'/epmwxwl/js/ztree/css/zTreeStyle/img/diy/8.png'   "icon"
+		from WXW_RES_FIELD_TYPE t2
+		where t2.parent_id=#{id,javaType=String,jdbcType=VARCHAR}
+		and t2.res_id=#{resId,javaType=String,jdbcType=VARCHAR}
+	    )
+	</select>
+	<select id="findResFieldTypeRel" parameterType="com.bonc.epmwxwl.model.ResFieldTypeRel" resultType="com.bonc.epmwxwl.model.ResFieldTypeRel">
+	    select
+		t.field_type_id   "field_type_id",
+		t.ress_id         "ress_id",
+		t.field_id         "field_id",
+		t.type_id         "type_id",
+		t.field_desc         "field_desc",
+		t.creat_user         "creat_user",
+		t.sort_num         "sort_num",
+		t.tenant_id         "tenant_id"
+		from WXWL_RES_FIELD_TYPE_REL t
+		where
+	     t.ress_id=#{ress_id,javaType=String,jdbcType=VARCHAR}
+		 and t.field_id=#{field_id,javaType=String,jdbcType=VARCHAR}
+	</select>
+	<update id="updateResFieldTypeRel" parameterType="com.bonc.epmwxwl.model.ResFieldTypeRel" >
+	    update WXWL_RES_FIELD_TYPE_REL t set 
+		t.field_desc    = #{field_desc,jdbcType=VARCHAR}
+		where
+	    t.field_type_id=#{field_type_id,javaType=String,jdbcType=VARCHAR}
+	</update>
+	<update id="updateTypeRel" parameterType="com.bonc.epmwxwl.model.ResFieldTypeRel" >
+	    update WXWL_RES_FIELD_TYPE_REL t set 
+		t.type_id    = #{type_id,jdbcType=VARCHAR}
+		where
+	    t.field_type_id=#{field_type_id,javaType=String,jdbcType=VARCHAR}
+	</update>
+	<insert id="saveResFieldTypeRel" parameterType="com.bonc.epmwxwl.model.ResFieldTypeRel">
+		insert into WXWL_RES_FIELD_TYPE_REL
+		values (
+		#{field_type_id,jdbcType=VARCHAR},   
+		#{ress_id,jdbcType=VARCHAR},   
+		#{field_id,jdbcType=VARCHAR},  
+		#{type_id,jdbcType=VARCHAR},   
+		#{field_desc,jdbcType=VARCHAR},
+		#{creat_user,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},  
+		#{tenant_id,jdbcType=VARCHAR}  
+		)
+	</insert>
+</mapper>

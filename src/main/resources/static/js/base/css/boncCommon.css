@@ -1,0 +1,142 @@
+@charset "utf-8";
+
+/* =============================== 东方国信 / 子页面组件 / 唯一样式表 / 20161008 =============================== */
+
+
+/* ---------------------------------- 活动策划 ---------------------------------- */
+
+/* 渠道色块指标 */
+input.l-bar-button {line-height: 35px !important;height: 35px !important;}
+.IndexBlock_activity { position: relative; margin-top:16px;}
+.IndexBlock_activity h4 {position: absolute; right:0; top:2px; width: 100%; font-size: 14px; color:#16325C; font-weight:bold;}
+.IndexBlock_activity h4 a.linkrefsh { float: right; padding-right: 4px; color:#E16742;}
+.IndexBlock_activity ol { display: block;}
+.IndexBlock_activity ol li { display: inline-block; margin-top:4px; }
+.IndexBlock_activity ol li a { display: block;  padding: 8px 20px 8px 20px; text-align: right; background-color:#666; text-decoration: none; }
+.IndexBlock_activity ol li a strong{ display: block; color:#fff; font-size: 18px;font-weight: normal; line-height: 1.2; white-space: nowrap;}
+.IndexBlock_activity ol li a strong sub { font-size: 12px; font-weight: normal; position: relative; top: -2px; left:-4px; white-space: nowrap;}
+.IndexBlock_activity ol li a em { color:rgba(255,255,255,.5); padding-right: 4px;white-space: nowrap;}
+
+/* 渠道色块指标总数 */
+.IndexBlock_activity ol li.first-child { margin-right: 10px;}
+.IndexBlock_activity ol li.first-child a { padding:8px 40px 8px 60px;}
+.IndexBlock_activity ol li.first-child strong { font-size:36px; font-weight:bold;}
+
+/* 渠道色块指标 第二行起 */
+.IndexBlock_activity ol li.wAuto a { width: 100px;}
+
+/* 渠道色块指标 第二行颜色划分 */
+.IndexBlock_activity ol li.ColorNo01 a { background-color:#16325C;}
+.IndexBlock_activity ol li.ColorNo02 a { background-color:#E16742;}
+.IndexBlock_activity ol li.ColorNo03 a { background-color:#FDA539;}
+.IndexBlock_activity ol li.ColorNo04 a { background-color:#7E5AC4;}
+.IndexBlock_activity ol li.ColorNo05 a { background-color:#45b2e0;}
+.IndexBlock_activity ol li.ColorNo06 a { background-color:#11cdb9;}
+.IndexBlock_activity ol li.ColorNo07 a { background-color:#ff6633;}
+.IndexBlock_activity ol li.ColorNo08 a { background-color:#f4c600;}
+
+.IndexBlock_activity ol li.ColorNo01 a:hover { background-color:#12284a;}
+.IndexBlock_activity ol li.ColorNo02 a:hover { background-color:#b45235;}
+.IndexBlock_activity ol li.ColorNo03 a:hover { background-color:#ca842e;}
+.IndexBlock_activity ol li.ColorNo04 a:hover { background-color:#65489d;}
+.IndexBlock_activity ol li.ColorNo05 a:hover { background-color:#378eb3;}
+.IndexBlock_activity ol li.ColorNo06 a:hover { background-color:#0ea494;}
+.IndexBlock_activity ol li.ColorNo07 a:hover { background-color:#cc5229;}
+.IndexBlock_activity ol li.ColorNo08 a:hover { background-color:#c39e00;}
+
+/*各渠道内容 */
+.ChannelOut_activity {position:relative;}
+.ChannelOut_activity h5 { padding:4px; border-width:2px 0 1px 0; border-style: solid; border-bottom-color:#ddd; background-color:#f9f9f9; color:#16325C;}
+.ChannelOut_activity h5.unbordered { border-bottom-width:0;}
+.ChannelOut_activity .AreaIn {  padding:10px 2px;}
+
+.ChannelOut_activity h5.ColorNo01 { border-top-color:#16325C;}
+.ChannelOut_activity h5.ColorNo02 { border-top-color:#E16742;}
+.ChannelOut_activity h5.ColorNo03 { border-top-color:#FDA539;}
+.ChannelOut_activity h5.ColorNo04 { border-top-color:#7E5AC4;}
+.ChannelOut_activity h5.ColorNo05 { border-top-color:#45b2e0;}
+.ChannelOut_activity h5.ColorNo06 { border-top-color:#11cdb9;}
+.ChannelOut_activity h5.ColorNo07 { border-top-color:#ff6633;}
+.ChannelOut_activity h5.ColorNo08 { border-top-color:#f4c600;}
+
+/* bootstrap from 二次修改 */
+.form-control {padding:0!important;}
+.form-horizontal .form-group{margin:0px!important}
+@media (min-width: 768px) {.modal-dialog{width:800px}}
+@media (min-width: 768px){ .modal-content{padding-bottom: 30px!important} }
+
+/* 颜色*/
+.orange{color: #fda539}
+.grayRed{color:#e16742}
+
+/*表单与表格布局*/
+.activitySetArea{width:730px; margin:0 auto 30px auto;}
+.activity{font-size: 18px;line-height:50px;background-color: #fefdfd; padding-left: 10px;border-bottom: 1px solid #e0e0e0;}
+
+table.activeLayout { width:100%;}
+table.activeLayout th { text-align: right; padding:10px; color:#16325c; white-space: nowrap;}
+table.activeLayout th.whiteNormal {white-space:normal;}
+table.activeLayout th span { padding:0 4px; color:#e16742;}
+table.activeLayout td { padding: 10px 2px;}
+table.activeLayout td a { text-decoration:underline;}
+table.activeLayout td ul { display: block;  width:100%;}
+table.activeLayout td ul li { display: inline-block; margin-right: 20px;}
+.activediv{border-top: 1px dashed #e0e0e0 ;width:100%;height:1px;margin-top: 30px}
+.pactive{padding-right: 20px;}
+.iconleft{text-align: right;padding-bottom: 2%;}
+.showInput{display: none!important;}
+table.ac tr th{text-align: center}
+table.ac tr{border-top:1px solid #e0e0e0}
+table.ac th{padding:6px 8px}
+table.ac td{padding:6px 8px}
+/*.ChannelOut { min-width: 300px;}*/
+
+/* 第二部分表格 */
+.people{text-align: right; font-size: 14px; padding:0!important;}
+.num{font-size: 18px;padding:0!important;}
+.ktext{width:82%!important;display:inline-block}
+.term{width:90px;height:30px;margin-left: 2px}
+.user{width:120px}
+.li1{ min-width:75px;}
+.li2{margin-right: 0!important;}
+.li3{margin-right: 36px!important;}
+.li4{margin-right: 14px!important;}
+
+/* 客户经理 */
+.manager{width:100%;margin-top: 20px;}
+table.managerTable{width:100%;}
+table.managerTable th{text-align: right;padding:0 10px}
+table.managerTable td{ padding: 10px 2px;}
+table.managerTable td.ar {color:#16325c;}
+table.managerTable td ul li{display: inline-block}
+.manInput{width:140px;display: inline-block}
+table.managerTable td span{color:#e16742;}
+table.managerTable td.liglist span{color:#000000;}
+.textDiv{width:160px;height:92px;overflow: scroll;border:1px solid #e0e0e0}
+.textDiv ul li{display: block!important;color:#0070d3}
+.windowDiv{width:600px;margin-left: auto;}
+#maglist {margin-top: 0px;padding:0 0;}
+table.managerTable td div #maglist table td{padding:0 0;height:32px;}
+
+/* ---------------------------------- 高级模式显示 ---------------------------------- */
+
+h3.headList{ font-size: 14px; padding: 8px 4px;  font-weight: bold; color:#e16742; border-bottom:1px dotted #ddd; background: #fefdfd; margin-top:24px;}
+
+table.activeLayout th.thLeft{text-align: left; padding:10px; color:#16325c;}
+
+/*表格*/
+table.explainTable{width:100%;font-size:12px;padding:10px;color:#16325c;text-align: center}
+table.explainTable th,
+table.explainTable td {border:1px solid #ddd; white-space:nowrap;}
+table.explainTable th{text-align: center; font-weight:normal;background-color:#e16742; border:1px solid #e16742; color:#fff; }
+.form-control.tableInput{font-size: 12px; line-height: 25px!important; height: 25px!important;text-align: center;color: #000}
+
+ /*图标*/
+.fa.fa-question-circle-o{color: #199ed8;margin-left: 5px;font-size: 18px;}
+.fa.fa-trash{font-size: 18px;}
+
+
+/* ---------------------------------- 渠道统一规则设置 ---------------------------------- */
+.form-control.inputWidth{width: 35%;display: inline-block;margin-left:10px;margin-right: 10px}
+table.activeLayout td.tdRight{text-align: right;padding-right: 15px}
+.form-control.inputrefResh{width: 80%;display: inline-block;margin-right: 10px}

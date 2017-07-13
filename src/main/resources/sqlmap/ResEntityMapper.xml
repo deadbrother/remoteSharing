@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.ResEntityDao">
+	
+	<update id="update" parameterType="com.bonc.epmwxwl.model.ResEntity">
+		update WXWL_RES_ENTITY
+		set
+			res_id = #{res_id,jdbcType=VARCHAR},
+			entity_id = #{entity_id,jdbcType=VARCHAR},
+			condition_sql = #{condition_sql,jdbcType=VARCHAR},
+			condition_resume = #{condition_resume,jdbcType=VARCHAR},
+			sort_num = #{sort_num,jdbcType=INTEGER},
+			tenant_id = #{tenant_id,jdbcType=VARCHAR}
+		where
+		res_entity_id=#{res_entity_id,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="findByResId" parameterType="String" resultType="com.bonc.epmwxwl.model.ResEntity">
+		select
+			res_entity_id "res_entity_id",
+			res_id "res_id",
+			entity_id "entity_id",
+			condition_sql "condition_sql",
+			condition_resume "condition_resume",
+			sort_num "sort_num",
+			tenant_id "tenant_id"
+		from WXWL_RES_ENTITY
+		where res_id=#{res_id}
+	</select>
+	
+</mapper>

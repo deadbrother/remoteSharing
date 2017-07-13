@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.EntityDao">
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.Entity">
+		insert into WXWL_ENTITY
+		values (
+		#{entity_id,jdbcType=VARCHAR},
+		#{entity_name,jdbcType=VARCHAR},
+		#{entity_table,jdbcType=VARCHAR},
+		#{data_res_id,jdbcType=VARCHAR},
+		#{entity_resume,jdbcType=VARCHAR},
+		#{stutas,jdbcType=VARCHAR},
+		#{sort_num,jdbcType=INTEGER},
+		#{tenant_id,jdbcType=VARCHAR}
+		)
+	</insert>
+	<delete id="deleteById" parameterType="String">
+		delete
+		from WXWL_ENTITY
+		where entity_id=#{id}
+	</delete>
+	<update id="update" parameterType="com.bonc.epmwxwl.model.Entity">
+		update WXWL_ENTITY
+		set
+		entity_name=#{entity_name,jdbcType=VARCHAR},
+		entity_table=#{entity_table,jdbcType=VARCHAR},
+		data_res_id=#{data_res_id,jdbcType=VARCHAR},
+		entity_resume=#{entity_resume,jdbcType=VARCHAR},
+		sort_num = #{sort_num,jdbcType=INTEGER}
+		where
+		entity_id=#{entity_id,jdbcType=VARCHAR}
+	</update>
+	<select id="findById" parameterType="String" resultType="com.bonc.epmwxwl.model.Entity">
+		select
+		entity_id "entity_id",
+		entity_name "entity_name",
+		entity_table "entity_table",
+		data_res_id "data_res_id",
+		entity_resume "entity_resume",
+		stutas "stutas",
+		sort_num "sort_num",
+		tenant_id "tenant_id"
+		from WXWL_ENTITY
+		where entity_id=#{id}
+	</select>
+	
+	<select id="findAll" resultType="com.bonc.epmwxwl.model.Entity">
+	  select
+	     t1.entity_id "entity_id",
+	     t1.entity_name "entity_name",
+	     t1.entity_table "entity_table",
+	     t2.data_res_name "data_res_name",
+	     t2.data_res_id "data_res_id",
+	     t1.entity_resume "entity_resume",
+	     t1.stutas "stutas",
+	     t1.sort_num "sort_num",
+	     t1.tenant_id "tenant_id"  
+     from WXWL_ENTITY t1
+     left join WXWL_DATA_RES t2 on t1.data_res_id=t2.data_res_id
+     order by t1.sort_num ASC
+	</select>
+	<select id="findAllByCondtion" parameterType="com.bonc.epmwxwl.model.Entity" resultType="com.bonc.epmwxwl.model.Entity">
+	 select
+	     t3.entity_id "entity_id",
+	     t3.entity_name "entity_name",
+	     t3.entity_table "entity_table",
+	     t3.data_res_name "data_res_name",
+	     t3.data_res_id "data_res_id",
+	     t3.entity_resume "entity_resume",
+	     t3.stutas "stutas",
+	     t3.sort_num "sort_num",
+	     t3.tenant_id "tenant_id"  
+     from (
+	  select
+	     t1.entity_id 			 AS    entity_id ,
+	     t1.entity_name 		 AS    entity_name,
+	     t1.entity_table 		 AS    entity_table,
+	     t2.data_res_id 		 AS    data_res_id,
+	     t2.data_res_name 		 AS    data_res_name,
+	     t1.entity_resume		 AS    entity_resume,
+	     t1.stutas				 AS    stutas,
+	     t1.sort_num 			 AS    sort_num,
+	     t1.tenant_id 			 AS    tenant_id  
+     from WXWL_ENTITY t1
+     left join WXWL_DATA_RES t2 on t1.data_res_id=t2.data_res_id
+     where 1=1 
+      <if test="entity_name !=null and entity_name!=''">  
+		    AND t1.entity_name like CONCAT(CONCAT('%', #{entity_name,javaType=String,jdbcType=VARCHAR}), '%') 
+	 </if> 
+      <if test="entity_table !=null and entity_table!=''">  
+		    AND t1.entity_table like CONCAT(CONCAT('%', #{entity_table,javaType=String,jdbcType=VARCHAR}), '%') 
+	 </if> 
+      <if test="entity_resume !=null and entity_resume!=''">  
+		    AND t1.entity_resume like CONCAT(CONCAT('%', #{entity_resume,javaType=String,jdbcType=VARCHAR}), '%') 
+	 </if> 
+	 <if test="tenant_id !=null and tenant_id !=''">  
+				    AND t1.tenant_id  like CONCAT(CONCAT('%', #{tenant_id,javaType=String,jdbcType=VARCHAR}), '%') 
+	 </if>  
+     order by t1.sort_num ASC
+     ) t3
+     where 1=1 
+      <if test="data_res_id !=null and data_res_id!='' ">  
+		    AND t3.data_res_id = #{data_res_id,javaType=String,jdbcType=VARCHAR}
+	 </if> 
+	</select>
+	<select id="fingAllByTenantId" parameterType="String" resultType="com.bonc.epmwxwl.model.Entity">
+	  select
+	     t1.entity_id "entity_id",
+	     t1.entity_name "entity_name",
+	     t1.entity_table "entity_table",
+	     t2.data_res_name "data_res_name",
+	     t2.data_res_id "data_res_id",
+	     t1.entity_resume "entity_resume",
+	     t1.stutas "stutas",
+	     t1.sort_num "sort_num",
+	     t1.tenant_id "tenant_id"  
+     from WXWL_ENTITY t1
+     left join WXWL_DATA_RES t2 on t1.data_res_id=t2.data_res_id
+			   where t1.tenant_id = #{id}
+     order by t1.sort_num ASC
+	</select>
+	<select id="fingMaxNum" parameterType="String" resultType="java.lang.Integer">
+	select max(t.sort_num)
+		from WXWL_ENTITY t
+	</select>
+	<select id="findAfterByCondition" parameterType="com.bonc.epmwxwl.model.Entity" resultType="com.bonc.epmwxwl.model.Entity">
+		select
+		    t2.entity_id "entity_id",
+	     	t2.entity_name "entity_name",
+	     	t2.entity_table "entity_table",
+	     	t2.data_res_id "data_res_id",
+	     	t2.entity_resume "entity_resume",
+		    t2.stutas "stutas",
+		    t2.sort_num "sort_num",
+	     	t2.tenant_id "tenant_id"  
+		    from 
+		    (
+		      select 
+		      	t.entity_id,
+	     		t.entity_name,
+		     	t.entity_table,
+		     	t.data_res_id,
+		     	t.entity_resume,
+			    t.stutas,
+			    t.sort_num,
+		     	t.tenant_id  
+				from WXWL_ENTITY t 
+					where t.sort_num &gt; (
+					select t.sort_num  from wxwl_entity t
+					where t.entity_id=#{entity_id}
+			      )
+			       <if test="entity_name !=null and entity_name!=''">  
+		   		 AND t.entity_name like CONCAT(CONCAT('%', #{entity_name,javaType=String,jdbcType=VARCHAR}), '%') 
+				 </if> 
+		    	  <if test="entity_table !=null and entity_table!=''">  
+				    AND t.entity_table like CONCAT(CONCAT('%', #{entity_table,javaType=String,jdbcType=VARCHAR}), '%') 
+				 </if> 
+		     	 <if test="entity_resume !=null and entity_resume!=''">  
+				    AND t.entity_resume like CONCAT(CONCAT('%', #{entity_resume,javaType=String,jdbcType=VARCHAR}), '%') 
+				 </if>  
+		     	 <if test="tenant_id !=null and tenant_id !=''">  
+				    AND t.tenant_id  like CONCAT(CONCAT('%', #{tenant_id,javaType=String,jdbcType=VARCHAR}), '%') 
+				 </if>  
+				  <if test="data_res_id !=null and data_res_id!='' ">  
+					    AND t.data_res_id = #{data_res_id,javaType=String,jdbcType=VARCHAR}
+				 </if> 
+			       order by  t.sort_num ASC 
+			    ) t2 
+		  where rownum=1
+	</select>
+	
+	<select id="findPreByCondition" parameterType="com.bonc.epmwxwl.model.Entity" resultType="com.bonc.epmwxwl.model.Entity">
+		select
+		    t2.entity_id "entity_id",
+	     	t2.entity_name "entity_name",
+	     	t2.entity_table "entity_table",
+	     	t2.data_res_id "data_res_id",
+	     	t2.entity_resume "entity_resume",
+		    t2.stutas "stutas",
+		    t2.sort_num "sort_num",
+	     	t2.tenant_id "tenant_id"  
+		    from 
+		    (
+		      select 
+		      	t.entity_id,
+	     		t.entity_name,
+		     	t.entity_table,
+		     	t.data_res_id,
+		     	t.entity_resume,
+			    t.stutas,
+			    t.sort_num,
+		     	t.tenant_id  
+				from WXWL_ENTITY t 
+					where t.sort_num &lt; (
+					select t.sort_num  from wxwl_entity t
+					where t.entity_id=#{entity_id}
+			      )
+			     <if test="entity_name !=null and entity_name!=''">  
+		   		 AND t.entity_name like CONCAT(CONCAT('%', #{entity_name,javaType=String,jdbcType=VARCHAR}), '%') 
+				 </if> 
+		    	  <if test="entity_table !=null and entity_table!=''">  
+				    AND t.entity_table like CONCAT(CONCAT('%', #{entity_table,javaType=String,jdbcType=VARCHAR}), '%') 
+				 </if> 
+		     	 <if test="entity_resume !=null and entity_resume!=''">  
+				    AND t.entity_resume like CONCAT(CONCAT('%', #{entity_resume,javaType=String,jdbcType=VARCHAR}), '%') 
+				 </if>  
+		     	 <if test="tenant_id !=null and tenant_id!=''">  
+				    AND t.tenant_id like CONCAT(CONCAT('%', #{tenant_id,javaType=String,jdbcType=VARCHAR}), '%') 
+				 </if>  
+				  <if test="data_res_id !=null and data_res_id!='' ">  
+					    AND t.data_res_id = #{data_res_id,javaType=String,jdbcType=VARCHAR}
+				 </if> 
+			       order by  t.sort_num DESC 
+			    ) t2 
+		  where rownum=1
+	</select>
+	
+</mapper>

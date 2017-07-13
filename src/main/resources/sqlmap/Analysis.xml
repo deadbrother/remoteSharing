@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.analysis.AnalysisDao">
+	<select id="findDrawTypeById" parameterType="java.util.Map"
+		resultType="com.bonc.epmwxwl.model.Analysis">
+		select
+		t.RULE_TYPE_ID "rule_type_id",
+		t.RULE_TYPE_NAME "rule_type_name",
+		t.RES_TYPE_ID "res_type_id",
+		t.DRAW_TYPE_ID "draw_type_id",
+		t.CONDITION_RESUME "condition_resume",
+		t.CONDITION_SQL "condition_sql",
+		d.ROWTYPET_NAME "rowtypet_name",
+		d.RESOURCES_ID "resources_id",
+		d.RESP_ID "resp_id",
+		d.RESUME "resume",
+		d.STUTAS "stutas",
+		d.SORT_NUM "sort_num",
+		d.TENANT_ID "tenant_id"
+		from WXWL_RULE_TYPE t
+		inner join
+		WXWL_DRAW_TYPE d on
+		t.draw_type_id=d.draw_type_id and t.tenant_id=d.tenant_id
+		and d.stutas = t.stutas
+		where t.tenant_id=#{tenant_id} and d.stutas='0' and
+		t.rule_type_id=#{rule_type_id}
+	</select>
+	<select id="findByResId" parameterType="java.util.Map"
+		resultType="com.bonc.epmwxwl.model.FieldEntityData">
+		select r.field_type_id "field_type_id",
+		r.ress_id "ress_id",
+		r.field_id "field_id",
+		r.type_id "type_id",
+		r.field_desc "field_desc",
+		r.creat_user "creat_user",
+		f.entity_id "entity_id",
+		f.entity_table "entity_table",
+		f.field_name "field_name",
+		f.field_name_en "field_name_en",
+		f.field_resume "field_resume",
+		f.field_type "field_type",
+		f.field_digit "field_digit",
+		f.code_type_id "code_type_id",
+		f.field_len "field_len",
+		f.mainkey "mainkey",
+		e.entity_name "entity_name",
+		e.data_res_id "data_res_id",
+		e.entity_resume "entity_resume",
+		d.data_res_type_id "data_res_type_id",
+		d.data_res_name "data_res_name",
+		d.data_res_desc "data_res_desc",
+		d.data_res_url "data_res_url",
+		d.username "username",
+		d.password "password",
+		dt.data_res_type_name "data_res_type_name",
+		dt.res_type "res_type",
+		dt.resume "resume",
+		e.stutas "stutas",
+		dt.sort_num "sort_num",
+		dt.tenant_id "tenant_id"
+		from WXWL_RES_FIELD_TYPE_REL r
+		inner join WXWL_ENTITY_FIELD f
+		on r.field_id = f.field_id
+		and r.tenant_id = f.tenant_id
+		inner join WXWL_ENTITY e
+		on f.entity_id = e.entity_id
+		and f.tenant_id = e.tenant_id
+		and f.field_stutas = e.stutas
+		inner join WXWL_DATA_RES d
+		on e.data_res_id = d.data_res_id
+		and e.tenant_id = d.tenant_id
+		and e.stutas = d.data_status
+		inner join WXWL_DATA_RES_TYPE dt
+		on d.data_res_type_id = dt.data_res_type_id
+		and d.data_status = dt.data_stutas
+		and d.tenant_id = dt.tenant_id
+		where dt.tenant_id = #{tenant_id}
+		and dt.data_stutas = '0'
+		and 
+		r.ress_id = #{res_id}
+	</select>
+	<select id="getResEntityInfo" parameterType="java.util.Map" resultType="com.bonc.epmwxwl.model.AnalysisResResp">
+		select
+		t.res_entity_id "res_entity_id",
+		t.res_id "res_id",
+		t.entity_id "entity_id",
+		t.condition_sql "encondition_sql",
+		t.condition_resume "encondition_resume",
+		tl.res_entity_rel_id "res_entity_rel_id",
+		tl.main_id "main_id",
+		tl.foreign_id "foreign_id",
+		tl.condition_resume "enlcondition_resume",
+		tl.condition_sql "enlcondition_sql"
+		from WXWL_RES_ENTITY t inner join WXWL_RES_ENTITY_REL tl 
+		on t.res_entity_id=tl.res_entity_id and t.tenant_id=tl.tenant_id 
+		where t.res_id =#{res_id} and t.tenant_id=#{tenant_id}
+	</select>
+	<select id="findTableNameByResid" parameterType="java.util.Map"
+		resultType="java.lang.String">
+		select
+		distinct f.entity_table "entity_table" 
+		from WXWL_RES_FIELD_TYPE_REL r
+		inner join WXWL_ENTITY_FIELD f
+		on r.field_id = f.field_id
+		and r.tenant_id = f.tenant_id
+		inner join WXWL_ENTITY e
+		on f.entity_id = e.entity_id
+		and f.tenant_id = e.tenant_id
+		and f.field_stutas = e.stutas
+		inner join WXWL_DATA_RES d
+		on e.data_res_id = d.data_res_id
+		and e.tenant_id = d.tenant_id
+		and e.stutas = d.data_status
+		inner join WXWL_DATA_RES_TYPE dt
+		on d.data_res_type_id = dt.data_res_type_id
+		and d.data_status = dt.data_stutas
+		and d.tenant_id = dt.tenant_id
+		where dt.tenant_id = #{tenant_id}
+		and dt.data_stutas = '0'
+		and r.ress_id = #{res_id}
+	</select>
+	<select id="getSortByRuleTypeId" parameterType="java.util.Map" resultType="com.bonc.epmwxwl.model.RuleTypeSortModel">
+	select 
+t.type_sort_id "type_sort_id",
+t.rule_type_id "rule_type_id",
+t.res_field_name "res_field_name",
+t.res_field_id "res_field_id",
+t.resq_field_name "resq_field_name",
+t.resq_field_id "resq_field_id",
+t.sort_num "sort_num",
+t.tenant_id "tenant_id" 
+from WXWL_RULE_TYPE_SORT t 
+where t.tenant_id=#{tenant_id} 
+and t.rule_type_id=#{rule_type_id} 
+	</select>
+	<select id="getConditionSql" parameterType="String" resultType="com.bonc.epmwxwl.model.RuleType">
+select 
+t.rule_type_id "rule_type_id",
+t.rule_type_name "rule_type_name",
+t.res_type_id "res_type_id",
+t.draw_type_id "draw_type_id",
+t.condition_resume "condition_resume",
+t.condition_sql "condition_sql",
+t.stutas "stutas",
+t.sort_num "sort_num",
+t.tenant_id "tenant_id" 
+from WXWL_RULE_TYPE t
+where t.rule_type_id=#{rule_type_id} 
+and t.tenant_id=#{tenant_id} 
+	</select>
+	<select id="selectMainT" parameterType="String" resultType="com.bonc.epmwxwl.model.Res">
+	select 
+	r.main_table "main_table",
+	r.main_field "main_field"  
+	from
+	WXWL_ROLE_SET t 
+	inner join WXWL_RULE_TYPE y 
+	on t.rule_type_id=y.rule_type_id 
+	inner 
+	join WXWL_DRAW_TYPE d 
+	on y.draw_type_id=d.draw_type_id
+	 inner join 
+     WXWL_RES r on d.resources_id=r.res_id  
+	and t.role_set_id=#{role_set_id}
+	</select>
+</mapper>

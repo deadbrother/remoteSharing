@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.res.RuleTypeInterDao">
+	<select id="getRuleTypeSetByTypeId" resultType="com.bonc.epmwxwl.model.DrawRuleList">
+		select
+		    rule_type_id         	"rule_type_id",
+		    rule_type_name         	"rule_type_name",
+		    res_type_id       		"res_type_id",
+		    draw_type_id       		"draw_type_id",
+		    condition_resume		"draw_type_id",
+		    condition_sql			"condition_sql"
+		from WXWL_RULE_TYPE 
+		where draw_type_id=#{id,javaType=String,jdbcType=VARCHAR} and tenant_id=#{tenant_id,javaType=String,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getRuleTypeSetByRuleTypeId" resultType="com.bonc.epmwxwl.model.DrawRuleList">
+		select
+		    t.rule_type_id         	"rule_type_id",
+		    t.rule_type_name         	"rule_type_name",
+		    t.res_type_id       		"res_type_id",
+		    t.draw_type_id       		"draw_type_id",
+		    t.condition_resume		"draw_type_id",
+		    t.condition_sql			"condition_sql",
+        e.main_table "main_table",
+        e.main_field "main_field" 
+		from WXWL_RULE_TYPE t 
+     inner join WXWL_DRAW_TYPE y on t.draw_type_id=y.draw_type_id  
+     inner join WXWL_RES e on  y.resources_id=e.res_id  
+	 where t.rule_type_id=#{id,javaType=String,jdbcType=VARCHAR} and t.tenant_id=#{tenant_id,javaType=String,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getRuleTypeSort" resultType="com.bonc.epmwxwl.model.RuleTypeSort">
+		select
+		    type_sort_id         	"id",
+		    res_field_name         	"resources_field_name",
+		    res_field_id       		"resources_field",
+		    resq_field_name       	"resq_field_name",
+		    resq_field_id			"resq_field"
+		from  WXWL_RULE_TYPE_SORT 
+		where rule_type_id=#{id}
+	</select>
+	
+	<select id="getSqlRunListByRuleTypeId" resultType="com.bonc.epmwxwl.model.SqlRun">
+		select dr.data_res_type_id "data_type",
+         	dr.data_res_url     "data_res_url",
+         	dr.username         "username",
+         	dr.password         "password"
+	    from WXWL_RULE_TYPE r
+	    left join WXWL_DRAW_TYPE d
+	      	on r.draw_type_id = d.draw_type_id
+	    left join WXWL_RES_ENTITY re
+	      	on d.resources_id = re.res_id
+	    left join WXWL_ENTITY e
+	      	on re.entity_id = e.entity_id
+	    left join WXWL_DATA_RES dr
+	      	on e.data_res_id = dr.data_res_id
+	 	where r.rule_type_id=#{rule_type_id}
+	</select>
+</mapper>

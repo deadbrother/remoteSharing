@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.demo.DemoDao">
+	<select id="queryActivityById" resultType="com.bonc.epmwxwl.model.demo.DemoPo">
+		select t.activity_id "activityId",
+		t.activity_name "activityName",
+		to_char(t.start_date,'yyyy-mm-dd') "startDate" 
+		from CLYX_ACTIVITY t
+		where t.activity_id = #{activityId}
+	</select>
+	
+	<insert id="saveActivity">
+		insert into CLYX_ACTIVITY (activity_id,activity_name,start_date)
+		values(#{activityId},#{activityName},to_date(#{startDate},'yyyy-mm-dd'))
+	</insert>
+	
+	<delete id="deleteActivity">
+		delete from CLYX_ACTIVITY t where t.activity_id = #{activityId}
+	</delete>
+	
+	<select id="queryActivityList" resultType="com.bonc.epmwxwl.model.demo.DemoPo">
+		select t.* from CLYX_ACTIVITY t 
+	</select>
+</mapper>

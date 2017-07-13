@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.ActivityChannelCoordinationDao">
+	<select id="findCoordinaByTenantId" parameterType="com.bonc.activity.model.ActivityProvBo" resultType="com.bonc.activity.model.ChannelCoordination">
+		select t.unit_id as "stepUnit",
+		t.time_unit as "timeUnit"
+  		from CLYX_CHANNEL_COORDINATE t
+ 		where 1 = 1
+   		and t.tenant_id = #{po.tenantId}
+   		and t.is_valid = '1' 
+   		order by t.unit_id
+	</select>
+	
+	<select id="queryChannelIdList" parameterType="com.bonc.activity.model.ActivityProvBo" resultType="java.lang.String">
+		select sys_param_value from clyx_system_param
+		where 1=1 and sys_param='11' and tenant_id = #{po.tenantId}
+	</select>
+	
+	<select id="queryChannelName" resultType="java.lang.String">
+		select channel_name from clyx_p_channel_info_activity 
+		where 1=1 and channel_code=#{channelId}
+		and tenant_id = #{tenantId} and is_valid='1'
+	</select>
+	
+</mapper>

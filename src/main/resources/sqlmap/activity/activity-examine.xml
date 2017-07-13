@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.ActivityExamineDao">
+	<select id="getActivityExamineList" parameterType="com.bonc.activity.model.ActivityProvPo"
+		resultType="java.util.HashMap">
+		select t.activity_id "activityDailyId",
+		t.activity_name  "activityDailyName",   
+		t5.org_level_name "orgLevel",   
+		t.activity_cycle "activityCycle",  
+		t.org_range "orgRange",        
+		t.channel_check "channelCheck",
+		t7.theme_name "activityTheme",     
+		t6.state_desc "stateDesc",   
+		to_char(t.start_date, 'yyyy-mm-dd') "startDate",  
+		to_char(t.end_date, 'yyyy-mm-dd') "endDate",   
+		to_char(t.create_date,'yyyy-mm-dd') "createDate",   
+		t.create_org_path "createOrgPath",   
+		t.org_path "orgPath",   
+		t.USERGROUP_ID "userGroupId",  
+		t.CREATE_USER  "createUser",  
+		STATE "state",
+		t.parent_id "parentId",     
+		t3.user_name "createUserName", 
+		t4.type_desc "activityTypeName"
+		from CLYX_ACTIVITY t
+		left join ${security}.userinfo t3 on
+		t3.login_id=t.CREATE_USER
+		left join clyx_activity_type t4 on
+		t4.type_id=t.activity_typeid
+		left join clyx_activity_orglevel t5 on
+		t.org_level=t5.org_level
+		left join clyx_activity_state_code t6 on
+		t.state=t6.state_code
+		left join clyx_activity_theme t7 on
+		t7.theme_code=t.ACTIVITY_THEME_CODE
+		 where not exists(
+		 select * from clyx_p_channel_info a
+		 where ','||t.channel_check||',' like '%,'||a.channel_code||',%'
+		 and a.channel_type='1' )
+		and  state='13' and
+		t.tenant_id=#{tenantId,javaType=String,jdbcType=VARCHAR}
+		and t.create_org_path = #{orgPath,javaType=String,jdbcType=VARCHAR}
+		<if test="activityName !=null and activityName !=''">
+			AND t.activity_name like CONCAT(
+			CONCAT('%', #{activityName,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		order by t.create_date desc
+	</select>
+
+	<select id="getActivityExamineList1" parameterType="com.bonc.activity.model.ActivityProvPo"
+		resultType="java.util.HashMap">
+		select t.activity_id "activityDailyId",
+	    t.activity_name "activityDailyName",
+	    t5.org_level_name "orgLevel",
+	    t.activity_cycle "activityCycle",
+	    t.org_range "orgRange",
+	    t.channel_check "channelCheck",
+	    t7.theme_name "activityTheme",
+	    t6.state_desc "stateDesc",
+	    to_char(t.start_date, 'yyyy-mm-dd') "startDate",
+	    to_char(t.end_date,'yyyy-mm-dd') "endDate",
+	    to_char(t.create_date,'yyyy-mm-dd') "createDate",
+	    t.create_org_path "createOrgPath",
+	    t.org_path "orgPath",
+	    t.USERGROUP_ID "userGroupId",
+	    t.CREATE_USER "createUser",
+	    t.state "state",
+	    t.parent_id "parentId",
+	    t3.user_name  "createUserName",
+	    t4.type_desc "activityTypeName"
+	    from CLYX_ACTIVITY t
+	    left join ${security}.userinfo t3 on
+	    t3.login_id=t.CREATE_USER
+	    left join CLYX_ACTIVITY_TYPE t4 on
+	    t4.type_id=t.activity_typeid
+	    left join CLYX_ACTIVITY_ORGLEVEL t5 on
+	    t.org_level=t5.org_level and t.tenant_id = t5.tenant_id
+	    left join CLYX_ACTIVITY_STATE_CODE t6 on
+	    t.state=t6.state_code
+	    left join CLYX_ACTIVITY_THEME t7 on
+	    t7.theme_code=t.ACTIVITY_THEME_CODE
+	    where (exists(
+		select * from CLYX_P_CHANNEL_INFO a
+		where ','||t.channel_check||',' like '%,'||a.channel_code||',%'
+		and a.channel_type='1' ) or t.org_level='1')
+		and t.state='13' and
+		t.tenant_id=#{tenantId,javaType=String,jdbcType=VARCHAR}
+		<if test="activityName !=null and activityName !=''">
+			AND t.activity_name like CONCAT(
+			CONCAT('%', #{activityName,javaType=String,jdbcType=VARCHAR}), '%')
+		</if>
+		order by t.create_date desc
+	</select>
+
+	<select id="getExecuteId" resultType="string">
+	select
+		to_char(execute_id_SEQ.nextval) as "execute_id" from dual
+	</select>
+	
+	<select id="getNowTime" resultType="java.lang.String">
+	    select 
+	    to_char(sysdate,'yyyy-mm-dd hh24:mi:ss') "sysDate"
+	    from dual
+	</select>
+	
+	<select id="getStatusName" resultType="java.lang.String">
+		select state_desc
+		"status" from CLYX_ACTIVITY_STATE_CODE where state_code=
+		#{status_code,javaType=String,jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="executeLog" parameterType="java.lang.String">
+		insert into CLYX_EXECUTE_LOG(EXECUTE_ID,ACTIVITY_ID,USER_ID,REMARK,
+		EXECUTE_DATE,STATUS,TENANT_ID,USER_NAME)VALUES(#{executeId,javaType=String,jdbcType=VARCHAR},
+		#{activityId,javaType=String,jdbcType=VARCHAR},#{loginUserId,javaType=String,jdbcType=VARCHAR},
+		#{remark,javaType=String,jdbcType=VARCHAR},to_date(#{executeDate,jdbcType=DATE},'yyyy/mm/dd hh24:mi:ss'),
+		#{status,javaType=String,jdbcType=VARCHAR},#{tenantId,javaType=String,jdbcType=VARCHAR}
+		,#{userName,javaType=String,jdbcType=VARCHAR})
+	</insert>  
+	<update id="updatePassActivity" parameterType="java.lang.String">
+		update CLYX_ACTIVITY set state='9' where
+		activity_id=#{activityId,javaType=String,jdbcType=VARCHAR}
+	</update>
+
+
+	<update id="updateNoPassActivity" parameterType="java.lang.String">
+		update CLYX_ACTIVITY set state='10' where
+		activity_id=#{activityId,javaType=String,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="queryProcPage" parameterType="com.bonc.activity.model.ActivityProvBo" resultType="com.bonc.activity.model.ActivityProcPageinfo">
+		select  t.id as "pageId",
+				t.title as "title"
+		from clyx_p_proc_page t
+		where t.id = #{procPageId}
+	</select>
+	
+	<select id="getProcPageinfo" parameterType="com.bonc.activity.model.ActivityProvBo" resultType="java.util.HashMap">
+		select  t.page_id as "pageId",
+				t.resource_id as "resourceId",
+				t.resource_des as "resourceDes",
+				t.resource_group as "resourceGroup"
+				
+		from clyx_p_proc_resource_rel t
+		where t.page_id = #{procPageId}
+			  and t.valid = '1'
+		order by t.ord
+	</select>
+	
+	<update id="saveProcessInstanceId" parameterType="com.bonc.activity.model.ActivityProvBo">
+	    update clyx_activity t 
+	    set process_instance_id = #{processInstanceId,javaType=String,jdbcType=VARCHAR}
+	    where t.activity_id = #{po.activityId,javaType=String,jdbcType=VARCHAR}
+	    and t.tenant_id = #{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</update>
+	<!-- 渠道审批信息处理 -->
+	<select id="queryChannelMess" parameterType="com.bonc.activity.model.ActivityProvBo">
+		select count(*) from clyx_channel_approval_message where t.activity_id = #{po.activityId,javaType=String,jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="insertChannelMess" parameterType="com.bonc.activity.model.ActivityProvBo">
+		insert into clyx_channel_approval_message(activity_id,channel_id,approval_status,tenant_id) 
+		values(#{po.activityId,javaType=String,jdbcType=VARCHAR},#{po.approvalChannelId,javaType=String,jdbcType=VARCHAR},#{po.approvalStatus,javaType=String,jdbcType=VARCHAR},#{po.tenantId,javaType=String,jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateChannelMess">
+		update clyx_channel_approval_message t set t.approval_status='13' where t.channel_id in(${po.rejectedChannel})
+	</update>
+	
+	<update id="updateApprovalChannel" parameterType="com.bonc.activity.model.ActivityProvBo">
+		update clyx_channel_approval_message t set t.approval_status= #{po.approvalStatus,javaType=String,jdbcType=VARCHAR} 
+		where t.channel_id = #{po.approvalChannelId} and t.tenant_id = #{po.tenantId,javaType=String,jdbcType=VARCHAR}
+		and t.activity_id = #{po.activityId}
+	</update>
+	
+	<select id="queryStartChannel" parameterType="com.bonc.activity.model.ActivityProvPo" resultType="java.lang.String">
+	    select to_char(count(*))
+	    from clyx_channel_approval_message t 
+	    where t.approval_status='9'
+	    and t.activity_id=#{activityId,javaType=String,jdbcType=VARCHAR}
+	    and t.tenant_id = #{tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+	
+	<delete id="deleteChannelMess" parameterType="com.bonc.activity.model.ActivityProvBo">
+		delete from clyx_channel_approval_message t where 1=1 
+		and t.activity_id =#{po.activityId,javaType=String,jdbcType=VARCHAR}
+		
+	</delete>
+	<update id="stopExamineActivity" parameterType="com.bonc.activity.model.ActivityProvPo">
+	    update clyx_activity t
+	    set t.state='8'
+	    where t.activity_id=#{activityId,javaType=String,jdbcType=VARCHAR}
+	      and t.tenant_id = #{tenantId,javaType=String,jdbcType=VARCHAR} 
+	</update>
+	
+	<update id="pauseSubmit" parameterType="com.bonc.activity.model.ActivityProvBo">
+	    update clyx_activity t 
+	    set t.state= #{po.state,javaType=String,jdbcType=VARCHAR}
+	    where t.activity_id=#{po.activityId,javaType=String,jdbcType=VARCHAR}
+	      and t.tenant_id = #{po.tenantId,javaType=String,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="ApprovalDataControl" parameterType="com.bonc.activity.model.ActivityProvBo" resultType="java.lang.String">
+		select sys_param_value from clyx_system_param where sys_param = '6'
+		and tenant_id = #{po.tenantId}
+	</select>
+	
+	<select id="queryIsSendSms" parameterType="com.bonc.activity.model.ActivityProvBo" resultType="java.lang.String">
+		select sys_param_value from CLYX_SYSTEM_PARAM where sys_param = '7'
+		and tenant_id = #{po.tenantId}
+	</select>
+</mapper>

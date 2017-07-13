@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.rule.RuleTypeDao">
+	<select id="findAllByIds" parameterType="String" resultType="com.bonc.epmwxwl.model.RuleSetList">
+		select 
+		rule_type_id "rule_type_id", 
+		rule_type_name "rule_type_name" ,
+		res_type_name "res_type_name" ,
+		w.tenant_id "tenant_id" ,
+		case  when w.stutas='0' then '停用' 
+		      when w.stutas='1' then '启用' 
+		end      "stutas"
+		from  
+		WXWL_RULE_TYPE w left join WXWL_RES_RULE_TYPE wr 
+		on w.res_type_id=wr.res_type_id
+		where w.draw_type_id = #{draw_type_id} 
+		and w.tenant_id=#{tenant_id}
+	</select>
+	<select id="findByIds" parameterType="String" resultType="com.bonc.epmwxwl.model.RuleSetList">
+		select 
+		rule_type_name "rule_type_name",
+		res_type_name "res_type_name",
+		condition_resume "condition_resume",
+		condition_sql "condition_sql",
+		w.stutas  "stutas",
+		w.sort_num "sort_num",
+		tenant_id "tenant_id" 
+		from 
+		WXWL_RULE_TYPE w left join WXWL_RES_RULE_TYPE wr 
+		on w.res_type_id=wr.res_type_id 
+		where w.rule_type_id=#{rule_type_id}
+		and w.tenant_id=#{tenant_id}
+	</select>
+	
+	<delete id="deleteByIds" parameterType="String">
+	delete  
+	from 
+	WXWL_RULE_TYPE 
+	where rule_type_id= #{rule_type_id} and tenant_id=#{tenant_id}
+	</delete>
+	
+	<update id="updateStutas1" parameterType="com.bonc.epmwxwl.model.RuleSetList">
+	update WXWL_RULE_TYPE 
+	set stutas=0 where rule_type_id= #{rule_type_id} and tenant_id=#{tenant_id}
+	</update>
+	<update id="updateStutas2" parameterType="com.bonc.epmwxwl.model.RuleSetList">
+	update WXWL_RULE_TYPE 
+	set stutas=1 where rule_type_id= #{rule_type_id} and tenant_id=#{tenant_id}
+	</update>
+	
+	<select id="findList" parameterType="com.bonc.epmwxwl.model.RuleSetList" resultType="com.bonc.epmwxwl.model.RuleSetList">
+		 select 
+    r.rule_type_id "rule_type_id", 
+    r.rule_type_name "rule_type_name" ,
+    d.rowtypet_name "rowtypet_name",
+   ru. res_type_name "res_type_name" ,
+   r.tenant_id "tenant_id" ,
+    r.stutas  "stutas"
+     from WXWL_RULE_TYPE r
+    left join WXWL_RES_RULE_TYPE ru on r.res_type_id = ru.res_type_id
+    left join WXWL_DRAW_TYPE d on d.draw_type_id = r.draw_type_id
+		where r.draw_type_id = #{draw_type_id} 
+		and r.tenant_id=#{tenant_id}
+	</select>
+</mapper>

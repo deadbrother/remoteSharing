@@ -1,0 +1,975 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<input type="hidden" id="channelcheck" name="po.channelCheck" value="">
+  <div class="manager">
+          <table style="width:730px;">
+              <colgroup>
+                  <col width="125px" />
+                  <col width="*" />
+              </colgroup>
+              <tr>
+                  <th style="text-align: right; padding-right:10px; padding-top:20px; vertical-align: top;">渠道触点</th>
+                  <td>
+                      <div class="IndexBlock_activity">
+            <h4 style=" padding-right:px;text-align:right"><a href="javascript:void(0)">按照用户渠道偏好统计</a><a href="javascript:void(0)" class="linkrefsh"><i class="fa  fa-repeat" aria-hidden="true"></i></a></h4>                      
+                          <ol>
+                              <li>
+                                  <a href="javascript:void(0)">
+                                      <strong>1362200 <sub>户</sub></strong>
+                                      <em>目标用户总数</em>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="javascript:void(0)" >
+                                      <strong>1600 <sub>户</sub></strong>
+                                      <em>客户经理</em>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="javascript:void(0)" >
+                                      <strong>6000 <sub>户</sub></strong>
+                                      <em>本地短信</em>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="javascript:void(0)" >
+                                      <strong>3000 <sub>户</sub></strong>
+                                      <em>微信</em>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="javascript:void(0)" >
+                                      <strong>333000 <sub>户</sub></strong>
+                                      <em>本地弹窗</em>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="javascript:void(0)" >
+                                      <strong>3000 <sub>户</sub></strong>
+                                      <em>网厅</em>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="javascript:void(0)" >
+                                      <strong>2600 <sub>户</sub></strong>
+                                      <em>手厅</em>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="javascript:void(0)" >
+                                      <strong>1000 <sub>户</sub></strong>
+                                      <em>沃视窗</em>
+                                  </a>
+                              </li>
+                          </ol>
+                      
+                          <div class="ChannelOut_activity">
+                              <h5>
+                                  <input type="checkbox" name="channel" class="icheckS" value="5" />
+                                  <i class="fa fa-user-o" aria-hidden="true"></i>
+                                  客户经理
+                              </h5>
+                              <div class="AreaIn" id="InNo1">
+                          
+                                  <table class="managerTable" id="selectedRule">
+                                      <colgroup>
+                                          <col width="20%"/>
+                                          <col width="20%"/>
+                                          <col width="35%"/>
+                                          <col width="10%"/>
+                                          <col width="10%"/>
+                                          <col width="10%"/>
+                                      </colgroup>
+                                      <tr>
+                                          <td class="ar">客户经理</td>
+                                          <td class="ar " colspan="3">当前目标用户数：<span class="grayRed"  style="font-weight: 700">2099</span></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">筛选数据</td>
+                                          <td>
+                                              <ul>
+                                                  <li class="li3"><input type="radio" id="selectData" name="po.frontlineChannelPo.isSpecialFilter" class="icheckS" value="1" />是</li>
+                                                  <li class="li2 showFrontline"><input type="radio" name="po.frontlineChannelPo.isSpecialFilter" class="icheckS" value="0" checked />否</li>
+                                              </ul>
+                                          </td>
+                                          <td colspan="3" id="content2" class="hidden">
+                                              筛选数据条件 
+                                              <input type="text"  class="form-control manInput" placeholder="" >
+                                          
+                                              <button type="button" id="content3" class="btn btn-primary term hidden" >条件</button>
+                                          </td>
+                                      </tr>
+                                      
+                                      
+                                      <tr>
+                                          <td class="ar" style="vertical-align:middle;">营销话术</td>
+                                          <td colspan="3">
+                                              <textarea class="form-control" rows="3" name="po.frontlineChannelPo.marketingWords"></textarea>
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">发送短信</td>
+                                          <td>
+                                              <ul>
+                                                  <li class="li3">  <input type="radio" id="selectData2" name="po.frontlineChannelPo.isSendSMS" class="icheckS" value="1" />是</li>
+                                                  <li class="li2"><input type="radio" name="po.frontlineChannelPo.isSendSMS" class="icheckS" value="0" checked />否</li>
+                                              </ul>
+                                          </td>
+                                          <td colspan="2">
+                                              <textarea class="form-control hidden" id="content4" rows="3" name="po.frontlineChannelPo.smsWords"></textarea>
+                                          </td>
+
+                                      </tr>
+                                       <input type="hidden" id="newrule" name='po.frontlineChannelPo.orderIssuedRule' value="">
+                                      <tr>
+                                          <td class="ar">工单下发规则</td>
+                                          <td colspan="2">
+                                               <select name="IssuedRule" class="form-control" id="orderIssuedRule">
+                                                 <option value="">请选择</option>
+                                                <c:forEach var ="activityWorkOrderRuleInfo"  items="${bo.activityWorkOrderRuleInfoList}">
+					                              <option id="${activityWorkOrderRuleInfo.rule_type_id}"  value="${activityWorkOrderRuleInfo.rule_type_id}">
+                			                         ${activityWorkOrderRuleInfo.rule_type_name}</option> 
+       					                        </c:forEach>
+                                              </select>
+                                          </td>
+                                          <td class="ar">
+                                              <button type="button" class="btn btn-primary term " onclick="addIssuedRule()">增加规则</button>
+                                          </td>
+                                      </tr>
+                                  </table>
+                                 
+                              </div>
+                          </div>
+                          <div class="ChannelOut_activity">
+                              <h5>
+                                  <input type="checkbox" name="channel" class="icheckS" value="7" />
+                                  <i class="fa fa-envelope-open-o" aria-hidden="true"></i>
+                                  本地短信
+                              </h5>
+                              <div class="AreaIn" id="InNo2">
+                         
+                                  <table class="managerTable">
+                                      <colgroup>
+                                          <col width="20%"/>
+                                          <col width="20%"/>
+                                          <col width="35%"/>
+                                          <col width="10%"/>
+                                           <col width="10%"/>
+                                      </colgroup>
+                                      <tr>
+                                          <td class="ar">短信</td>
+                                          <td class="ar" colspan="3">当前目标用户数：<span class="grayRed"  style="font-weight: 700">2099</span></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">筛选数据</td>
+                                          <td>
+                                              <ul>
+                                                  <li class="li3 sendMessage"><input id="#selectData3" type="radio" name="numed" class="icheckS" value="" />是</li>
+                                                  <li class="li2"><input type="radio" name="numed" class="icheckS" value="" checked />否</li>
+                                              </ul>
+                                          </td>
+                                          <td colspan="3" id="sendMessageContent" style="display:none">
+                                              筛选数据条件
+                                              <input type="text" class="form-control manInput" placeholder="" >
+                                         
+                                              <button type="button" class="btn btn-primary term " >条件</button>
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">模板参数</td>
+                                          <td colspan="3">
+                                              年：*YEAR*    月：*MONTH*      日：*DAY*    套内流量*TNLL*
+                                          </td>
+
+                                      </tr>
+                                      <tr>
+                                          <td class="ar" style="vertical-align:middle;">发送内容</td>
+                                          <td colspan="3">
+                                              <textarea class="form-control" rows="3"  name="po.msmChannelPo.smsContent"  id="sendContent"></textarea>
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">测试号码</td>
+                                          <td colspan="2">
+                                              <input type="text" class="form-control" placeholder="测试号码" id="phoneNum">
+                                          </td>
+                                          <td class="ar">
+                                              <button type="button" class="btn btn-primary term "   id="smsMsgTest" >发送测试</button>
+                                          </td>
+                                      </tr>
+                                     
+                                      <tr>
+                                          <td class="ar"> 原地址：</td>
+                                          <td colspan="2">
+                                             
+                                              <input type="text" class="form-control manInput" placeholder=""  id="longUrl" >
+                                              <button type="button" class="btn btn-primary term " id="trans">合成短链接</button>
+                                              <i class="fa fa-question-circle-o" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="自定义：不使用统一设置，重新定义接触频次"></i>
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar"> 短链接：</td>
+                                          <td colspan="2">
+                                             <input type="text" class="form-control manInput" placeholder=" "  id="shortUrl">
+                                              <i class="fa fa-question-circle-o" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="自定义：不使用统一设置，重新定义接触频次"></i>
+                                          </td>
+                                      </tr>
+                                  </table>
+                                 
+                              </div>
+                          </div>
+                          <div class="ChannelOut_activity">
+                              <h5>
+                                  <input type="checkbox" name="channel" class="icheckS" value="11" />
+                                  <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                  微信
+                              </h5>
+                              <div class="AreaIn" id="InNo3">
+                                 
+                                  <table class="managerTable">
+                                      <colgroup>
+                                          <col width="20%"/>
+                                          <col width="80%"/>
+                                      </colgroup>
+                                      <tr>
+                                          <td class="ar">公众号信息</td>
+                                          <td colspan="2">
+                                               <select name="po.webChatMidActivityPo.publicId" class="form-control" id="">
+                 
+                                                <c:forEach var ="channelPublicWebChatPo"  items="${bo.webChatPublic}">
+					                              <option id="${channelPublicWebChatPo.publicId}"  value="${channelPublicWebChatPo.publicId}">
+                			                         ${channelPublicWebChatPo.publicName}</option> 
+       					                        </c:forEach>
+                                              </select>
+                                          </td>
+                               
+                                      </tr>
+                                      
+                                      <tr>
+                                          <td class="ar">
+                                              <span>*</span>标题
+                                          </td>
+                                          <td><input type="text" class="form-control" placeholder="" name="channelWebchatInfo.channelWebchatTitle"></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">
+                                              <span>*</span>网址
+                                          </td>
+                                          <td><input type="url" class="form-control" placeholder="请输入网址" name="channelWebchatInfo.channelWebchatUrl"></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar" style="vertical-align:middle;">
+                                              <span>*</span>话术
+                                          </td>
+                                          <td><textarea class="form-control" rows="3" name="channelWebchatInfo.channelWebchatContent"></textarea></td>
+                                      </tr>
+                                  </table>
+                          
+                              </div>
+                          </div>
+                          <div class="ChannelOut_activity">
+                              <h5>
+                                  <input type="checkbox" name="channel" class="icheckS" value="8" />
+                                  <i class="fa fa-newspaper-o" aria-hidden="true"></i>
+                                  本地弹窗
+                              </h5>
+                             
+             
+                              <div class="AreaIn" id="InNo4">
+         
+                                  <div class="windowDiv">
+                                      <ul class="nav nav-tabs " role="tablist" id="myTab">
+                                          <li role="presentation"  class="active"><a href="#home" role="tab" data-toggle="tab">自有营业厅</a></li>
+                                          <li role="presentation"><a href="#home1" role="tab" data-toggle="tab">社会营业厅</a></li>
+                                      </ul>
+                                      <div class="tab-content">
+                                          <div role="tabpanel" class="tab-pane active" id="home">
+                                           <input type="hidden" name="mvclist[0].channelName" value="自有营业厅">
+                                              <table class="managerTable">
+                                                  <colgroup>
+                                                      <col width="20%"/>
+                                                      <col width="60%"/>
+                                                      <col width="20%"/>
+                                                  </colgroup>
+                                                  <tr>
+                                                  <tr>
+                                                      <td class="ar">
+                                                          渠道生效
+                                                      </td>
+                                                      <td> <input type="checkbox" name="activ" class="icheckS" value="" checked/>点选生效</td>
+                                                    
+                                                  </tr>
+                                                  <tr>
+                                                      <td  class="ar">
+                                                         日弹出限制
+                                                      </td>
+                                                      <td><input type="text" class="form-control" placeholder=""  name="" ></td>
+                                                      <td>次</td>
+                                                      
+                                                  </tr>
+                                                <!--    <tr>
+                                                      <td  class="ar">
+                                                         
+                                                      </td>
+                                                      <td colspan="2"><input type="number" class="form-control" placeholder="" min="1" max="100" ></td>
+                                                  </tr>-->
+                                                  <tr>
+                                                      <td class="ar">
+                                                          目标
+                                                      </td>
+                                                      <td colspan="2"><input type="text" class="form-control" placeholder=""  name="mvclist[0].target"></td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td  class="ar" style="vertical-align:middle;">
+                                                          话术
+                                                      </td>
+                                                      <td><textarea class="form-control" rows="3" name="mvclist[0].content"></textarea></td>
+                                                      <td>
+                                                          <div class="textDiv">
+                                                              <ul>
+                                                                  <li>渠道偏好</li>
+                                                                  <li>稳定度标签</li>
+                                                                  <li>出账费用(元)</li>
+                                                                  <li>合约到期时间</li>
+                                                                  <li>合约类型</li>
+                                                                  <li>地市</li>
+                                                                  <li>省份</li>
+                                                                  <li>产品分类</li>
+                                                                  <li>服务类型</li>
+                                                                  <li>费用类型</li>
+                                                              </ul>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                              </table>
+                                          </div>
+                                          <div role="tabpanel" class="tab-pane" id="home1">
+                                           <input type="hidden" name="mvclist[1].channelName" value="社会营业厅">
+                                              <table class="managerTable">
+                                                  <colgroup>
+                                                      <col width="20%"/>
+                                                      <col width="60%"/>
+                                                      <col width="20%"/>
+                                                  </colgroup>
+                                                  <tr>
+                                                  <tr>
+                                                      <td class="ar">
+                                                          渠道生效
+                                                      </td>
+                                                      <td > <input type="checkbox" name="activ" class="icheckS" value="" checked/>点选生效</td>
+                                                   
+                                                  </tr>
+                                                  <tr>
+                                                      <td  class="ar">
+                                                          日弹出限制
+                                                      </td>
+                                                      <td class="ar"><input type="text" class="form-control" placeholder=""  name=""></td>
+                                                      <td >次</td>
+                                                      <td></td>
+                                                  </tr>
+                                              <!--     <tr>
+                                                      <td  class="ar">
+                                                         
+                                                      </td>
+                                                      <td colspan="2"><input type="number" class="form-control" placeholder="" min="1" max="100" ></td>
+                                                  </tr>--> 
+                                                  <tr>
+                                                      <td class="ar">
+                                                          目标
+                                                      </td>
+                                                      <td colspan="2"><input type="text" class="form-control" placeholder=""  name="mvclist[1].target"></td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td  class="ar" style="vertical-align:middle;">
+                                                          话术
+                                                      </td>
+                                                      <td><textarea class="form-control" rows="3" name="mvclist[1].content"></textarea></td>
+                                                      <td>
+                                                          <div class="textDiv">
+                                                              <ul>
+                                                                  <li>渠道偏好</li>
+                                                                  <li>稳定度标签</li>
+                                                                  <li>出账费用(元)</li>
+                                                                  <li>合约到期时间</li>
+                                                                  <li>合约类型</li>
+                                                                  <li>地市</li>
+                                                                  <li>省份</li>
+                                                                  <li>产品分类</li>
+                                                                  <li>服务类型</li>
+                                                                  <li>费用类型</li>
+                                                              </ul>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                              </table>
+                                          </div>
+                                      </div>
+                                  </div>
+                                 
+                              </div>
+                          <div class="ChannelOut_activity">
+                              <h5>
+                                  <input type="checkbox" name="channel" class="icheckS" value="2" />
+                                  <i class="fa fa-television" aria-hidden="true"></i>
+                                  网厅
+                              </h5>
+                              <div class="AreaIn" id="InNo5">
+        
+                                  <table class="managerTable">
+                                      <colgroup>
+                                          <col width="20%"/>
+                                          <col width="80%"/>
+                                      </colgroup>
+                                      <tr>
+                                          <td class="ar" style="vertical-align:middle;">
+                                              <span>*</span>话术
+                                          </td>
+                                          <td><textarea class="form-control" rows="3" name="wangting.content"></textarea></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">
+                                              <span>*</span>标题
+                                          </td>
+                                          <td><input type="text" class="form-control" placeholder="" name="wangting.title"></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">
+                                              <span>*</span>网址
+                                          </td>
+                                          <td><input type="text" class="form-control" placeholder="" name="wangting.url"></td>
+                                      </tr>
+                                  </table>
+                     
+                              </div>
+                          </div>
+                          <div class="ChannelOut_activity">
+                              <h5>
+                                  <input type="checkbox" name="channel" class="icheckS" value="1"  />
+                                  <i class="fa fa-tablet" aria-hidden="true"></i>
+                                  手厅
+                              </h5>
+                              <div class="AreaIn" id="InNo6">
+                     
+                                  <table class="managerTable">
+                                      <colgroup>
+                                          <col width="20%"/>
+                                          <col width="80%"/>
+                                      </colgroup>
+                                      <tr>
+                                          <td class="ar" style="vertical-align:middle;">
+                                              <span>*</span>话术
+                                          </td>
+                                          <td><textarea class="form-control" rows="3" name="channelHandOfficePo.content"></textarea></td>
+                                      </tr>
+                                      <td class="ar">
+                                          <span>*</span>标题
+                                      </td>
+                                      <td><input type="text" class="form-control" placeholder="" name="channelHandOfficePo.title"></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">
+                                              <span>*</span>网址
+                                          </td>
+                                          <td><input type="url" class="form-control" placeholder="请输入网址" name="channelHandOfficePo.url"></td>
+                                      </tr>
+
+                                  </table>
+                       
+                              </div>
+                          </div>
+                          <div class="ChannelOut_activity">
+                              <h5>
+                                  <input type="checkbox" name="channel" class="icheckS" value="9"  />
+                                  <i class="fa fa-sticky-note-o" aria-hidden="true"></i>
+                                  沃视窗
+                              </h5>
+                              <div class="AreaIn" id="InNo7">
+                  
+                                  <table class="managerTable">
+                                      <colgroup>
+                                          <col width="20%"/>
+                                          <col width="80%"/>
+                                      </colgroup>
+                                      <tr>
+                                          <td class="ar" style="vertical-align:middle;">
+                                              <span>*</span>话术
+                                          </td>
+                                          <td><textarea class="form-control" rows="3" name="channelWoWindowPo.huashu"></textarea></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">
+                                              <span>*</span>标题
+                                          </td>
+                                          <td><input type="text" class="form-control" placeholder="" name="channelWoWindowPo.title"></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">
+                                              <span>*</span>网址
+                                          </td>
+                                          <td><input type="url" class="form-control" placeholder="请输入网址" name="channelWoWindowPo.url"></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">
+                                              <span>*</span>图片网址
+                                          </td>
+                                          <td><input type="url" class="form-control" placeholder="" name="channelWoWindowPo.imgUrl"></td>
+                                      </tr>
+                                      <tr>
+                                          <td class="ar">
+                                              <span>*</span>图片尺寸
+                                          </td>
+                                          <td>
+                                              <select class="form-control" name="channelWoWindowPo.imgSize">
+                                                  <option value="600*360">600*360</option>
+                                                  <option value ="640*90">640*90</option>
+							                      <option value ="640*268">640*268</option>
+							                      <option value ="620*420">620*420</option>
+                                              </select>
+                                          </td>
+                                      </tr>
+                                  </table>
+                           
+                              </div>
+                          </div>
+                      </div>
+</div>
+                  </td>
+              </tr>
+          </table>
+          </div>
+
+          <button id="advancedActivityBtn" type="button" class="btn btn-primary fr" style="margin-top:10px;" data-toggle="modal" data-target="">高级模式</button>
+     <div id="advancedActivity" style="display:none">
+     <h2 class="activity">高级模式</h2>
+<div class="activitySetArea">
+
+    <h3 class="headList">活动信息扩展配置</h3>
+    <table class="activeLayout">
+        <colgroup>
+            <col width="22%" />
+            <col width="15%" />
+            <col width="15%" />
+        </colgroup>
+        <tr>
+            <th>活动优先级</th>
+            <td colspan="2">
+                <select name="po.urgencyLevel" class="form-control" value="${bo.activityBasicInfo.urgencyLevel }">
+                    <option value="1" ${bo.activityBasicInfo.urgencyLevel==1?'selected':'' }>高</option>
+                    <option value="2" ${bo.activityBasicInfo.urgencyLevel==2||bo.activityBasicInfo.urgencyLevel==null?'selected':'' }>中</option>
+                    <option value="3" ${bo.activityBasicInfo.urgencyLevel==3?'selected':'' }>低</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>关联活动</th>
+            <td colspan="2">
+                <select name="po.parentActivity" class="form-control" value="${bo.activityBasicInfo.parentActivityId }">
+                    <option value="" >请选择</option>
+                    <c:forEach items="${bo.underActivityList }" var ="ual">
+                    <option value="${ual.activityDailyId }" ${ual.activityDailyId==bo.activityBasicInfo.parentActivityId?'selected':'' }>${ual.activityDailyName }</option>
+                    </c:forEach>
+
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>所属政策</th>
+            <td colspan="2">
+                <select name="po.policyId" class="form-control" value="${bo.activityBasicInfo.policyId }">
+                    <option value="" >请选择</option>
+                    <c:forEach items="${bo.policyList }" var="pol">
+                    <option value="${pol.policyId}" ${pol.policyId==bo.activityBasicInfo.policyId?'selected':''}>${pol.policyName}</option>
+                    </c:forEach>
+                </select>
+            </td>
+        </tr>
+    </table>
+  
+    <h3 class="headList">工单规则扩展配置</h3>
+    <table class="activeLayout">
+        <colgroup>
+            <col width="22%" />
+            <col width="25%" />
+            <col width="25%" />
+            <col width="28%" />
+        </colgroup>
+        <tr>
+            <th colspan="2" class="whiteNormal">不同用户显示不同推荐信息说明</th>
+            <td colspan="2">
+                <form>
+                <ul>
+                    <li class="li1 toggole"><input  type="radio" onclick="getRadio()" name="userSelect" class="icheckS" value="是" />是</li>
+                    <li class="li2"><input  type="radio" onclick="getRadio()"  name="userSelect" class="icheckS" value="否"  checked="checked"/>否
+                        <i data-toggle="tooltip" data-placement="right" title="同一个活动，在执行页面不同用户展现不同的推荐信息" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                    </li>
+                </ul>
+                </form>
+            </td>
+        </tr>
+        <tr style="display: none" id="explainTable">
+            <th></th>
+            <td colspan="3">
+                <table class="explainTable">
+                    <colgroup>
+                        <col width="36px" />
+                        <col width="15%" />
+                        <col width="25%" />
+                        <col width="6%" />
+                        <col width="*" />
+                        <col width="36px" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>规则名称</th>
+                        <th>数据条件</th>
+                        <th>筛选后用户数</th>
+                        <th>推荐信息</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>剩余用户数</td>
+                        <td>以下筛选条件剩余用户数</td>
+                        <td>0</td>
+                        <td><input type="text" class="form-control tableInput" placeholder="引导用户打开网络"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" class="form-control tableInput" placeholder="规则一"></td>
+                        <td>终端类型：4g终端；卡类型：uim卡；</td>
+                        <td>2700</td>
+                        <td><input type="text" class="form-control tableInput" placeholder="引导用户先换卡"></td>
+                        <td><i class="fa fa-trash" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><input type="text" class="form-control tableInput" placeholder="规则二"></td>
+                        <td>终端类型：4g终端；卡类型：sim卡；</td>
+                        <td>4300</td>
+                        <td><input type="text" class="form-control tableInput" placeholder="引导用户打开网络"></td>
+                        <td><i class="fa fa-trash" aria-hidden="true"></i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <th>工单生命周期</th>
+            <td>
+                <input name="po.orderCycle" class="form-control" placeholder="1" type="number"  min="1" max="100" value="${bo.activityBasicInfo.ORDERCYCLE }">
+            </td>
+            <td style="padding-left: 10px" >
+                单位(月/日)
+            </td>
+            <td>
+                <input  type="radio" name="" class="icheckS" value="" />
+                是否参照活动结束时间
+            </td>
+        </tr>
+        <tr>
+            <th>工单更新规则</th>
+            <td colspan="2">
+                <form>
+                    <ul>
+                        <li class="li1"><input  type="radio"  name="po.orderUpdateRule" class="icheckS" value="1" ${bo.activityBasicInfo.ORDERUPDATERULE==1?'checked':''}/>追加
+                            <i data-toggle="tooltip" data-placement="right" title="符合口径的新工单追加进来，现有工单不符合口径的注销" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li>
+                        <li class="li2"><input  type="radio"  name="po.orderUpdateRule" class="icheckS" value="2" ${bo.activityBasicInfo.ORDERUPDATERULE==2||bo.activityBasicInfo.ORDERUPDATERULE==null?'checked':'' }/>覆盖
+                            <i data-toggle="tooltip" data-placement="right" title="将原有用户工单未执行未成功的注销，生成新工单" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li>
+                    </ul>
+                </form>
+            </td>
+        </tr>
+    </table>
+   
+    <h3 class="headList">渠道扩展配置</h3>
+    <table class="activeLayout">
+        <colgroup>
+            <col width="125px" />
+            <col width="30%" />
+            <col width="*" />
+            <col width="*" />
+        </colgroup>
+        <tr>
+            <th>接触频次定义</th>
+            <td>客户经理</td>
+            <td colspan="2">
+                <form>
+                    <ul>
+                        <li class="li1"><input  type="radio"  name="accountManager" class="icheckS" value="" checked />使用统一设置
+                            <i data-toggle="tooltip" data-placement="right" title="使用统一设置：使用渠道总控设置里的接触频次" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li>
+                        <li class="li2 front"><input  type="radio"  name="accountManager" class="icheckS" value="" />自定义
+                            <i data-toggle="tooltip" data-placement="right" title="自定义：不使用统一设置，重新定义接触频次" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li>
+                    </ul>
+                </form>
+            </td>
+        </tr>
+        <tr id="advanceActivity_frontlineChannel" style="display:none">
+        <th>接触频次设置</th>
+            <td>
+                              近<input class="form-control inputWidth" type="number" placeholder="30"  min="1" max="100">天一次
+               <span data-toggle="tooltip" data-placement="right" title="接触频次：出工单时会判断接触记录表中近多少天是否与用户接触过。"> <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+            </span>
+            </td>
+        
+        
+        </tr>
+        
+        <tr>
+            <td></td>
+            <td>短信</td>
+            <td colspan="2">
+                <form>
+                    <ul>
+                        <li class="li1"><input  type="radio"  name="note" class="icheckS" value="" checked />使用统一设置
+                            <i data-toggle="tooltip" data-placement="right" title="使用统一设置：使用渠道总控设置里的接触频次" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li>
+                        <li class="li2 message"><input  type="radio"  name="note" class="icheckS" value="" />自定义
+                            <i data-toggle="tooltip" data-placement="right" title="自定义：不使用统一设置，重新定义接触频次" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li>
+                    </ul>
+                </form>
+            </td>
+        </tr>
+        <tr style="display:none" id="advanceActivity_message">
+                    <th></th>
+            <td colspan="5">
+         <table class="activeLayout" style="margin-left:20px">
+        <colgroup>
+            <col width="22%" />
+            <col width="17%" />
+            <col width="22%" />
+            <col width="17%" />
+            <col width="22%" />
+        </colgroup>
+        <tr>
+            <th>短信时段设置</th>
+            <td colspan="2"><input  type="checkbox"  name="noteTime" class="icheckS" value="" checked="checked"/>上午（9：00-12：00）</td>
+            <td style="padding-left: 90px" colspan="2"><input  type="checkbox"  name="noteTime" class="icheckS" value="" checked="checked" />下午（14：30-18：00）</td>
+        </tr>
+        <tr>
+            <th>按月刷新发送设置</th>
+            <td>开始日期</td>
+            <td> <input  class="form-control inputrefResh" type="number" placeholder="8" min="1" max="31">日</td>
+            <td class="tdRight">结束日期</td>
+            <td> <input  class="form-control inputrefResh" type="number" placeholder="26" min="1" max="31">日</td>
+        </tr>
+        <tr>
+            <th></th>
+            <td>本周期内发送次数</td>
+            <td> <input  class="form-control inputrefResh" type="number" placeholder="1" min="1" max="31">次</td>
+            <td class="tdRight">间隔</td>
+            <td><input  class="form-control inputrefResh"  type="number"  min="1" max="31">日</td>
+        </tr>
+        <tr>
+            <th>按日刷新发送设置</th>
+            <td colspan="4">发送说明：出工单当天发</td>
+        </tr>
+        <tr>
+            <th>发送频次设置</th>
+            <td colspan="4">
+                近<input class="form-control inputWidth" name="po.touchLimitDay" type="number"  min="1" value="${bo.activityBasicInfo.touchLimitDay}" placeholder="30" max="100">天一次
+               <span data-toggle="tooltip" data-placement="right" title="发送频次:出工单时会判断发送短信记录。">
+               <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+               </span>
+            </td>
+        </tr>
+        <tr>
+            <th>最后一次修改人</th>
+            <td colspan="4">市场部-杨烨</td>
+        </tr>
+    </table>
+        </td>
+        
+        
+        </tr>
+        
+        <tr>
+            <th class="whiteNormal">受限用户</th>
+            <td><a href="javasciprt:void(0)">查看限制用户数</a> </td>
+            <td colspan="3">
+                客户经理：100个 占总数3%；短信：50个 占总数1%
+            </td>
+        </tr>
+        <tr>
+            <th></th>
+            <td>处理方式</td>
+            <td colspan="3">
+                <input  class="icheckS" type="radio" name="po.isSendOrder"  value="0" ${bo.activityBasicInfo.isSendOrder==0||bo.activityBasicInfo.isSendOrder==null?'checked':'' }"/>
+                不出工单
+            </td>
+        </tr>
+        <tr>
+            <th rowspan="3">渠道协同配置</th>
+            <td>自动推送 <i data-toggle="tooltip" data-placement="right" title="当微信与短信同时选择时，自动发送渠道关系配置 " class="fa fa-question-circle-o" aria-hidden="true"></i></td>
+            <td colspan="3">
+                <form>
+                    <ul>
+                        <li class="li4"><input  type="radio"  name="po.selfSendChannelRule" class="icheckS" value="1" ${bo.activityBasicInfo.selfSendChannelRule==1||bo.activityBasicInfo.selfSendChannelRule==null?'checked':'' } />各自发送可以重复
+                        </li>
+                        <li class="li2 hidden"><input  type="radio"  name="po.selfSendChannelRule" class="icheckS" value="0"${bo.activityBasicInfo.selfSendChannelRule==0?'checked':'' } />短信微信互斥发送
+                            <i data-toggle="tooltip" data-placement="right" title="先发送微信，其它用户发送短信" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li>
+                    </ul>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td >电子渠道<i data-toggle="tooltip" data-placement="right" title="电子渠道包括：网厅、手厅、沃视窗、弹窗" class="fa fa-question-circle-o" aria-hidden="true"></i></td>
+            <td colspan="2">
+                <form>
+                    <ul>
+                        <li class="li1">
+                            <input  type="radio"  name="po.eChannelShowRule" class="icheckS" value="1" ${bo.activityBasicInfo.eChannelShowRule==1||bo.activityBasicInfo.eChannelShowRule==null?'checked':'' }/>不互斥
+                            <i data-toggle="tooltip" data-placement="right" title="不互斥：表示互不影响，每个渠道都可以展示一次" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li>
+                    </ul>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td>客户经理与弹窗</td>
+            <td colspan="2">
+                <form>
+                    <ul>
+                        <li class="li1">
+                            <input  type="radio"  name="po.otherChannelExerule" class="icheckS" value="1" ${bo.activityBasicInfo.otherChannelExerule==1||bo.activityBasicInfo.otherChannelExerule==null?'checked':'' }/>不互斥
+                            <i data-toggle="tooltip" data-placement="right" title="不互斥表示都可以执行一次" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li> 
+                        <li class="li2 hidden">
+                            <input  type="radio"  name="po.otherChannelExerule" class="icheckS" value="0" ${bo.activityBasicInfo.otherChannelExerule==0?'checked':''} />互斥
+                            <i data-toggle="tooltip" data-placement="right" title="互斥表示客户经理与弹窗只执行一次" class="fa fa-question-circle-o" aria-hidden="true"></i>
+                        </li>
+                    </ul>
+                </form>
+            </td>
+        </tr>
+    </table>
+ 
+</div>
+</div>
+<script type="text/javascript">
+
+    $("#advancedActivityBtn").click(function(){
+    $("#advancedActivity").toggle();
+    });
+    
+    
+    $('.li2.message input.icheckS').iCheck({
+        labelHover : false,
+        cursor : true,
+        checkboxClass : 'icheckbox_square-blue',
+        radioClass : 'iradio_square-blue',
+        increaseArea : '20%'
+    }).on('ifChecked', function(event){
+        $("#advanceActivity_message").show();
+    }).on('ifUnchecked', function(event){
+        $("#advanceActivity_message").hide();
+    });
+    
+    
+    
+    
+    
+    var k=1;	
+	function addIssuedRule(){
+		     var delid="del"+k;
+			 var newdivid="deldiv"+k;
+			 var newdiv1="#"+newdivid;
+			 var tdid="tdid"+k;
+			 var finid="#"+tdid;
+		     var oSel = document.getElementById("orderIssuedRule");
+			 var newdiv="<tr id='"+newdivid+"' name='newdiv'><td class='ar'>工单下发规则</td></tr>"
+			 var aaa="<td class='ar'><button class='btn btn-primary term' id='"+delid+"' "+"onclick='delIssuedRule(this)'>删除</button></td>"
+			 console.log(aaa);
+             var oNewSel = oSel.cloneNode(true);
+			  $("#selectedRule").append(newdiv);
+			// $(newdiv1).append("<div name='order'>第"+k+"优先级"+"</div>");
+			 $(newdiv1).append("<td colspan='2' id='"+tdid+"' name='order'></td>");
+			 oNewSel.setAttribute("id","orderIssuedRule"+k);	
+             $(finid).append(oNewSel);	
+			 $(newdiv1).append(aaa);
+			  k++;
+	}
+	function getSelectRule(){
+		var str;
+		var i=0;
+		var name=document.getElementsByName("IssuedRule");
+		$("select[name=IssuedRule] option:selected").each(function(){
+			if($(this).val()==null||$(this).val()==""){
+				return;
+			}
+		 if(i==0){
+			  str=$(this).val();
+			  i=1;
+		 }else{str+=","+$(this).val();}  
+         });
+		 $("#newrule").val(str);
+		
+	}
+	
+	function delIssuedRule(ele){
+		   // alert(ele);
+		   // $(ele).empty();
+		    var object= ele.parentNode.parentNode.parentNode;
+			object.removeChild(ele.parentNode.parentNode);
+			--k;
+			
+		}
+	
+	//客户经理界面优化
+    $(document).ready(function(){
+    	 $("#selectData").iCheck({
+ 	        labelHover : false,
+ 	        cursor : true,
+ 	        checkboxClass : 'icheckbox_square-blue',
+ 	        radioClass : 'iradio_square-blue',
+ 	        increaseArea : '20%'
+ 	    }).on('ifChecked', function(event){
+ 	       // $("#content1").attr("class","");
+ 	        $("#content2").attr("class","");
+ 	        $("#content3").attr("class","btn btn-primary term");
+ 	        
+ 	    }).on('ifUnchecked', function(event){
+ 	       // $("#content1").attr("class","hidden");
+ 	        $("#content2").attr("class","hidden");
+ 	        $("#content3").attr("class","btn btn-primary term hidden");
+ 	    });
+    	 
+    	 $("#selectData2").iCheck({
+  	        labelHover : false,
+  	        cursor : true,
+  	        checkboxClass : 'icheckbox_square-blue',
+  	        radioClass : 'iradio_square-blue',
+  	        increaseArea : '20%'
+  	    }).on('ifChecked', function(event){
+  	        $("#content4").attr("class","form-control");
+  	        
+  	    }).on('ifUnchecked', function(event){
+  	        $("#content4").attr("class","form-control hidden");
+  	    });
+    	 
+    	/*  短信优化 */
+    	 $("#selectData3").on('ifChecked', function(event){
+  	       // $("#content1").attr("class","");
+  	      
+  	      $("#sendMessageContent").show();
+  	        
+  	    }).on('ifUnchecked', function(event){
+  	       // $("#content1").attr("class","hidden");
+  	      $("#sendMessageContent").hide();
+  	    
+  	    });
+    })
+	
+  
+</script>
+

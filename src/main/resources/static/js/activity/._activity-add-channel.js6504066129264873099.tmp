@@ -1,0 +1,403 @@
+$(document).ready(function() {
+	$("#trans").click(function() {
+		transLongtoShort();
+	});
+
+	$("#smsMsgTest").click(function() {
+		debugger;
+		var contents = $("#sendContent").val();
+		var targetPhoneNumber = $("#phoneNum").val();
+		if (contents == null || contents == "") {
+			alert("发送的内容不能为空");
+			return;
+		} else if (targetPhoneNumber == null || targetPhoneNumber == "") {
+			alert("手机号不能为空");
+			return;
+		}
+
+		$.ajax({
+			url : "../activity/msmMsgSendTest",
+			data : {
+				"contents" : contents,
+				"targetPhoneNumber" : targetPhoneNumber
+			},
+			type : "POST",
+		    async : false,
+			success : function(data) {
+				if (data == "success") {
+					alert("短信发送成功");
+				} else {
+					alert("服务连接失败");
+				}
+			}
+		});
+	});
+	
+	$("#channelcheck").click(function(){
+		
+		
+	});
+});
+// 长地址合成短地址
+function transLongtoShort() {
+	var longUrl = $("#longUrl").val();
+	if (longUrl == null || longUrl == "") {
+		alert("请输入长地址");
+		return;
+	}
+	
+		$.ajax({
+		url : "../activity/longtoshort",
+		data : {
+			"longUrl" : longUrl
+		},
+		success : function(data) {
+			if (data.status == "200") {
+				$("#shortUrl").val(data.urlShort);
+			} else {
+				$("#shortUrl").val("");
+				alert("服务连接失败或长地址不合法");
+			}
+		}
+	});
+
+
+}
+
+//选中的渠道
+function getSelectChannelId(){
+	 var channelId; 
+	 var flag=1;
+	 var name=document.getElementsByName("channel");
+	 for(var i=0;i<name.length;i++){
+		  if(name[i].checked){
+			   if(flag==1){
+				   channelId=name[i].value;
+				   flag=2;
+			   }else{
+				   channelId+=','+name[i].value;
+			   }
+		  }
+	 }
+	 if(channelId==null){
+		 alert("请至少勾选一个渠道");
+		 return false;
+	 }else{
+		 $("#channelcheck").val(channelId);
+		 return true;
+	 }
+   
+}
+
+/**
+ * 增加一行规则
+ */
+function addStrategyRule(){
+	if(jQuery("#strategyRuleTable tbody tr[id!=defaultStrategyRule]:last").find("input[condition]").val()==""){
+		alert("请先把规则填写完整再增加新的规则")
+		return;
+	}
+	
+	var obj = jQuery("tr[id=defaultStrategyRule]").clone();
+	obj.attr("id","");
+	jQuery("#strategyRuleTable").append(obj);
+	strategyRuleNum();
+	obj.show();
+}
+/**
+ * 筛选条件选择
+ * @param obj
+ */
+function chooseRuleCondition(obj) {
+	conditionObj.taskCond("", "2", function(sql, resume) {
+		jQuery(obj).parent().find(":hidden").val(sql);
+		jQuery(obj).parent().find(":text").val(resume);
+	});
+	//刷新用户数
+	jQuery(obj).parent().next().html(getUserGroupNumberByChoice($("#userGroupId").val(),
+			jQuery(obj).parent().find(":hidden").val()))
+}
+/**
+ * 删除一行规则
+ * @param obj
+ */
+function deleteStrategyRule(obj){
+	jQuery(obj).parent().parent().remove();
+	strategyRuleNum();
+}
+/**
+ * 规则列表序号刷新
+ */
+function strategyRuleNum(){
+	jQuery("#strategyRuleTable tbody tr[id!=defaultStrategyRule]").each(function(i){
+		jQuery(this).find("td")[0].innerHTML=i;
+		jQuery(this).find(":hidden[ord]").val(i+1);
+		jQuery(jQuery(this).find("td")[1]).find(":input").val("规则" + i);
+		jQuery(jQuery(this).find("td")[4]).find(":input").val("请填写推荐信息");
+		jQuery(this).find(":input[name]").each(function(){
+			jQuery(this).attr("name",jQuery(this).attr("name").replace(new RegExp("channelSpecialFilterList\\[.*\\]","gm"),"channelSpecialFilterList["+i+"]"))
+		})
+//		jQuery(this).html(jQuery(this).html().replace(new RegExp("channelSpecialFilterList\\[.*\\]","gm"),"channelSpecialFilterList["+i+"]"));
+	})
+}
+
+function refreshStrategyRuleNum(){
+	var sqlObj = jQuery("#strategyRuleTable tbody td[filterConditionSql] ");
+	for(var i=0;i<sqlObj.length-1;i++){
+		console.log(sqlObj.find(":hidden").val());
+	}
+}
+
+//检查客户经理
+function checkFrontlineChannelPo(){
+	if(!checkIsNull("po.frontlineChannelPo.marketingWords","客户经理","话术","textarea")){
+		 return false;
+	}
+	if($("#content4").attr("code")==1){
+		if(!checkIsNull("po.frontlineChannelPo.smsWords","客户经理","短信内容","textarea")){
+			  return false;
+		}
+	}
+	if($("#newrule").val().length==0){
+		alert("请至少选择一条工单下发规则");
+		return false;
+	}
+	channelnum=channelnum+1;
+}
+//本地短信
+function checkMsmChannelPo(){
+	if(checkIsNull("msmChannelPo.smsContent","本地短信","话术","textarea")){
+		channelnum=channelnum+1;
+	}else{return false;}
+}
+//微信
+function checkWebChatinfo(){
+	if(checkIsNull("channelWebchatInfo.channelWebchatTitle","微信","标题","input")&&
+	checkIsNull("channelWebchatInfo.channelWebchatUrl","微信","网址","input")&&
+	checkIsNull("channelWebchatInfo.channelWebchatContent","微信","话术","textarea")){
+		channelnum=channelnum+1;
+	}else{return false}
+	
+}
+//本地弹窗
+function checkGroupPopup(){
+	var numberLimit1 = $("#numberLimit1").val();
+	var numberLimit2 = $("#numberLimit2").val();
+	var target1 = $("#target1").val();
+	var content1 = $("#content1").val();
+	var target2 = $("#target2").val();
+	var content22 = $("#content22").val();
+	// 自有营业厅选中
+	if ($("#ownTing").is(':checked')) {
+		if (numberLimit1 == null || numberLimit1 == "") {
+			alert("请填写自有营业厅日弹出限制次数");
+			return false;
+		}else{
+			if(numberLimit1<1){
+				alert("自有营业厅日弹出限制次数最小为1");
+				return false;				
+			}
+			if(numberLimit1>10000){
+				alert("自有营业厅日弹出限制次数最大为10000");
+				return false;					
+			}			
+		}
+		
+		if (target1 == null || target1 == "") {
+			alert("请填写自有营业厅目标");
+			return false;
+		}else{
+			if(target1<1){
+				alert("自有营业厅目标最小为1");
+				return false;				
+			}
+			if(target1>10000){
+				alert("自有营业厅目标最大为10000");
+				return false;					
+			}
+		}
+		
+		if (content1 == null || content1 == "") {
+			alert("请填写自有营业厅内容");
+			return false;
+		}else{
+			if(content1.length>1500){
+				alert("自有营业厅话术最长为1500");	
+				return false;
+			}
+			
+		}
+		
+	} else {
+		if ((target1 != null && target1 != "")
+				|| (content1 != null && content1 != "")
+				|| (numberLimit1 != null && numberLimit1 != "")) {
+			alert("请勾选自有营业厅生效");
+			return false;
+		}
+	}
+
+	// 社会营业厅被选中
+	if ($("#securityTing").is(':checked')) {
+		if (numberLimit2 == null || numberLimit2 == "") {
+			alert("请填写社会营业厅日弹出限制次数");
+			return false;
+		}else{
+			if(numberLimit2<1){
+				alert("社会营业厅日弹出限制次数最小为1");
+				return false;				
+			}
+			if(numberLimit2>10000){
+				alert("社会营业厅日弹出限制次数最大为10000");
+				return false;					
+			}			
+		}
+		
+		if (target2 == null || target2 == "") {
+			alert("请填写社会营业厅目标");
+			return false;
+		}else{
+			if(target2<1){
+				alert("社会营业厅目标最小为1");
+				return false;				
+			}
+			if(target2>10000){
+				alert("社会营业厅目标最大为10000");
+				return false;					
+			}
+			
+			
+		}
+		if (content22 == null || content22 == "") {
+			alert("请填写社会营业厅内容");
+			return false;
+		}else{
+			if(content22.length>1500){
+				alert("社会营业厅话术最长为1500");		
+				return false;
+			}
+		}
+		
+	} else {
+		if ((target2 != null && target2 != "")
+				|| (content22 = null && content22 != "")
+				|| (numberLimit2 != null && numberLimit2 != "")) {
+			alert("请勾选社会营业厅生效");
+			return false;
+		}
+	}
+	channelnum = channelnum + 1;	
+}
+//手厅
+function checkHandOffice(){
+	 if(checkIsNull("channelHandOfficePo.content","手厅","话术","textarea")&&
+	 checkIsNull("channelHandOfficePo.title","手厅","标题","input")&&
+	 checkIsNull("channelHandOfficePo.url","手厅","网址","input")){
+	
+		 channelnum=channelnum+1;
+	 }else{return false}
+}
+//网厅
+function checkWebOffice(){
+	if(checkIsNull("wangting.content","网厅","话术","textarea")&&
+	checkIsNull("wangting.title","网厅","标题","input")&&
+	checkIsNull("wangting.url","网厅","网址","input")){
+		channelnum=channelnum+1;
+	}else {return false}
+}
+//沃视窗
+function checkWowindowinfo(){
+	if(checkIsNull("channelWoWindowPo.huashu","沃视窗","话术","textarea")&&
+	checkIsNull("channelWoWindowPo.title","沃视窗","标题","input")&&
+	checkIsNull("channelWoWindowPo.url","沃视窗","网址","input")&&
+	checkIsNull("channelWoWindowPo.imgUrl","沃视窗","图片网址","input")){
+		channelnum=channelnum+1;
+		
+	}else{return false}
+	
+}
+//渠道校验方法
+function controllSelect(){
+	channelnum=0;
+	checkChannel=0;
+	 var name=document.getElementsByName("channel");
+	 for(var i=0;i<name.length;i++){
+		  if(name[i].checked){
+			  checkChannel=checkChannel+1;
+			  switch(name[i].value)
+			  {
+			  case '5':
+			 checkFrontlineChannelPo(); //校验客户经理渠道
+			
+			    break;
+			  case '11':
+				checkWebChatinfo();//校验微信渠道
+			
+			    break;
+			  case '9':
+				checkWowindowinfo();//校验沃视窗
+				
+				break;
+			  case '1':
+			checkHandOffice();//校验手厅
+				
+				break;
+			  case '2':
+				checkWebOffice(); //校验网厅
+			
+			    break;
+			  case '8':
+			 checkGroupPopup();//检查弹窗
+			    
+				break;
+			  case '7':
+		     checkMsmChannelPo();//校验数字短信
+			
+			    break;  
+			  }
+		  }
+	 }
+	 if(channelnum==checkChannel){
+		  return true;
+	 }else{return false}
+}
+
+
+function checkIsNull(value,name,content,type){
+	var needtocheck=type+"[name="+"'"+value+"'"+"]";
+	if($(needtocheck).val()==null||$(needtocheck).val()==''){
+		alert("请填写"+name+"渠道"+content+"内容");
+		return false;
+	}else{
+		return true;
+	}	
+}
+
+var channelnum=0;
+var channelflag=false;
+var checkChannel=0;
+
+//短信
+function addVarInitMsm(p) {
+	var content = $("#sendContent").val();
+	p = "${" + p + "}";
+	$("#sendContent").val(content + p);
+}
+// 自有营业厅
+function addVarInitOwn(p) {
+	var content = $("#content1").val();
+	p = "${" + p + "}";
+	$("#content1").val(content + p);
+}
+// 社会营业厅
+function addVarInitSecurity(p) {
+	var content = $("#content22").val();
+	p = "${" + p + "}";
+	$("#content22").val(content + p);
+}
+// 客户经理
+function addVarInitFront(p) {
+	var content = $("#marketingWords").val();
+	p = "${" + p + "}";
+	$("#marketingWords").val(content + p);
+}

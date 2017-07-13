@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.ActivityHuashuDao">
+<select id="getHuashuList"  parameterType="com.bonc.activity.model.ActivityHuashuVarPo" resultType="com.bonc.activity.model.ActivityHuashuVarPo">
+select
+	   id id,
+	   name name,
+       remarks remarks,
+       ord ord,
+       content content,
+       real_name realName,
+       decode(var_type, '01', '非实时', '02', '实时') varType ,
+       mysql_name mysqlName ,
+       decode(valid, '0', '否', '1', '是') valid     
+       from CLYX_HUASHU_VAR  t
+       where   t.tenant_id= #{tenantId}   
+       <if test="name!=null and name!=''">
+       and t.name like '%' || #{name} || '%'
+       </if>
+       order by to_number(t.ord) 
+</select>
+
+<select id="huashuUpdate"  parameterType="com.bonc.activity.model.ActivityHuashuVarPo" resultType="com.bonc.activity.model.ActivityHuashuVarPo">
+select 
+	   id id,
+	   name name,
+       remarks remarks,
+       ord ord,
+       content content,
+       real_name realName,
+       var_type varType ,
+       mysql_name mysqlName ,
+       valid valid    
+       from CLYX_HUASHU_VAR  t
+       where   t.tenant_id= #{tenantId}   
+       and t.id=#{id}
+       
+</select>
+
+<update id="huashuUpdate1" parameterType="com.bonc.activity.model.ActivityHuashuVarPo" >
+	update CLYX_HUASHU_VAR set
+	name=#{name},
+	remarks=#{remarks},
+	ord=#{ord},
+	content=#{content},
+	real_name=#{realName},
+	var_type=#{varType},
+	mysql_name=#{mysqlName} ,
+	valid=#{valid}
+	where id=#{id}
+
+</update>
+
+<select id="queryMaxId"  resultType="com.bonc.activity.model.ActivityHuashuVarPo">
+ select max(to_number(id)) id from CLYX_HUASHU_VAR
+</select>
+
+<insert id="huashuAdd1" parameterType="com.bonc.activity.model.ActivityHuashuVarPo">
+ insert into CLYX_HUASHU_VAR (
+	id,
+	name ,
+	remarks,
+	ord,
+	prov_id,
+	city_id,
+	content,
+	tenant_id,
+	real_name,
+	var_type,
+	mysql_name,
+	valid)
+	values(#{id}+1,#{name},#{remarks},#{ord}+1,'-1','-1',#{content},#{tenantId},
+	#{realName},#{varType},#{mysqlName},#{valid}
+	)  
+</insert>
+
+<select id="isExist"  parameterType="com.bonc.activity.model.ActivityHuashuVarPo" resultType="com.bonc.activity.model.ActivityHuashuVarPo">
+ select name from CLYX_HUASHU_VAR where name=#{name}
+ </select>
+ 
+ <delete id="huashuDelete" parameterType="com.bonc.activity.model.ActivityHuashuVarPo">
+ delete from CLYX_HUASHU_VAR where id=#{id}
+ </delete>
+</mapper>

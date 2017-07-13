@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.distribution.DistributionDao">
+	<select id="findAllByTenantId" parameterType="com.bonc.epmwxwl.model.RoleSet"
+		resultType="com.bonc.epmwxwl.model.RoleSet">
+		select
+		t.role_set_id "role_set_id",
+		t.clientsetname "clientsetname",
+		t.rule_type_id "rule_type_id",
+		t.dept_id "dept_id",
+		t.target_dept_id "target_dept_id",
+		t.cond_resume "cond_resume",
+		r.rule_type_name "rule_type_name",
+		t.cond_sql "cond_sql",
+		t.sortid "sortid",
+		t.creatime "creatime",
+		t.creatuserid "creatuserid",
+		t.tenant_id "tenant_id"
+		from WXWL_ROLE_SET t left join
+		WXWL_RULE_TYPE r on
+		t.rule_type_id = r.rule_type_id and
+		t.tenant_id=r.tenant_id and
+		r.stutas='0'
+		where t.tenant_id=#{tenant_id} and
+		t.dept_id=#{dept_id}
+		order by t.sortid asc
+	</select>
+	<select id="findAllRule" parameterType="String" resultType="java.util.Map">
+		select
+		t.rule_type_id "rule_type_id",
+		t.rule_type_name "rule_type_name"
+		from WXWL_RULE_TYPE t
+		where
+		t.tenant_id=#{tenant_id} and
+		t.stutas='0' and
+		t.draw_type_id='1'
+	</select>
+	<insert id="save" parameterType="com.bonc.epmwxwl.model.RoleSet">
+		insert into WXWL_ROLE_SET
+		(ROLE_SET_ID,
+		CLIENTSETNAME,
+		RULE_TYPE_ID,
+		DEPT_ID,
+		TARGET_DEPT_ID,
+		COND_RESUME,
+		COND_SQL,
+		SORTID,
+		CREATIME,
+		CREATUSERID,
+		TENANT_ID
+		) values (
+		#{role_set_id,jdbcType=VARCHAR},
+		#{clientsetname,jdbcType=VARCHAR},
+		#{rule_type_id,jdbcType=VARCHAR},
+		#{dept_id,jdbcType=VARCHAR},
+		#{target_dept_id,jdbcType=VARCHAR},
+		#{cond_resume,jdbcType=VARCHAR},
+		#{cond_sql,jdbcType=VARCHAR},
+		(select max(sortid)+1 from WXWL_ROLE_SET ),
+		sysdate,
+		#{creatuserid,jdbcType=VARCHAR},
+		#{tenant_id,jdbcType=VARCHAR}
+		)
+	</insert>
+	<select id="findOrgList" parameterType="com.bonc.epmwxwl.model.AllocationCount"
+		resultType="com.bonc.epmwxwl.model.AllocationCount">
+		select
+		org.id "orgId",
+		org.org_name "orgName",
+		org.path "orgPath",
+		org.orginfo_id "parenId"
+		from security_ys.orginfo org
+		where org.tenant_id = #{tenantId}
+		<if test="orgId !=null and orgId!=''">
+			and (org.id in (${orgId}) or org.orginfo_id in(${orgId}))
+		</if>
+		order by org.id desc
+	</select>
+	<select id="findOrg" parameterType="String" resultType="com.bonc.epmwxwl.model.AllocationCount">
+		${buf}
+	</select>
+	<select id="selectRoleSetById" parameterType="com.bonc.epmwxwl.model.RoleSet"
+		resultType="com.bonc.epmwxwl.model.RoleSet">
+		select
+		t.role_set_id "role_set_id",
+		t.clientsetname "clientsetname",
+		t.rule_type_id "rule_type_id",
+		t.dept_id "dept_id",
+		t.target_dept_id "target_dept_id",
+		t.cond_resume "cond_resume",
+		t.cond_sql "cond_sql",
+		t.sortid "sortid",
+		t.creatime "creatime",
+		t.creatuserid "creatuserid",
+		t.tenant_id "tenant_id"
+		from WXWL_ROLE_SET t
+		where t.tenant_id=#{tenant_id}
+		and t.role_set_id=#{role_set_id}
+	</select>
+	<select id="getResRuleTypeById" parameterType="java.util.Map"
+		resultType="com.bonc.epmwxwl.model.ResRuleType">
+		select
+		r.res_type_id "res_type_id",
+		r.res_type_name "res_type_name"
+		from WXWL_RULE_TYPE rt
+		inner join
+		WXWL_RES_RULE_TYPE r on
+		rt.res_type_id=r.res_type_id
+		where
+		rt.rule_type_id=#{rule_type_id}
+	</select>
+	<update id="updateClientsetname" parameterType="com.bonc.epmwxwl.model.RoleSet">
+		update
+		WXWL_ROLE_SET t set
+		t.clientsetname =#{clientsetname}
+		where t.role_set_id=#{role_set_id}
+	</update>
+	<update id="updateRuleTypeId" parameterType="com.bonc.epmwxwl.model.RoleSet">
+		update
+		WXWL_ROLE_SET t set
+		t.rule_type_id =#{rule_type_id}
+		where t.role_set_id=#{role_set_id}
+	</update>
+	<update id="updateTargetDeptId" parameterType="com.bonc.epmwxwl.model.RoleSet">
+		update
+		WXWL_ROLE_SET t set
+		t.target_dept_id =#{target_dept_id}
+		where t.role_set_id=#{role_set_id}
+	</update>
+	<update id="updateCond" parameterType="com.bonc.epmwxwl.model.RoleSet">
+		update
+		WXWL_ROLE_SET t set
+		t.cond_resume =#{cond_resume},
+		t.cond_sql=#{cond_sql}
+		where t.role_set_id=#{role_set_id}
+	</update>
+	<update id="updateSort" parameterType="com.bonc.epmwxwl.model.RoleSet">
+		update
+		WXWL_ROLE_SET t set
+		t.sortid =#{sortid}
+		where t.role_set_id=#{role_set_id}
+	</update>
+	<delete id="deleRule" parameterType="java.util.List">
+		delete from WXWL_ROLE_SET t
+		where t.role_set_id in
+		<foreach collection="ids" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

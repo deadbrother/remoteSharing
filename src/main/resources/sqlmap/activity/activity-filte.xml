@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.activity.dao.ActivityFilteUserDao">
+	<!-- 查询黑白名单 -->
+	<select id="getFilteList" parameterType="com.bonc.activity.model.ActivityFilteUser"
+		resultType="java.util.HashMap">
+		select 
+		t.USER_ID "userId",
+		t.USER_PHONE "userPhone",
+		t.FILTE_OPERATOR "operator",
+		t.FILTE_OPERATE_TIME "operatorTime",
+		t.TENANT_ID "tenantId",
+		t.FILTE_TYPE "filteType" ,
+		t.FILTE_DESC "desc",
+		t.AREA_NO "areaNo",
+		t1.user_name "userName",
+		c.name  "orgClassName"
+		<!-- c. class_level "classLevel",
+		c.name "orgClassname" -->
+		from
+		CLYX_ACTIVITY_FILTE_USERS  t
+		left join ${security}.userinfo t1 on
+		t1.login_id=t.FILTE_OPERATOR and t.tenant_id=t1.tenant_id
+		left join ${security}.org_class c 
+		on t.AREA_NO=c.id 
+		<!-- left join ${security}.userinfo_orginfo_rel a
+		on  t1.id=a.userinfo_id  and t1.tenant_id=a.tenant_id
+		left join ${security}.orginfo b
+        on a.orginfo_id = b.id  and a.tenant_id=b.tenant_id
+        left join ${security}.org_class c
+		on b.org_class = c.ID  and  b.tenant_id=c.tenant_id -->
+		where t.TENANT_ID=#{tenantId}
+		<if test="filteType !=null and filteType !='2'  and filteType !=2  and filteType !=''">
+				AND t.FILTE_TYPE = #{filteType}
+		</if> 
+		<if test="userPhone !=null and userPhone !=''">
+				AND t.USER_PHONE LIKE CONCAT(CONCAT('%', #{userPhone}), '%')
+		</if>
+		<if test="loginClassLevel !=null and loginClassLevel !=''  and loginClassLevel!=1 and  loginOrgClassId!='' and loginOrgClassId!=null">
+		        AND t.AREA_NO=#{loginOrgClassId} 
+		</if>
+		order by
+		t.FILTE_OPERATE_TIME desc
+	</select>
+	<!-- 插入黑白名单 -->
+	<insert id="saveFilteUser" parameterType="com.bonc.activity.model.ActivityFilteUser">
+	   <!-- <selectKey keyProperty="userId" resultType="String" order="BEFORE">
+			select
+			FILTE_USERS_id.nextval from dual
+		</selectKey> -->
+	    insert into  CLYX_ACTIVITY_FILTE_USERS
+		(USER_ID,
+		USER_PHONE,
+		FILTE_OPERATOR,
+		FILTE_OPERATE_TIME,
+		TENANT_ID,
+		FILTE_TYPE,
+		FILTE_DESC,
+		AREA_NO
+		) values(
+		#{userId,javaType=String,jdbcType=VARCHAR},
+		#{userPhone,javaType=String,jdbcType=VARCHAR},
+		#{operator,javaType=String,jdbcType=VARCHAR},
+		#{operatorTime,javaType=Date,jdbcType=DATE},
+		#{tenantId,javaType=String,jdbcType=VARCHAR},
+		#{filteType,javaType=String,jdbcType=VARCHAR},
+		#{desc,javaType=String,jdbcType=VARCHAR},
+		#{areaNo,javaType=String,jdbcType=VARCHAR}
+		)
+
+	</insert>
+	<!-- 根据id查询名单 -->
+	<select id="getActivityFilteById" parameterType="com.bonc.activity.model.ActivityFilteUser"
+		resultType="com.bonc.activity.model.ActivityFilteUser">
+		SELECT
+			T.USER_ID "userId",
+			T.USER_PHONE "userPhone",
+			T.FILTE_OPERATOR "operator",
+			T.FILTE_OPERATE_TIME "operatorTime",
+			T.TENANT_ID "tenantId",
+			T.FILTE_TYPE "filteType",
+			T.FILTE_DESC "desc",
+			T.AREA_NO "areaNo"
+		FROM
+			CLYX_ACTIVITY_FILTE_USERS t
+		WHERE
+			1 = 1
+		AND t.USER_ID =#{userId,javaType=String,jdbcType=VARCHAR}
+		AND t.tenant_id =#{tenantId,javaType=String,jdbcType=VARCHAR}
+	</select>
+
+	<!-- -->
+	<select id="queryFilteWithBatch" parameterType="com.bonc.activity.model.ActivityFilteUser"
+		resultType="com.bonc.activity.model.ActivityFilteUser">
+		select
+		USER_ID "userId",
+		USER_PHONE "userPhone",
+		FILTE_OPERATOR "operator",
+		FILTE_OPERATE_TIME "operatorTime",
+		TENANT_ID "tenantId",
+		FILTE_TYPE
+		"filteType",
+		FILTE_DESC "desc"
+		from CLYX_ACTIVITY_FILTE_USERS
+		WHERE USER_ID IN
+		( ${ids} )
+	</select>
+	<!-- 删除黑白名单 -->
+	<delete id="deleteFilteUser" parameterType="com.bonc.activity.model.ActivityFilteUser">
+		DELETE FROM
+		CLYX_ACTIVITY_FILTE_USERS
+		WHERE
+		USER_ID=#{userId}
+		
+	</delete>
+
+	<select id="queryWithPhone" parameterType="com.bonc.activity.model.ActivityFilteUser"
+		resultType="com.bonc.activity.model.ActivityFilteUser">
+		select
+		USER_ID "userId",
+		USER_PHONE "userPhone",
+		FILTE_OPERATOR "operator",
+		FILTE_OPERATE_TIME "operatorTime",
+		TENANT_ID "tenantId",
+		FILTE_TYPE
+		"filteType",
+		FILTE_DESC "desc"
+		from CLYX_ACTIVITY_FILTE_USERS
+		WHERE
+		USER_PHONE = #{userPhone,jdbcType=VARCHAR}
+	</select>
+	<!--  得到下一个添加的id-->
+	<select id="getFilteUserId"  resultType="string">
+	  select to_char(FILTE_USERS_id.nextval) as "userId" from dual
+	</select>
+    <!--批量数据插入到临时表  -->
+    <insert id="saveModifyActivityFilteUser"  parameterType="com.bonc.activity.model.ActivityFilteUser">
+		insert into  ${tableName}
+		(USER_ID,
+		USER_PHONE,
+		FILTE_OPERATOR,
+		FILTE_OPERATE_TIME,
+		TENANT_ID,
+		FILTE_TYPE,
+		FILTE_DESC,
+		AREA_NO
+		) values(
+		FILTE_USERS_id.nextval,
+		#{userPhone,javaType=String,jdbcType=VARCHAR},
+		#{operator,javaType=String,jdbcType=VARCHAR},
+		sysdate,
+		#{tenantId,javaType=String,jdbcType=VARCHAR},
+		#{filteType,javaType=String,jdbcType=VARCHAR},
+		#{desc,javaType=String,jdbcType=VARCHAR},
+		#{areaNo,javaType=String,jdbcType=VARCHAR}
+		)
+    </insert>
+    
+        <!--修改后，插入数据  -->
+    <insert id="saveModifyActivityFilteUser2"  parameterType="com.bonc.activity.model.ActivityFilteUser">
+		insert into  CLYX_ACTIVITY_FILTE_USERS
+		(USER_ID,
+		USER_PHONE,
+		FILTE_OPERATOR,
+		FILTE_OPERATE_TIME,
+		TENANT_ID,
+		FILTE_TYPE,
+		FILTE_DESC,
+		AREA_NO
+		) values(
+		#{userId,javaType=String,jdbcType=VARCHAR},
+		#{userPhone,javaType=String,jdbcType=VARCHAR},
+		#{operator,javaType=String,jdbcType=VARCHAR},
+		<!-- #{operatorTime,javaType=Date,jdbcType=DATE}, -->
+		sysdate,
+		#{tenantId,javaType=String,jdbcType=VARCHAR},
+		#{filteType,javaType=String,jdbcType=VARCHAR},
+		#{desc,javaType=String,jdbcType=VARCHAR},
+		#{areaNo,javaType=String,jdbcType=VARCHAR}
+		)
+    </insert>
+    
+    	<!-- 修改黑白名单插入日志表 -->
+	<insert id="saveOperateLog" parameterType="com.bonc.activity.model.ActivityFilteUser">
+		INSERT INTO CLYX_ACTIVITY_FILTE_USERS_LOG
+		(LOG_USER_ID,
+		LOG_USER_PHONE,
+		LOG_FILTE_OPERATOR,
+		LOG_FILTE_OPERATE_TIME,
+		TENANT_ID,
+		LOG_FILTE_TYPE,
+		LOG_OPERATE_TIME,
+		LOG_FILTE_DESC,
+		AREA_NO
+		)
+		VALUES (
+		#{userId,jdbcType=VARCHAR},
+		#{userPhone,jdbcType=VARCHAR},
+		#{operator,jdbcType=VARCHAR},
+		#{operatorTime,jdbcType=DATE},
+		#{tenantId,jdbcType=VARCHAR},
+		#{filteType,jdbcType=VARCHAR},
+		#{logOperateTime,jdbcType=DATE},
+		#{desc,jdbcType=VARCHAR},
+		#{areaNo,javaType=String,jdbcType=VARCHAR}
+		)
+	</insert>
+	<!--  查询该手机号是否存在-->
+	<select id="getActivityFilteByNumber"   parameterType="com.bonc.activity.model.ActivityFilteUser"  resultType="java.util.HashMap">
+	    select
+		USER_ID "userId",
+		USER_PHONE "userPhone",
+		FILTE_OPERATOR "operator",
+		FILTE_OPERATE_TIME "operatorTime",
+		TENANT_ID
+		"tenantId",
+		FILTE_TYPE
+		"filteType",
+		FILTE_DESC "desc"
+		from
+		CLYX_ACTIVITY_FILTE_USERS t where 1=1
+		<if test="userPhone !=null and userPhone !=''">
+		    and t.USER_PHONE = #{userPhone,javaType=String,jdbcType=VARCHAR}
+		</if> 
+	</select>
+	
+	
+	<update id="executeSql" parameterType="java.lang.String">
+	   ${_parameter}
+	</update>
+	
+</mapper>

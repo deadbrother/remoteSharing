@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bonc.epmwxwl.dao.activity.ActivityDao">
+	<select id="getActivityList" parameterType="com.bonc.epmwxwl.model.ActivityProvPo"
+		resultType="java.util.HashMap">
+		select t.activity_id "activityDailyId",
+		t.activity_name "activityDailyName",
+		t5.org_level_name "orgLevel",
+		t.activity_cycle "activityCycle",
+		t.org_range "orgRange",
+		t.channel_check "channelCheck",
+		t.prov_id "provId",
+		t.city_id "cityId",
+		t.create_org_path "createOrgPath",
+		t.org_path "orgPath",
+		USERGROUP_ID "userGroupId",
+		t.CREATE_USER "createUser",
+		STATE "state",
+		t.parent_id "parentId",
+		t3.user_name "createUserName",
+		t4.type_desc "activityTypeName"
+		from CLYX_ACTIVITY t
+		left join CLYX_ACTIVITY_PROV t2 on t2.activity_id=t.activity_id and
+		t2.tenant_id=t.tenant_id
+		left join security_hn.userinfo t3 on t3.login_id=t.CREATE_USER
+		left join CLYX_ACTIVITY_TYPE t4 on t4.type_id=t.activity_typeid
+		left join CLYX_ACTIVITY_ORGLEVEL t5 on t.org_level=t5.org_level
+		where 1=1 and t.tenant_id=#{tenantId,javaType=String,jdbcType=VARCHAR}
+		order by t.create_date desc
+	</select>
+	
+</mapper>
