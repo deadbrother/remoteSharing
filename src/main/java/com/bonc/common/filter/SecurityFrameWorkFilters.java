@@ -20,7 +20,7 @@ public class SecurityFrameWorkFilters {
 	@Autowired
 	private FrameConfigurationProperties frameConfigurationProperties;
 	
-	@Bean	
+	//@Bean	
     public FilterRegistrationBean ssoRegistrationBean() {
 		System.out.println("参数配置="+JSON.toJSONString(frameConfigurationProperties));
         final FilterRegistrationBean registrationBean = new FilterRegistrationBean();        
@@ -52,7 +52,7 @@ public class SecurityFrameWorkFilters {
 		return registrationBean;
 	}
 	
-	@Bean 
+	//@Bean 
    public FilterRegistrationBean loginRegistrationBean() {
        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
        
