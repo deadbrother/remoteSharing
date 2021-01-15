@@ -320,7 +320,7 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.8</version>
+			<version>4.0.0</version>
 		</dependency>
 		<!-- 数据源监控 -->
 		<dependency>
