@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0</version>
 		</dependency>
 		
 		<dependency>  
@@ -320,7 +320,7 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.8</version>
+			<version>3.11</version>
 		</dependency>
 		<!-- 数据源监控 -->
 		<dependency>
